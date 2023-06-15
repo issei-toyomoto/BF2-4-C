@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="AppMain.cpp" />
     <ClCompile Include="GameMain.cpp" />
+    <ClCompile Include="InputKey.cpp" />
     <ClCompile Include="SceneManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +149,7 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="FPS.h" />
     <ClInclude Include="GameMain.h" />
+    <ClInclude Include="InputKey.h" />
     <ClInclude Include="SceneManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
