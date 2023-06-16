@@ -6,4 +6,6 @@ private:
 	int MoveX;
 	int MoveY;
 	int balloon;
+	int floatingX;
+	int floatingY;
 };
