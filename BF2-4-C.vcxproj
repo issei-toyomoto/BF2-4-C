@@ -141,7 +141,7 @@
   <ItemGroup>
     <ClCompile Include="AppMain.cpp" />
     <ClCompile Include="GameMain.cpp" />
-    <ClCompile Include="gStage1.cpp" />
+    <ClCompile Include="Stage.cpp" />
     <ClCompile Include="InputKey.cpp" />
     <ClCompile Include="SceneManager.cpp" />
   </ItemGroup>
@@ -150,7 +150,7 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="FPS.h" />
     <ClInclude Include="GameMain.h" />
-    <ClInclude Include="gStage1.h" />
+    <ClInclude Include="Stage.h" />
     <ClInclude Include="InputKey.h" />
     <ClInclude Include="SceneManager.h" />
   </ItemGroup>
