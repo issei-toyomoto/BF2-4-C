@@ -8,4 +8,6 @@ private:
 	int balloon;
 	int floatingX;
 	int floatingY;
+public:
+
 };
