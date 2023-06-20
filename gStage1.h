@@ -3,5 +3,8 @@
 class gStage1 :
     public AbstractScene
 {
+private:
+    int gStageImg1;
+public:
 };
 
