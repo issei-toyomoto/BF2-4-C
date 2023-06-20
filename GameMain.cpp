@@ -15,6 +15,7 @@
 
 AbstractScene* GameMain::Update()
 {
+
 	if (CheckHitKey(KEY_INPUT_9)) {
 		return nullptr;
 	}
