@@ -1,13 +1,13 @@
 #pragma once
 #include"AbstractScene.h"
-class PlayerMode:public AbstractScene
+class Player
 {
 private:
-	int MoveX;
-	int MoveY;
-	int balloon;
-	int floatingX;
-	int floatingY;
+	int MoveX;//’n–Ê‚ÌˆÚ“®X²
+	int MoveY;//’n–Ê‚ÌˆÚ“®Y²
+	int balloon;//•—‘D‚Ì”
+	int floatingX;//‹ó’†‚Å‚ÌˆÚ“®X²
+	int floatingY;//‹ó’†‚Å‚ÌˆÚ“®Y²
 public:
 
 };
