@@ -8,6 +8,4 @@ private:
 	int Balloon;//•—‘D‚Ì”
 	int FloatingX;//‹ó’†‚Å‚ÌˆÚ“®
 	int FloatingY;//‹ó’†‚Å‚ÌˆÚ“®
-public:
-
 };
