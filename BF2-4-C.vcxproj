@@ -142,6 +142,7 @@
     <ClCompile Include="AppMain.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="InputKey.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="SceneManager.cpp" />
   </ItemGroup>
   <ItemGroup>
