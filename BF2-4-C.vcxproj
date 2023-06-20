@@ -144,6 +144,7 @@
     <ClCompile Include="InputKey.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="Thunderbolt.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractScene.h" />
@@ -153,6 +154,7 @@
     <ClInclude Include="InputKey.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="Thunderbolt.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
