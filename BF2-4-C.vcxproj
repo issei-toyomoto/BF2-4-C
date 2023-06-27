@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AppMain.cpp" />
+    <ClCompile Include="Fish.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="InputKey.cpp" />
@@ -150,6 +151,7 @@
   <ItemGroup>
     <ClInclude Include="AbstractScene.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="Fish.h" />
     <ClInclude Include="FPS.h" />
     <ClInclude Include="GameMain.h" />
     <ClInclude Include="Stage.h" />
