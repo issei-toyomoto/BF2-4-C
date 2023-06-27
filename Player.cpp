@@ -20,5 +20,6 @@ void Player::Draw() const /***•`‰æ***/
 
 #ifdef DEBUG
 	DrawFormatString(10, 10, C_WHITE, "X:%d Y:%d",XStick,YStick);
+	DrawBox(XStick, YStick, XStick + 10, YStick + 10, C_RED, TRUE);
 #endif // DEBUG
 }
