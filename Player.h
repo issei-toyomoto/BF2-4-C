@@ -3,9 +3,13 @@
 class Player
 {
 private:
-	int PlayerX;//プレイヤー座標
-	int PlayerY;//プレイヤー座標
-
+	int PlayerX;//プレイヤーX座標
+	int PlayerY;//プレイヤーY座標
+	int VectorX;//ベクトルX
+	int VectorY;//ベクトルY
+	
+	int XStick;
+	int YStick;
 
 public:
 	//コンストラクタ

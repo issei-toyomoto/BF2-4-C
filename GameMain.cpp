@@ -2,6 +2,7 @@
 #include "GameMain.h"
 #include "Common.h"
 #include "stdio.h"
+#include "Player.h"
 
 #define DEBUG
 
@@ -17,7 +18,7 @@
 
 AbstractScene* GameMain::Update()
 {
-
+	player.Update();
 
 #ifdef DEBUG
 	if (CheckHitKey(KEY_INPUT_9)) {
@@ -29,7 +30,7 @@ AbstractScene* GameMain::Update()
 
 void GameMain::Draw()const 
 {
-
+	player.Draw();
 
 #ifdef DEBUG
 	DrawFormatString(10, 30, C_RED, "9キーでプログラム終了");
