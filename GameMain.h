@@ -1,10 +1,10 @@
 ﻿#include "DxLib.h"
 #include "AbstractScene.h"
-
+#include"bubble.h"
 class GameMain :public AbstractScene
 {
 private:
-
+	bubble BUBBLE;
 public:
 	//コンストラクタ
 	GameMain() {};

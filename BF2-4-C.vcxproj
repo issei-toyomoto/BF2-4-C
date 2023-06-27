@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AppMain.cpp" />
+    <ClCompile Include="bubble.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="InputKey.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -148,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractScene.h" />
+    <ClInclude Include="bubble.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="FPS.h" />
     <ClInclude Include="GameMain.h" />
