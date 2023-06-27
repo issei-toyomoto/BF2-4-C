@@ -2,6 +2,7 @@
 #include "GameMain.h"
 #include "Common.h"
 #include "stdio.h"
+#include "Stage.h"
 
 //GameMain::GameMain() 
 //{
@@ -17,7 +18,7 @@ AbstractScene* GameMain::Update()
 {
 
 	if (CheckHitKey(KEY_INPUT_9)) {
-		return nullptr;
+		return new gStage1();
 	}
 	return this;
 }
