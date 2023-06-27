@@ -3,12 +3,12 @@
 #include "InputKey.h"
 #include "Common.h"
 
-void Player::Update() 
+void Player::Update() /***•`‰æˆÈŠO***/
 {
 
 }
 
-void Player::Draw() const 
+void Player::Draw() const /***•`‰æ***/
 {
 
 }
