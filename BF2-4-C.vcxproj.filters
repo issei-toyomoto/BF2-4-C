@@ -77,7 +77,5 @@
     <ClInclude Include="Fish.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
