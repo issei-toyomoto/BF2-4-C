@@ -142,6 +142,7 @@
     <ClCompile Include="AppMain.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="bubble.cpp" />
+    <ClCompile Include="Fish.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="InputKey.cpp" />
@@ -154,6 +155,7 @@
     <ClInclude Include="bubble.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Fish.h" />
     <ClInclude Include="FPS.h" />
     <ClInclude Include="GameMain.h" />
     <ClInclude Include="Stage.h" />
