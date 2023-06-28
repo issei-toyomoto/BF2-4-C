@@ -4,6 +4,11 @@
 class InputKey
 {
 private:
+	/*static int key_flg;
+	static int now_key;
+	static int old_key;*/
+
+public:
 	static int key_flg;
 	static int now_key;
 	static int old_key;

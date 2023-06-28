@@ -3,8 +3,12 @@
 #include "Common.h"
 #include "stdio.h"
 #include "Player.h"
+#include "Stage.h"
 
 #define DEBUG
+
+
+
 
 //GameMain::GameMain() 
 //{
@@ -22,7 +26,7 @@ AbstractScene* GameMain::Update()
 
 #ifdef DEBUG
 	if (CheckHitKey(KEY_INPUT_9)) {
-		return nullptr;
+		return new gStage1();
 	}
 #endif // DEBUG
 	return this;
