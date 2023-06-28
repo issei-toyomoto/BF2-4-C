@@ -4,22 +4,26 @@
 void bubble::GenerationBubble() const{
 
 	DrawBox(bubbleX, bubbleY, bubbleX+10, bubbleY +10, GetColor(255, 0, 0), TRUE);
-	DrawFormatString(10, 100, C_WHITE, "%d", bubbleX);
+	//DrawFormatString(10, 100, C_WHITE, "%d", bubbleX);
 }	
 void bubble::UpdateBubble()
 {
 	FPSCount++;
+	
+	bubbleY-=5;
 
-
-	bubbleY--;
-	bubbleX += VectorBubbleX;
-
-	if (bubbleX - 50 > bubbleX) {
-		VectorBubbleX*=-1;
+	if (FPSCount>30) {
+		bubbleX -= 20;
+		
 	}
-	else if (bubbleX + 50 < bubbleX) {
-		VectorBubbleX*=-1;
+	else {
+		bubbleX += 10;
 	}
+	if(FPSCount>60){
+		bubbleX += 30;
+	}
+	
+	
 	
 
 	/*if (FPSCount % 60 == 0) {
