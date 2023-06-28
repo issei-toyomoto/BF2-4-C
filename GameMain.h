@@ -1,12 +1,14 @@
 ﻿#include "DxLib.h"
 #include "AbstractScene.h"
 #include "Player.h"
+#include"bubble.h"
 
 class GameMain :public AbstractScene
 {
 private:
 	int gPlayerImg;
 	Player player;
+	bubble BUBBLE;
 public:
 	//コンストラクタ
 	GameMain() {};

@@ -23,6 +23,7 @@
 AbstractScene* GameMain::Update()
 {
 	player.Update();
+	BUBBLE.UpdateBubble();
 
 #ifdef DEBUG
 	if (CheckHitKey(KEY_INPUT_9)) {
@@ -35,6 +36,7 @@ AbstractScene* GameMain::Update()
 void GameMain::Draw()const 
 {
 	player.Draw();
+	BUBBLE.GenerationBubble();
 
 #ifdef DEBUG
 	DrawFormatString(10, 30, C_RED, "9キーでプログラム終了");
