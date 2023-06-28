@@ -2,6 +2,7 @@
 #include "SceneManager.h"
 #include "FPS.h"
 #include "GameMain.h"
+#include "Stage.h"
 
 #define _SCREEN_HEIGHT_ 480
 #define _SCREEN_WIDHT_	640
