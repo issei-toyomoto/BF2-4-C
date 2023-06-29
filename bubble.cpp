@@ -8,22 +8,26 @@ void bubble::GenerationBubble() const{
 }	
 void bubble::UpdateBubble()
 {
+	
 	FPSCount++;
 	
-	bubbleY-=5;
+	bubbleY-=1;
 
-	if (FPSCount>30) {
-		bubbleX -= 20;
+		
+	if (i < 5) {
+	
+		if (FPSCount > 30) {
+			bubbleX -= 10;
+		}
+		else {
+			bubbleX += 5;
+		}
+		if (FPSCount > 50) {
+				bubbleX += 15;
+		}
 		
 	}
-	else {
-		bubbleX += 10;
-	}
-	if(FPSCount>60){
-		bubbleX += 30;
-	}
-	
-	
+
 	
 
 	/*if (FPSCount % 60 == 0) {
