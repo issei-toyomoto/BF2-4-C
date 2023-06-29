@@ -2,4 +2,7 @@
 #include"Thunderbolt.h"
 #include<math.h>
 
- 
+void Thunder::ChangeAngle()
+{
+
+}
