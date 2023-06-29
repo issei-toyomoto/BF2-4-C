@@ -4,7 +4,7 @@
 class GameMain :public AbstractScene
 {
 private:
-	int gPlayerImg;
+	/*int gPlayerImg;*/
 public:
 	//コンストラクタ
 	GameMain() {};

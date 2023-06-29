@@ -66,7 +66,7 @@ AbstractScene* gStage2::Update()
 void gStage2::Draw() const
 {
 	DrawFormatString(10, 30, C_RED, "3キーでステージ3へ");
-	DrawGraph(100 + gPlayer.speedx, 350 + gPlayer.speedy, gPlayerImg, TRUE);
+	DrawGraph(100 + gPlayer.speedx, 365 + gPlayer.speedy, gPlayerImg, TRUE);
 	DrawGraph(0, 470, gSeaImg, FALSE);
 	DrawGraph(0, 450, gStageImg1, FALSE);
 	DrawGraph(460, 450, gStageImg1, FALSE);
@@ -98,7 +98,6 @@ void gStage3::Draw() const
 	DrawGraph(300, 200, gStageImg4, FALSE);
 	DrawGraph(450, 150, gStageImg4, FALSE);
 }
-
 AbstractScene* gStage4::Update()
 {
 	gPlayer.x += gPlayer.speedx;
