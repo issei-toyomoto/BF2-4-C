@@ -12,7 +12,7 @@ private:
         float w, h;			//幅・高さ
         double angle;		//機体の向き
         int count;			//タイミング用
-        int speedx;			//移動速度
+        int speedx;			//移動速度7
         int speedy;     
     };
     struct PLAYER gPlayer;
