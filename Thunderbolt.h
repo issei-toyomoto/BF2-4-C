@@ -2,6 +2,7 @@
 class Thunder 
 {
 private:
+	int gCloudImg = LoadGraph("Stage_Cloud01.png");
 	int ThunderX,ThunderY;// 雷の座標
 	int ThunderMoveX, ThunderMoveY;
 	int Speed;// 雷の速度
@@ -9,4 +10,6 @@ private:
 	int ThunderFlg; // 雷の状態（0...移動中 1...物に接触 2...スタート状態）
 	int WaitTime;// 待ち時間
 	void ChangeAngle();
+	void MoveThunder();
+	void DrawThunder();
 };
