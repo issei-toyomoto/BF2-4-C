@@ -40,12 +40,11 @@ void Thunder::MoveThunder() {
 	}
 }
 
-void Thunder::DrawThunder()
-{
+
 	gCloudImg;
 		//ˆîÈ‚Ì•`‰æ
 		DrawCircle(Thunder::ThunderX, Thunder::ThunderY, 4, 0xFFD700, TRUE);
 	
-}
+
 
 
