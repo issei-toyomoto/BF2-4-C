@@ -39,17 +39,23 @@
 #define P_Img_Thunder_1 30
 //*******************************************//
 
+#define Init_BallonNum 2
+
 class Player
 {
 private:
 	int FPSCnt;
 
 	int PlayerImg[32];	//プレイヤー画像
+	int NowPlayerImg;	//現在のプレイヤー画像配列の要素
+
 	int PlayerX;		//プレイヤーX座標
 	int PlayerY;		//プレイヤーY座標
 	int VectorX;		//ベクトルX
 	int VectorY;		//ベクトルY
 	
+	int BallonNum;		//現在の風船の数
+
 	int XStick;//ステック上下
 	int YStick;//ステック左右
 

@@ -9,7 +9,7 @@
 #define _SCREEN_COLOR_BIT_16_ 16
 #define _SCREEN_COLOR_BIT_32_ 32
 
-//#define DEBUG
+#define DEBUG
 
 int WINAPI WinMain(_In_ HINSTANCE ih, _In_opt_ HINSTANCE ioh, _In_ LPSTR il, _In_ int ii)
 {
