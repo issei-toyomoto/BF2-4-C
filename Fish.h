@@ -3,9 +3,10 @@ class Fish
 {
 private:
 	int WaitTime;
-
+	int PosX, PosY;
 public:
-	void CreateFish();//魚生成
-	void HitBoxArea();//出現エリア判定
-
+	void CreateFish();	//魚生成
+	void HitBoxArea();	//出現エリア判定
+	void DrawFish();	//魚描画
+	void MoveFish();	//魚移動
 };
