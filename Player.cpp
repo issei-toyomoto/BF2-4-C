@@ -11,6 +11,7 @@ Player::Player()
 	FPSCnt = 0;
 	NowPlayerImg = P_Img_Wait_Ballon_2_0;
 	BallonNum = Init_BallonNum;
+	PlayerState = P_State_Wait;
 }
 
 

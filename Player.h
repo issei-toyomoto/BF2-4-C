@@ -38,8 +38,14 @@
 #define P_Img_Thunder_0 29
 #define P_Img_Thunder_1 30
 //*******************************************//
+//プレイヤーの状態
+#define P_State_Wait    0 //待機状態
+#define P_State_Run     1 //走る
+#define P_State_Float   2 //浮く
+#define P_State_Drop    3 //落下
+#define P_State_Thunder 4 //雷に当たる
 
-#define Init_BallonNum 2
+#define Init_BallonNum 2//風船の初期数
 
 class Player
 {
@@ -54,6 +60,7 @@ private:
 	int VectorX;		//ベクトルX
 	int VectorY;		//ベクトルY
 	
+	int PlayerState;	//プレイヤーの状態
 	int BallonNum;		//現在の風船の数
 
 	int XStick;//ステック上下
