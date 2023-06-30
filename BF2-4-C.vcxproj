@@ -153,6 +153,7 @@
     <ClInclude Include="Stage.h" />
     <ClInclude Include="InputKey.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="StageImg.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
