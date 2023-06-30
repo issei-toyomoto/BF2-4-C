@@ -5,11 +5,7 @@
 #include "Player.h"
 #include "Stage.h"
 
-
 #define DEBUG
-
-
-
 
 //GameMain::GameMain() 
 //{
@@ -29,6 +25,8 @@ AbstractScene* GameMain::Update()
 
 #ifdef DEBUG
 	if (CheckHitKey(KEY_INPUT_9)) {
+	if (CheckHitKey(KEY_INPUT_1)) {
+
 		return new gStage1();
 	}
 #endif // DEBUG
@@ -43,5 +41,8 @@ void GameMain::Draw()const
 
 #ifdef DEBUG
 	DrawFormatString(10, 30, C_RED, "9キーでプログラム終了");
+	DrawFormatString(10, 30, C_RED, "1キーでプログラム終了");
 #endif // DEBUG
+
+	
 }
