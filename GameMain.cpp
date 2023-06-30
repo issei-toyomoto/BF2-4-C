@@ -25,5 +25,5 @@ AbstractScene* GameMain::Update()
 
 void GameMain::Draw()const 
 {
-	DrawFormatString(10, 30, C_RED, "1キーでプログラム終了");
+	DrawFormatString(10, 30, C_RED, "1キーでステージ1へ");
 }
