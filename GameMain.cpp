@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Stage.h"
 
+
 #define DEBUG
 
 
@@ -24,6 +25,7 @@ AbstractScene* GameMain::Update()
 {
 	player.Update();
 	BUBBLE.UpdateBubble();
+	enemy.Update();
 
 #ifdef DEBUG
 	if (CheckHitKey(KEY_INPUT_9)) {
@@ -37,6 +39,7 @@ void GameMain::Draw()const
 {
 	player.Draw();
 	BUBBLE.GenerationBubble();
+	enemy.Draw();
 
 #ifdef DEBUG
 	DrawFormatString(10, 30, C_RED, "9キーでプログラム終了");

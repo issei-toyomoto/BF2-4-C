@@ -5,6 +5,8 @@ class Enemy
 private:
 	int EnemyX;
 	int EnemyY;
+	int EnemyFlg;
+	int StartFlg;
 
 public:
 	Enemy();   // コンストラクタ
