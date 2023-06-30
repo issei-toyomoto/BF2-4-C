@@ -14,7 +14,8 @@ public:
 	Enemy();   // コンストラクタ
 	~Enemy();  // デストラクタ
 
-	void EnemyStart();
+	void Enemyballoon();
+	void EnemyMove();
 
 	//描画以外の更新を実装する
 	void Update();
