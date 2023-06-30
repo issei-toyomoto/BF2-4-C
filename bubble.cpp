@@ -13,20 +13,21 @@ void bubble::UpdateBubble()
 	
 	bubbleY-=1;
 
-		
-	if (i < 5) {
 	
-		if (FPSCount > 30) {
+
+	
+	
+	if (FPSCount > 30) {
 			bubbleX -= 10;
-		}
-		else {
-			bubbleX += 5;
-		}
-		if (FPSCount > 50) {
-				bubbleX += 15;
-		}
-		
 	}
+	else {
+			bubbleX += 5;
+	}
+	if (FPSCount > 50) {
+				bubbleX += 15;
+	}
+
+	
 
 	
 
