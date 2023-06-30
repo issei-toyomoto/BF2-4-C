@@ -3,7 +3,7 @@
 #include<math.h>
 
 void Fish::CreateFish() {
-	DrawBox;
+	/*DrawBox;*/
 }
 
 void Fish::HitBoxArea() {
