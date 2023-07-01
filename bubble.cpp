@@ -11,21 +11,22 @@ void bubble::UpdateBubble()
 	
 	FPSCount++;
 	
-	bubbleY-=1;
+	//bubbleY-=2;
 
 	
 
 	
 	
-	if (FPSCount > 30) {
-			bubbleX -= 10;
+	/*if (FPSCount > 30) {
+		bubbleX -= 12;
 	}
 	else {
-			bubbleX += 5;
+		bubbleX += 5.5;
 	}
 	if (FPSCount > 50) {
-				bubbleX += 15;
-	}
+		bubbleX += 15;
+		FPSCount = 0;
+	}*/
 
 	
 

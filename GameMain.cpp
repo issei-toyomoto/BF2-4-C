@@ -35,6 +35,7 @@ AbstractScene* GameMain::Update()
 
 void GameMain::Draw()const
 {
+
 	player.Draw();
 	BUBBLE.GenerationBubble();
 	enemy.Draw();

@@ -31,6 +31,8 @@ private:
     int gRlandImg1;
     int gRlandImg2;
     int gSeaImg;
+    int MousePointx;
+    int MousePointy;
     
 public:
 
