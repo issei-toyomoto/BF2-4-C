@@ -23,13 +23,13 @@
 #define P_Img_Fly_Ballon_2_1 17
 #define P_Img_Fly_Ballon_2_2 18
 #define P_Img_Fly_Ballon_2_3 19
-#define P_Img_Fly_Ballon_2_4 20
+#define P_Img_FlyStop_Ballon_2_4 20
 //ïÇÇ≠ÅiïóëDÇPå¬Åj
 #define P_Img_Fly_Ballon_1_0 24
 #define P_Img_Fly_Ballon_1_1 25
 #define P_Img_Fly_Ballon_1_2 26
 #define P_Img_Fly_Ballon_1_3 27
-#define P_Img_Fly_Ballon_1_4 28
+#define P_Img_FlyStop_Ballon_1_4 28
 //óéâ∫
 #define P_Img_Drop_0 21
 #define P_Img_Drop_1 22

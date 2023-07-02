@@ -150,47 +150,53 @@ void Player::UpdatePlayerImgRun()
 			NowPlayerImg = P_Img_Run_Ballon_2_2;
 		}
 		/*else if (FPSCnt > 45 && FPSCnt < 60) {
-			NowPlayerImg = P_Img_Run_Ballon_2_3;
+			NowPlayerImg = P_Img_RunStop_Ballon_2_3;
 		}*/
 	}
 }
 
 void Player::UpdatePlayerImgFly() 
 {
-	if (BalloonNum == 1) {
-		if (FPSCnt >= 0 && FPSCnt <= 3 || FPSCnt >= 20 && FPSCnt<=23 || FPSCnt >= 40 && FPSCnt <= 43) {
-			NowPlayerImg = P_Img_Fly_Ballon_1_0;
-		}
-		else if (FPSCnt >= 4 && FPSCnt <= 7 || FPSCnt >= 24 && FPSCnt <= 27 || FPSCnt >= 44 && FPSCnt <= 47) {
-			NowPlayerImg = P_Img_Fly_Ballon_1_1;
-		}
-		else if (FPSCnt >= 8 && FPSCnt <= 11 || FPSCnt >= 28 && FPSCnt <=31 || FPSCnt >= 48 && FPSCnt <= 51) {
-			NowPlayerImg = P_Img_Fly_Ballon_1_2;
-		}
-		else if (FPSCnt >= 12 && FPSCnt <= 15 || FPSCnt >= 32 && FPSCnt <= 35 || FPSCnt >= 52 && FPSCnt <= 55) {
-			NowPlayerImg = P_Img_Fly_Ballon_1_3;
-		}
-		else if (FPSCnt >= 16 && FPSCnt <= 19 || FPSCnt >= 36 && FPSCnt <= 39 || FPSCnt >= 56 && FPSCnt <= 60) {
-			NowPlayerImg = P_Img_Fly_Ballon_1_4;
+	//•—‘D‚PŒÂ
+	if (InputKey::GetKey(PAD_INPUT_A) || InputKey::GetKey(PAD_INPUT_B)) {
+		if (BalloonNum == 1) {
+			if (FPSCnt % 8 == 0 || FPSCnt % 8 == 1) {//‚QƒtƒŒ[ƒ€‚ÅŽŸ‚Ì‰æ‘œ
+				NowPlayerImg = P_Img_Fly_Ballon_1_0;
+			}
+			else if (FPSCnt % 8 == 2 || FPSCnt % 8 == 3) {
+				NowPlayerImg = P_Img_Fly_Ballon_1_1;
+			}
+			else if (FPSCnt % 8 == 4 || FPSCnt % 8 == 5) {
+				NowPlayerImg = P_Img_Fly_Ballon_1_2;
+			}
+			else if (FPSCnt % 8 == 6 || FPSCnt % 8 == 7) {
+				NowPlayerImg = P_Img_Fly_Ballon_1_3;
+			}
 		}
 	}
-
-	if (BalloonNum == 2) {
-		if (FPSCnt >= 0 && FPSCnt <= 3 || FPSCnt >= 20 && FPSCnt <= 23 || FPSCnt >= 40 && FPSCnt <= 43) {
-			NowPlayerImg = P_Img_Fly_Ballon_2_0;
+	else {
+		NowPlayerImg = P_Img_FlyStop_Ballon_1_4;
+	}
+	
+	//•—‘D‚QŒÂ
+	if (InputKey::GetKey(PAD_INPUT_A) || InputKey::GetKey(PAD_INPUT_B)) {
+		if (BalloonNum == 2) {
+			if (FPSCnt % 8 == 0 || FPSCnt % 8 == 1) {//‚QƒtƒŒ[ƒ€‚ÅŽŸ‚Ì‰æ‘œ
+				NowPlayerImg = P_Img_Fly_Ballon_2_0;
+			}
+			else if (FPSCnt % 8 == 2 || FPSCnt % 8 == 3) {
+				NowPlayerImg = P_Img_Fly_Ballon_2_1;
+			}
+			else if (FPSCnt % 8 == 4 || FPSCnt % 8 == 5) {
+				NowPlayerImg = P_Img_Fly_Ballon_2_2;
+			}
+			else if (FPSCnt % 8 == 6 || FPSCnt % 8 == 7) {
+				NowPlayerImg = P_Img_Fly_Ballon_2_3;
+			}
 		}
-		else if (FPSCnt >= 4 && FPSCnt <= 7 || FPSCnt >= 24 && FPSCnt <= 27 || FPSCnt >= 44 && FPSCnt <= 47) {
-			NowPlayerImg = P_Img_Fly_Ballon_2_1;
-		}
-		else if (FPSCnt >= 8 && FPSCnt <= 11 || FPSCnt >= 28 && FPSCnt <= 31 || FPSCnt >= 48 && FPSCnt <= 51) {
-			NowPlayerImg = P_Img_Fly_Ballon_2_2;
-		}
-		else if (FPSCnt >= 12 && FPSCnt <= 15 || FPSCnt >= 32 && FPSCnt <= 35 || FPSCnt >= 52 && FPSCnt <= 55) {
-			NowPlayerImg = P_Img_Fly_Ballon_2_3;
-		}
-		else if (FPSCnt >= 16 && FPSCnt <= 19 || FPSCnt >= 36 && FPSCnt <= 39 || FPSCnt >= 56 && FPSCnt <= 60) {
-			NowPlayerImg = P_Img_Fly_Ballon_2_4;
-		}
+	}
+	else {
+		NowPlayerImg = P_Img_FlyStop_Ballon_2_4;
 	}
 }
 
