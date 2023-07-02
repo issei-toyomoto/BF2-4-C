@@ -41,9 +41,9 @@ void Thunder::MoveThunder() {
 }
 
 
-	gCloudImg;
-		//ˆîÈ‚Ì•`‰æ
-		DrawCircle(Thunder::ThunderX, Thunder::ThunderY, 4, 0xFFD700, TRUE);
+	//gCloudImg;
+	//	//ˆîÈ‚Ì•`‰æ
+	//	DrawCircle(Thunder::ThunderX, Thunder::ThunderY, 4, 0xFFD700, TRUE);
 	
 
 

@@ -19,17 +19,17 @@
 #define P_Img_Run_Ballon_1_2     14
 #define P_Img_RunStop_Ballon_1_3 15
 //浮く（風船２個）
-#define P_Img_Float_Ballon_2_0 16
-#define P_Img_Float_Ballon_2_1 17
-#define P_Img_Float_Ballon_2_2 18
-#define P_Img_Float_Ballon_2_3 19
-#define P_Img_Float_Ballon_2_4 20
+#define P_Img_Fly_Ballon_2_0 16
+#define P_Img_Fly_Ballon_2_1 17
+#define P_Img_Fly_Ballon_2_2 18
+#define P_Img_Fly_Ballon_2_3 19
+#define P_Img_Fly_Ballon_2_4 20
 //浮く（風船１個）
-#define P_Img_Float_Ballon_1_0 24
-#define P_Img_Float_Ballon_1_1 25
-#define P_Img_Float_Ballon_1_2 26
-#define P_Img_Float_Ballon_1_3 27
-#define P_Img_Float_Ballon_1_4 28
+#define P_Img_Fly_Ballon_1_0 24
+#define P_Img_Fly_Ballon_1_1 25
+#define P_Img_Fly_Ballon_1_2 26
+#define P_Img_Fly_Ballon_1_3 27
+#define P_Img_Fly_Ballon_1_4 28
 //落下
 #define P_Img_Drop_0 21
 #define P_Img_Drop_1 22
@@ -41,11 +41,14 @@
 //プレイヤーの状態
 #define P_State_Wait    0 //待機状態
 #define P_State_Run     1 //走る
-#define P_State_Float   2 //浮く
+#define P_State_Fly     2 //浮く
 #define P_State_Drop    3 //落下
 #define P_State_Thunder 4 //雷に当たる
 
 #define Init_BallonNum 2//風船の初期数
+
+#define Right 0 //右
+#define Left  1 //左
 
 class Player
 {
@@ -59,9 +62,10 @@ private:
 	int PlayerY;		//プレイヤーY座標
 	int VectorX;		//ベクトルX
 	int VectorY;		//ベクトルY
+	int Direction;		//向いてる方向
 	
 	int PlayerState;	//プレイヤーの状態
-	int BallonNum;		//現在の風船の数
+	int BalloonNum;		//現在の風船の数
 
 	int XStick;//ステック上下
 	int YStick;//ステック左右
@@ -76,12 +80,15 @@ public:
 	//描画の更新を実装する
 	void Draw() const;
 
-	//移動（地面）
-	void UpdatePlayerRun();
+	//移動（地面）の画像処理
+	void UpdatePlayerImgRun();
 
-	//待機状態
-	void UpdatePlayerWait();
+	//移動（空中）の画像処理
+	void UpdatePlayerImgFly();
 
-	//雷に当たる
-	void UpdatePlayerThunder();
+	//待機状態の画像処理
+	void UpdatePlayerImgWait();
+
+	//雷に当たるの画像処理
+	void UpdatePlayerImgThunder();
 };

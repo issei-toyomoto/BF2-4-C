@@ -1,5 +1,5 @@
 #pragma once
-#include"AbstractScene.h"
+
 class Thunder
 {
 private:
@@ -17,11 +17,11 @@ private:
 	Thunder() {};
 
 	//デストラクタ
-	virtual ~Thunder() {};
+	~Thunder() {};
 
 	//描画以外の更新を実装する
-	virtual AbstractScene* Update() override;
+	void Update();
 
 	//描画に関することを実装する
-	virtual void Draw() const  override;
+	void Draw() const;
 };
