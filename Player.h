@@ -30,10 +30,10 @@
 #define P_Img_Fly_Ballon_1_2 26
 #define P_Img_Fly_Ballon_1_3 27
 #define P_Img_FlyStop_Ballon_1_4 28
-//落下
-#define P_Img_Drop_0 21
-#define P_Img_Drop_1 22
-#define P_Img_Drop_2 23
+//死亡
+#define P_Img_Dead_0 21
+#define P_Img_Dead_1 22
+#define P_Img_Dead_2 23
 //雷に当たる
 #define P_Img_Thunder_0 29
 #define P_Img_Thunder_1 30
@@ -42,7 +42,7 @@
 #define P_State_Wait    0 //待機状態
 #define P_State_Run     1 //走る
 #define P_State_Fly     2 //浮く
-#define P_State_Drop    3 //落下
+#define P_State_Dead    3 //落下
 #define P_State_Thunder 4 //雷に当たる
 
 #define Init_BallonNum 2//風船の初期数
@@ -53,7 +53,7 @@
 class Player
 {
 private:
-	int FPSCnt;
+	int FPSCnt;			//FPSカウント
 
 	int PlayerImg[32];	//プレイヤー画像
 	int NowPlayerImg;	//現在のプレイヤー画像配列の要素
@@ -62,7 +62,7 @@ private:
 	int PlayerY;		//プレイヤーY座標
 	int VectorX;		//ベクトルX
 	int VectorY;		//ベクトルY
-	int Direction;		//向いてる方向
+	int Angle;			//向いてる方向
 	
 	int PlayerState;	//プレイヤーの状態
 	int BalloonNum;		//現在の風船の数
@@ -80,6 +80,11 @@ public:
 	//描画の更新を実装する
 	void Draw() const;
 
+	//移動処理（X方向）
+	void UpdatePlayerX();
+	//移動処理（Y方向）
+	void UpdatePlayerY();
+
 	//移動（地面）の画像処理
 	void UpdatePlayerImgRun();
 
@@ -91,4 +96,7 @@ public:
 
 	//雷に当たるの画像処理
 	void UpdatePlayerImgThunder();
+
+	//死亡時の画像処理
+	void UpdatePlayerImgDead();
 };

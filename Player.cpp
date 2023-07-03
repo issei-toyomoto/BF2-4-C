@@ -15,6 +15,7 @@ Player::Player()
 	PlayerX = 0;
 	PlayerY = 400;
 	VectorX = 0;
+	VectorY = 0;
 }
 
 
@@ -29,46 +30,11 @@ void Player::Update() /***•`‰æˆÈŠO***/
 	InputKey::GetJoyStickY(YStick);
 
 	//X•ûŒü
-	if (XStick > 0) {
-		VectorX = 2;
-		PlayerState = P_State_Run;
-		Direction = Right;
-	}
-	else if (XStick < 0) {
-		VectorX = -2;
-		PlayerState = P_State_Run;
-		Direction = Left;
-	}
-	else if (XStick == 0) {
-		VectorX = 0;
-		PlayerState = P_State_Wait;
-	}
-
+	UpdatePlayerX();
 	PlayerX += VectorX;
 
 	//Y•ûŒü
-	if (PlayerY < 400) {
-		if (BalloonNum == 1) {
-			VectorY = 2;
-		}
-		else if (BalloonNum == 2) {
-			VectorY = 1;
-		}
-		PlayerState = P_State_Fly;
-	}
-	else if (PlayerY >= 400) {
-		VectorY = 0;
-	}
-	
-	
-	if (InputKey::GetKeyDown(PAD_INPUT_A)) {
-		VectorY = -30;
-	}
-
-	if (InputKey::GetKey(PAD_INPUT_B)) {
-		VectorY = -5;
-	}
-
+	UpdatePlayerY();
 	PlayerY += VectorY;
 
 	//‰æ‘œˆ—
@@ -83,6 +49,9 @@ void Player::Update() /***•`‰æˆÈŠO***/
 	}
 	else if (PlayerState == P_State_Thunder) {//—‹‚É“–‚½‚é
 		UpdatePlayerImgThunder();
+	}
+	else if (PlayerState == P_State_Dead) {
+		UpdatePlayerImgDead();
 	}
 
 
@@ -100,10 +69,10 @@ void Player::Update() /***•`‰æˆÈŠO***/
 
 void Player::Draw() const /***•`‰æ***/
 {
-	if (Direction == Left) {
+	if (Angle == Left) {
 		DrawGraph(PlayerX, PlayerY, PlayerImg[NowPlayerImg], TRUE);
 	}
-	else if (Direction == Right) {
+	else if (Angle == Right) {
 		DrawTurnGraph(PlayerX, PlayerY, PlayerImg[NowPlayerImg], TRUE);
 	}
 	else {
@@ -124,23 +93,20 @@ void Player::UpdatePlayerImgRun()
 {
 	//‘–‚éi•—‘D‚PŒÂj
 	if (BalloonNum == 1) {
-		if (FPSCnt >= 0 && FPSCnt <= 4 || FPSCnt >= 15 && FPSCnt <= 19 || FPSCnt >= 30 && FPSCnt <= 34 || FPSCnt >= 45 && FPSCnt <= 49) {
+		if (FPSCnt % 15 == 0 || FPSCnt % 15 == 1 || FPSCnt % 15 == 2 || FPSCnt % 15 == 3 || FPSCnt == 4) {//‚TƒtƒŒ[ƒ€‚²‚Æ‚É‰æ‘œ•ÏX
 			NowPlayerImg = P_Img_Run_Ballon_1_1;
 		}
-		else if (FPSCnt >= 5 && FPSCnt <= 9 || FPSCnt >= 20 && FPSCnt <= 24 || FPSCnt >= 35 && FPSCnt <= 39 || FPSCnt >= 50 && FPSCnt <= 54) {
+		else if (FPSCnt % 15 == 5 || FPSCnt % 15 == 6 || FPSCnt % 15 == 7 || FPSCnt % 15 == 8 || FPSCnt % 15 == 9) {
 			NowPlayerImg = P_Img_Run_Ballon_1_0;
 		}
-		else if (FPSCnt >= 10 && FPSCnt <= 14 || FPSCnt >= 25 && FPSCnt <= 29 || FPSCnt >= 40 && FPSCnt <= 44 || FPSCnt >= 55 && FPSCnt <= 60) {
+		else if (FPSCnt % 15 == 10 || FPSCnt % 15 == 11 || FPSCnt % 15 == 12 || FPSCnt % 15 == 13 || FPSCnt % 15 == 14) {
 			NowPlayerImg = P_Img_Run_Ballon_1_2;
 		}
-		/*else if (FPSCnt > 45 && FPSCnt < 60) {
-			NowPlayerImg = P_Img_RunStop_Ballon_1_3;
-		}*/
 	}
 
 	//‘–‚éi•—‘D‚QŒÂj
 	if (BalloonNum == 2) {
-		if (FPSCnt % 15 == 0 || FPSCnt % 15 == 1 || FPSCnt % 15 == 2 || FPSCnt % 15 == 3 || FPSCnt == 4) {
+		if (FPSCnt % 15 == 0 || FPSCnt % 15 == 1 || FPSCnt % 15 == 2 || FPSCnt % 15 == 3 || FPSCnt == 4) {//‚TƒtƒŒ[ƒ€‚²‚Æ‚É‰æ‘œ•ÏX
 			NowPlayerImg = P_Img_Run_Ballon_2_1;
 		}
 		else if (FPSCnt % 15 == 5 || FPSCnt % 15 == 6 || FPSCnt % 15 == 7 || FPSCnt % 15 == 8 || FPSCnt % 15 == 9) {
@@ -149,6 +115,53 @@ void Player::UpdatePlayerImgRun()
 		else if (FPSCnt % 15 == 10 || FPSCnt % 15 == 11 || FPSCnt % 15 == 12 || FPSCnt % 15 == 13 || FPSCnt % 15 == 14) {
 			NowPlayerImg = P_Img_Run_Ballon_2_2;
 		}
+	}
+}
+
+void Player::UpdatePlayerX() 
+{
+	if (XStick > 0) {//‰E
+		VectorX = 2;
+		PlayerState = P_State_Run;
+		Angle = Right;
+	}
+	else if (XStick < 0) {//¶
+		VectorX = -2;
+		PlayerState = P_State_Run;
+		Angle = Left;
+	}
+	else if (XStick == 0) {
+		VectorX = 0;
+		PlayerState = P_State_Wait;
+	}
+
+	if (PlayerState == P_State_Fly) {
+		
+	}
+}
+
+void Player::UpdatePlayerY() 
+{
+	if (PlayerY < 400) {
+		if (BalloonNum == 1) {
+			VectorY = 2;
+		}
+		else if (BalloonNum == 2) {
+			VectorY = 1;
+		}
+		PlayerState = P_State_Fly;
+	}
+	else if (PlayerY >= 400) {
+		VectorY = 0;
+	}
+
+
+	if (InputKey::GetKeyDown(PAD_INPUT_A)) {
+		VectorY = -20;
+	}
+
+	if (InputKey::GetKey(PAD_INPUT_B)) {
+		VectorY = -5;
 	}
 }
 
@@ -228,10 +241,23 @@ void Player::UpdatePlayerImgWait()
 
 void Player::UpdatePlayerImgThunder() 
 {
-	if (FPSCnt % 3 == 0) {
+	if (FPSCnt % 4 == 0 || FPSCnt % 4 == 1) {
 		NowPlayerImg = P_Img_Thunder_0;
 	}
-	else if (FPSCnt % 5 == 0) {
+	else if (FPSCnt % 4 == 2 || FPSCnt % 4 == 3) {
 		NowPlayerImg = P_Img_Thunder_1;
+	}
+}
+
+void Player::UpdatePlayerImgDead() 
+{
+	if (FPSCnt % 9 == 0 || FPSCnt % 9 == 1 || FPSCnt % 9 == 2) {
+		NowPlayerImg = P_Img_Dead_0;
+	}
+	else if (FPSCnt % 9 == 3 || FPSCnt % 9 == 4 || FPSCnt % 9 == 5) {
+		NowPlayerImg = P_Img_Dead_1;
+	}
+	else if (FPSCnt % 9 == 6 || FPSCnt % 9 == 7 || FPSCnt % 9 == 8) {
+		NowPlayerImg = P_Img_Dead_2;
 	}
 }
