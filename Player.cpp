@@ -11,7 +11,7 @@ Player::Player()
 	FPSCnt = 0;
 	NowPlayerImg = P_Img_Wait_Ballon_2_0;
 	BalloonNum = 2;
-	PlayerState = P_State_Run;
+	PlayerState = P_State_Wait;
 	PlayerX = 0;
 	PlayerY = 400;
 	VectorX = 0;
@@ -30,12 +30,12 @@ void Player::Update() /***•`‰æˆÈŠO***/
 
 	//X•ûŒü
 	if (XStick > 0) {
-		VectorX = 1;
+		VectorX = 2;
 		PlayerState = P_State_Run;
 		Direction = Right;
 	}
 	else if (XStick < 0) {
-		VectorX = -1;
+		VectorX = -2;
 		PlayerState = P_State_Run;
 		Direction = Left;
 	}
@@ -60,7 +60,7 @@ void Player::Update() /***•`‰æˆÈŠO***/
 		VectorY = 0;
 	}
 	
-
+	
 	if (InputKey::GetKeyDown(PAD_INPUT_A)) {
 		VectorY = -30;
 	}
@@ -140,25 +140,22 @@ void Player::UpdatePlayerImgRun()
 
 	//‘–‚éi•—‘D‚QŒÂj
 	if (BalloonNum == 2) {
-		if (FPSCnt >= 0 && FPSCnt <= 4 || FPSCnt >= 15 && FPSCnt <= 19 || FPSCnt >= 30 && FPSCnt <= 34 || FPSCnt >= 45 && FPSCnt <= 49) {
+		if (FPSCnt % 15 == 0 || FPSCnt % 15 == 1 || FPSCnt % 15 == 2 || FPSCnt % 15 == 3 || FPSCnt == 4) {
 			NowPlayerImg = P_Img_Run_Ballon_2_1;
 		}
-		else if (FPSCnt >= 5 && FPSCnt <= 9 || FPSCnt >= 20 && FPSCnt <= 24 || FPSCnt >= 35 && FPSCnt <= 39 || FPSCnt >= 50 && FPSCnt <= 54) {
+		else if (FPSCnt % 15 == 5 || FPSCnt % 15 == 6 || FPSCnt % 15 == 7 || FPSCnt % 15 == 8 || FPSCnt % 15 == 9) {
 			NowPlayerImg = P_Img_Run_Ballon_2_0;
 		}
-		else if (FPSCnt >= 10 && FPSCnt <= 14 || FPSCnt >= 25 && FPSCnt <= 29 || FPSCnt >= 40 && FPSCnt <= 44 || FPSCnt >= 55 && FPSCnt <=60) {
+		else if (FPSCnt % 15 == 10 || FPSCnt % 15 == 11 || FPSCnt % 15 == 12 || FPSCnt % 15 == 13 || FPSCnt % 15 == 14) {
 			NowPlayerImg = P_Img_Run_Ballon_2_2;
 		}
-		/*else if (FPSCnt > 45 && FPSCnt < 60) {
-			NowPlayerImg = P_Img_RunStop_Ballon_2_3;
-		}*/
 	}
 }
 
 void Player::UpdatePlayerImgFly() 
 {
 	//•—‘D‚PŒÂ
-	if (InputKey::GetKey(PAD_INPUT_A) || InputKey::GetKey(PAD_INPUT_B)) {
+	if (InputKey::GetKeyDown(PAD_INPUT_A) || InputKey::GetKey(PAD_INPUT_B)) {
 		if (BalloonNum == 1) {
 			if (FPSCnt % 8 == 0 || FPSCnt % 8 == 1) {//‚QƒtƒŒ[ƒ€‚ÅŽŸ‚Ì‰æ‘œ
 				NowPlayerImg = P_Img_Fly_Ballon_1_0;
@@ -179,7 +176,7 @@ void Player::UpdatePlayerImgFly()
 	}
 	
 	//•—‘D‚QŒÂ
-	if (InputKey::GetKey(PAD_INPUT_A) || InputKey::GetKey(PAD_INPUT_B)) {
+	if (InputKey::GetKeyDown(PAD_INPUT_A) || InputKey::GetKey(PAD_INPUT_B)) {
 		if (BalloonNum == 2) {
 			if (FPSCnt % 8 == 0 || FPSCnt % 8 == 1) {//‚QƒtƒŒ[ƒ€‚ÅŽŸ‚Ì‰æ‘œ
 				NowPlayerImg = P_Img_Fly_Ballon_2_0;
