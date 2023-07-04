@@ -21,6 +21,8 @@ void Fish::CreateFish() {
 		DrawBox;	//‹›‰æ‘œ
 		/*DrawGraph()*/
 	}
+	/*DrawBox;*/
+
 }
 
 //oŒ»ƒGƒŠƒA(Update)

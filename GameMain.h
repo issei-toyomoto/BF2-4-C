@@ -7,7 +7,6 @@
 class GameMain :public AbstractScene
 {
 private:
-	int gPlayerImg;
 	Player player;
 	bubble BUBBLE;
 	Enemy enemy;
