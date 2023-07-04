@@ -9,6 +9,8 @@ private:
 	int EnemyLife;
 	int EnemyFlg;
 	int StartFlg;
+	int EnemyImg[24];
+	int WaitTime;
 
 public:
 	Enemy();   // コンストラクタ
