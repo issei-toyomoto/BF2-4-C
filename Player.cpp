@@ -16,6 +16,7 @@ Player::Player()
 	PlayerY = 400;
 	VectorX = 0;
 	VectorY = 0;
+	CanMoveFlg = true;
 }
 
 
@@ -30,8 +31,10 @@ void Player::Update() /***•`‰æˆÈŠO***/
 	InputKey::GetJoyStickY(YStick);
 
 	//X•ûŒü
-	UpdatePlayerX();
-	PlayerX += VectorX;
+	if (CanMoveFlg == true) {
+		UpdatePlayerX();
+		PlayerX += VectorX;
+	}
 
 	//Y•ûŒü
 	UpdatePlayerY();
@@ -41,10 +44,10 @@ void Player::Update() /***•`‰æˆÈŠO***/
 	if (PlayerState == P_State_Wait) {//‘Ò‹@ó‘Ô
 		UpdatePlayerImgWait();
 	}
-	else if (PlayerState == P_State_Run) {//‘–‚é
+	else if (PlayerState == P_State_Run || PlayerState == P_State_RunStop) {//‘–‚é
 		UpdatePlayerImgRun();
 	}
-	else if (PlayerState == P_State_Fly) {
+	else if (PlayerState == P_State_Fly) {//”ò‚Ô
 		UpdatePlayerImgFly();
 	}
 	else if (PlayerState == P_State_Thunder) {//—‹‚É“–‚½‚é
@@ -116,27 +119,27 @@ void Player::UpdatePlayerImgRun()
 			NowPlayerImg = P_Img_Run_Ballon_2_2;
 		}
 	}
+
+	if (VectorX == 0) {
+		NowPlayerImg = P_Img_RunStop_Ballon_2_3;
+	}
 }
 
 void Player::UpdatePlayerX() 
 {
 	if (XStick > 0) {//‰E
-		VectorX = 2;
+		VectorX = VectorX + 1;
 		PlayerState = P_State_Run;
 		Angle = Right;
 	}
 	else if (XStick < 0) {//¶
-		VectorX = -2;
+		VectorX = VectorX + -1;
 		PlayerState = P_State_Run;
 		Angle = Left;
 	}
 	else if (XStick == 0) {
 		VectorX = 0;
 		PlayerState = P_State_Wait;
-	}
-
-	if (PlayerState == P_State_Fly) {
-		
 	}
 }
 
@@ -154,7 +157,6 @@ void Player::UpdatePlayerY()
 	else if (PlayerY >= 400) {
 		VectorY = 0;
 	}
-
 
 	if (InputKey::GetKeyDown(PAD_INPUT_A)) {
 		VectorY = -20;

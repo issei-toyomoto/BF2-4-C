@@ -44,6 +44,7 @@
 #define P_State_Fly     2 //浮く
 #define P_State_Dead    3 //落下
 #define P_State_Thunder 4 //雷に当たる
+#define P_State_RunStop 5 //走るのをやめる
 
 #define Init_BallonNum 2//風船の初期数
 
@@ -70,6 +71,7 @@ private:
 	int XStick;//ステック上下
 	int YStick;//ステック左右
 
+	bool CanMoveFlg;
 public:
 	//コンストラクタ
 	Player();
