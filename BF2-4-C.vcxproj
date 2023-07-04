@@ -141,9 +141,9 @@
   <ItemGroup>
     <ClCompile Include="AppMain.cpp" />
     <ClCompile Include="GameMain.cpp" />
-    <ClCompile Include="Stage.cpp" />
     <ClCompile Include="InputKey.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="Stage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractScene.h" />

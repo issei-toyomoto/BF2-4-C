@@ -1,9 +1,11 @@
 ﻿#include "DxLib.h"
 #include "AbstractScene.h"
+#include "Stage.h"
 
 class GameMain :public AbstractScene
 {
 private:
+	gStage1 gstage1;
 	/*int gPlayerImg;*/
 public:
 	//コンストラクタ
