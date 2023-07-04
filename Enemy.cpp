@@ -9,6 +9,9 @@ Enemy::Enemy()
 	EnemyFlg = 0;
 	EnemyLife = 3;
 	StartFlg = 0;
+	WaitTime = 0;
+
+	LoadDivGraph("image/Enemy/Enemy_P_Animation.png", 24, 8, 3, 64, 64, EnemyImg);//‰æ‘œ“Ç‚İ‚İ
 }
 
 Enemy::~Enemy()
@@ -18,9 +21,13 @@ Enemy::~Enemy()
 
 void Enemy::Update()
 {
+
 	if (StartFlg == 0)
 	{
-		Enemyballoon();
+		if (++WaitTime <= 10)
+		{
+			Enemyballoon();
+		}
 	}
 	
 	if(StartFlg != 0 && EnemyState == 0)
@@ -41,52 +48,34 @@ void Enemy::Draw() const
 {
 #ifdef _DEBUG
 	DrawFormatString(50, 50, 0xffffff, "EnX:%d EnY:%d", EnemyX, EnemyY);
+	DrawFormatString(50, 70, 0xffffff, "Enflg:%d", EnemyFlg);
+	DrawFormatString(50, 90, 0xffffff, "WaitTime:%d", WaitTime);
+
 #endif // DEBUG
 	if (EnemyState == 0)
 	{
-		if (EnemyFlg == 0)
+		if (StartFlg == 0)
 		{
-			DrawBox(EnemyX, EnemyY, EnemyX + 20, EnemyY + 20, 0xffffff, TRUE);
+			DrawGraph(EnemyX, EnemyY, EnemyImg[EnemyFlg], TRUE);
 		}
-		if (EnemyFlg == 1)
+		else
 		{
-			DrawBox(EnemyX, EnemyY, EnemyX + 20, EnemyY + 20, 0xff0000, TRUE);
-		}
-		if (EnemyFlg == 2)
-		{
-			DrawBox(EnemyX, EnemyY, EnemyX + 20, EnemyY + 20, 0x00ff00, TRUE);
-		}
-		if (EnemyFlg == 3)
-		{
-			DrawBox(EnemyX, EnemyY, EnemyX + 20, EnemyY + 20, 0x0000ff, TRUE);
-		}
-		if (EnemyFlg == 4)
-		{
-			DrawBox(EnemyX, EnemyY, EnemyX + 20, EnemyY + 20, 0xffffff, TRUE);
-		}
-		if (EnemyFlg == 5)
-		{
-			DrawBox(EnemyX, EnemyY, EnemyX + 20, EnemyY + 20, 0xff0000, TRUE);
-		}
-		if (EnemyFlg == 6)
-		{
-			DrawBox(EnemyX, EnemyY, EnemyX + 20, EnemyY + 20, 0x00ff00, TRUE);
+			DrawGraph(EnemyX, EnemyY, EnemyImg[8], TRUE);
 		}
 	}
 }
 
 void Enemy::Enemyballoon()
 {
-
+	
 	EnemyFlg++;
 
-	if (EnemyFlg == 7)
+	if (EnemyFlg == 8)
 	{
 		EnemyFlg = 0;
 		StartFlg = 1;
 	}
 
-	WaitTimer(300);
 }
 
 void Enemy::EnemyMove()
@@ -103,9 +92,9 @@ void Enemy::EnemyMove()
 	
 	EnemyX++;
 
-	if (EnemyY <= 0)
+	if (EnemyY <= -10)
 	{
-		EnemyY = 0;
+		EnemyY = -10;
 	}
 	else if (EnemyY > 480)
 	{
@@ -113,5 +102,5 @@ void Enemy::EnemyMove()
 		EnemyState += 1;
 	}
 
-	EnemyY++;
+	EnemyY--;
 }
