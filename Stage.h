@@ -72,6 +72,8 @@ private:
     int gRlandImg1;
     int gRlandImg2;
     int gSeaImg;
+    int MousePointx;
+    int MousePointy;
 
 public:
 
@@ -110,6 +112,8 @@ private:
     int gRlandImg1;
     int gRlandImg2;
     int gSeaImg;
+    int MousePointx;
+    int MousePointy;
 public:
     gStage3();
 
@@ -146,6 +150,8 @@ private:
     int gRlandImg1;
     int gRlandImg2;
     int gSeaImg;
+    int MousePointx;
+    int MousePointy;
 
 public:
 
@@ -184,6 +190,8 @@ private:
     int gRlandImg1;
     int gRlandImg2;
     int gSeaImg;
+    int MousePointx;
+    int MousePointy;
 
 public:
     gStage5();

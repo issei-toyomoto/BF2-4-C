@@ -94,6 +94,8 @@ gStage2::gStage2()
 	gRlandImg1 = LoadGraph("images/Stage_Land_Right01.png"); // ステージ右下の足場1
 	gRlandImg2 = LoadGraph("images/Stage_Land_Right02.png"); // ステージ右下の足場2
 	gSeaImg = LoadGraph("images/Stage_Sea01.png");           // 海の画像
+	MousePointx = 0;
+	MousePointy = 0;
 }
 
 AbstractScene* gStage2::Update()
@@ -101,6 +103,8 @@ AbstractScene* gStage2::Update()
 	/*gPlayer.x += gPlayer.speedx;
 	gPlayer.y += gPlayer.speedy;*/
 	InputKey::Update();
+
+	GetMousePoint(&MousePointx, &MousePointy);
 
 	if (CheckHitKey(KEY_INPUT_3)) {
 		return new gStage3();
@@ -110,7 +114,7 @@ AbstractScene* gStage2::Update()
 
 void gStage2::Draw() const
 {
-	DrawFormatString(10, 30, C_RED, "3キーでステージ3へ");
+	/*DrawFormatString(10, 30, C_RED, "3キーでステージ3へ");*/
 	DrawGraph(100, 330, gPlayerImg, TRUE);
 	DrawGraph(150, 450, gSeaImg, FALSE);
 	DrawGraph(0, 420, gLlandImg1, FALSE);
@@ -118,6 +122,7 @@ void gStage2::Draw() const
 	DrawGraph(180, 250, gFootImg1, FALSE);
 	DrawGraph(50, 100, gFootImg2, FALSE);
 	DrawGraph(450, 100, gFootImg2, FALSE);
+	DrawFormatString(10, 30, C_RED, "%d %d", MousePointx, MousePointy);
 }
 
 gStage3::gStage3()
@@ -136,6 +141,8 @@ gStage3::gStage3()
 	gRlandImg1 = LoadGraph("images/Stage_Land_Right01.png"); // ステージ右下の足場1
 	gRlandImg2 = LoadGraph("images/Stage_Land_Right02.png"); // ステージ右下の足場2
 	gSeaImg = LoadGraph("images/Stage_Sea01.png");           // 海の画像
+	MousePointx = 0;
+	MousePointy = 0;
 }
 
 AbstractScene* gStage3::Update()
@@ -143,6 +150,8 @@ AbstractScene* gStage3::Update()
 	/*gPlayer.x += gPlayer.speedx;
 	gPlayer.y += gPlayer.speedy;*/
 	InputKey::Update();
+
+	GetMousePoint(&MousePointx, &MousePointy);
 
 	if (CheckHitKey(KEY_INPUT_4)) {
 		return new gStage4();
@@ -152,7 +161,7 @@ AbstractScene* gStage3::Update()
 
 void gStage3::Draw() const
 {
-	DrawFormatString(10,30, C_RED, "4キーでステージ4へ");
+	/*DrawFormatString(10,30, C_RED, "4キーでステージ4へ");*/
 	DrawGraph(100, 330, gPlayerImg, TRUE);
 	DrawGraph(150, 450, gSeaImg, FALSE);
 	DrawGraph(0, 420, gLlandImg1, FALSE);
@@ -162,6 +171,7 @@ void gStage3::Draw() const
 	DrawGraph(330, 200, gFootImg4, FALSE);
 	DrawGraph(500, 100, gFootImg4, FALSE);
 	DrawGraph(200, 100, gFootImg5, FALSE);
+	DrawFormatString(10, 30, C_RED, "%d %d", MousePointx, MousePointy);
 }
 
 gStage4::gStage4()
@@ -180,6 +190,8 @@ gStage4::gStage4()
 	gRlandImg1 = LoadGraph("images/Stage_Land_Right01.png"); // ステージ右下の足場1
 	gRlandImg2 = LoadGraph("images/Stage_Land_Right02.png"); // ステージ右下の足場2
 	gSeaImg = LoadGraph("images/Stage_Sea01.png");           // 海の画像
+	MousePointx = 0;
+	MousePointy = 0;
 }
 
 AbstractScene* gStage4::Update()
@@ -187,6 +199,8 @@ AbstractScene* gStage4::Update()
 	/*gPlayer.x += gPlayer.speedx;
 	gPlayer.y += gPlayer.speedy;*/
 	InputKey::Update();
+
+	GetMousePoint(&MousePointx, &MousePointy);
 
 	if (CheckHitKey(KEY_INPUT_5)) {
 		return new gStage5();
@@ -196,7 +210,7 @@ AbstractScene* gStage4::Update()
 
 void gStage4::Draw() const
 {
-	DrawFormatString(10, 30, C_RED, "5キーでステージ5へ");
+	/*DrawFormatString(10, 30, C_RED, "5キーでステージ5へ");*/
 	DrawGraph(100, 330, gPlayerImg, TRUE);
 	DrawGraph(150, 450, gSeaImg, FALSE);
 	DrawGraph(0, 420, gLlandImg2, FALSE);
@@ -206,6 +220,7 @@ void gStage4::Draw() const
 	DrawGraph(280, 150, gFootImg6, FALSE);
 	DrawGraph(350, 370, gFootImg6, FALSE);
 	DrawGraph(460, 260, gFootImg6, FALSE);
+	DrawFormatString(10, 30, C_RED, "%d %d", MousePointx, MousePointy);
 }
 
 gStage5::gStage5()
@@ -224,6 +239,8 @@ gStage5::gStage5()
 	gRlandImg1 = LoadGraph("images/Stage_Land_Right01.png"); // ステージ右下の足場1
 	gRlandImg2 = LoadGraph("images/Stage_Land_Right02.png"); // ステージ右下の足場2
 	gSeaImg = LoadGraph("images/Stage_Sea01.png");           // 海の画像
+	MousePointx = 0;
+	MousePointy = 0;
 }
 
 AbstractScene* gStage5::Update()
@@ -231,6 +248,8 @@ AbstractScene* gStage5::Update()
 	/*gPlayer.x += gPlayer.speedx;
 	gPlayer.y += gPlayer.speedy;*/
 	InputKey::Update();
+
+	GetMousePoint(&MousePointx, &MousePointy);
 
 	if (CheckHitKey(KEY_INPUT_6)) {
 		return nullptr;
@@ -240,7 +259,7 @@ AbstractScene* gStage5::Update()
 
 void gStage5::Draw() const
 {
-	DrawFormatString(10, 30, C_RED, "6キーでプログラム終了");
+	/*DrawFormatString(10, 30, C_RED, "6キーでプログラム終了");*/
 	DrawGraph(100, 330, gPlayerImg, TRUE);
 	DrawGraph(150, 450, gSeaImg, FALSE);
 	DrawGraph(0, 420, gLlandImg2, FALSE);
@@ -251,4 +270,5 @@ void gStage5::Draw() const
 	DrawGraph(230, 380, gFootImg6, FALSE);
 	DrawGraph(350, 380, gFootImg6, FALSE);
 	DrawGraph(480, 150, gFootImg8, FALSE);
+	DrawFormatString(10, 30, C_RED, "%d %d", MousePointx, MousePointy);
 }
