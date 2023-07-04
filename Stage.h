@@ -2,11 +2,12 @@
 #include "AbstractScene.h"
 #include "DxLib.h"
 #include "InputKey.h"
-class gStage1
+class gStage
 {
 private:
 
-    int gPlayerImg;
+    int gGameImg[14];
+    /*int gPlayerImg;
     int gFootImg1;
     int gFootImg2;
     int gFootImg3;
@@ -18,20 +19,30 @@ private:
     int gLlandImg1;
     int gLlandImg2;
     int gRlandImg1;
-    int gRlandImg2;
+    int gRlandImg2;*/
     int gSeaImg;
     int MousePointx;
     int MousePointy;
 
-    int gStageImg[4][];
+    int gGameState;
     
 public:
 
     void Update();
 
-    gStage1();
+    void StageState();
 
-    void Draw() const;
+    gStage();
+
+    void DrawStage1() const;
+
+    void DrawStage2() const;
+
+    void DrawStage3() const;
+
+    void DrawStage4() const;
+
+    void DrawStage5() const;
 };
 //class gStage2 : public AbstractScene
 //{
