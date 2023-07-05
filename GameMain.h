@@ -4,7 +4,6 @@
 #include "bubble.h"
 #include "Enemy.h"
 #include "Thunderbolt.h"
-#include "Stage.h"	
 
 class GameMain :public AbstractScene
 {
@@ -16,7 +15,6 @@ private:
 
 	int gGameImg[14];
 	int gStageState;
-	gStage gstage;
 	struct StageDate
 	{
 		int flg;

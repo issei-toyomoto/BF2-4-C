@@ -3,7 +3,6 @@
 #include "Common.h"
 #include "stdio.h"
 #include "Player.h"
-#include "Stage.h"
 
 #define DEBUG
 
