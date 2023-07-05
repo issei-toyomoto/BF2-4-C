@@ -17,12 +17,10 @@ Fish::Fish() {
 
 //‹›¶¬(Draw)
 void Fish::CreateFish() {
-	if (f_Count < 60) {
-		DrawBox;	//‹›‰æ‘œ
-		/*DrawGraph()*/
-	}
-	/*DrawBox;*/
-
+	//if (f_Count < 60) {
+	//	DrawBox;	//‹›‰æ‘œ
+	//	/*DrawGraph()*/
+	//}
 }
 
 //oŒ»ƒGƒŠƒA(Update)
