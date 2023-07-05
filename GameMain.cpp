@@ -19,7 +19,7 @@
 
 AbstractScene* GameMain::Update()
 {
-	player.Update();
+	player.Update(gStageState);
 	BUBBLE.UpdateBubble();
 	enemy.Update();
 
@@ -115,5 +115,17 @@ void GameMain::Draw()const
 		break;
 	}
 	/*gstage.DrawStage1();*/
+
+#ifdef DEBUG
+	//ステージ画像(ステージ１)
+	DrawBox(0, 420, 155, 455, C_RED, FALSE);
+	DrawLine(0, 420, 155, 455, C_RED, 1);
+
+	DrawBox(180, 250, 460, 265, C_RED, FALSE);
+	DrawLine(180, 250, 460, 265, C_RED, 1);
+
+	DrawBox(460, 420, 620, 455, C_RED, FALSE);
+	DrawLine(460, 420, 620, 455, C_RED, 1);
+#endif // DEBUG
 
 }
