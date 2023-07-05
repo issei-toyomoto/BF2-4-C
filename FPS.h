@@ -15,6 +15,7 @@ public:
 		mStartTime = 0;
 		mCount = 0;
 		mFps = 0;
+		mNow = 0;
 	}
 
 	bool Update() {

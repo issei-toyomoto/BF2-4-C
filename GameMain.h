@@ -1,18 +1,28 @@
 ﻿#include "DxLib.h"
 #include "AbstractScene.h"
+#include "Player.h"
+#include "bubble.h"
+#include "Enemy.h"
+#include "Thunderbolt.h"
+#include "Stage.h"	
 
 class GameMain :public AbstractScene
 {
 private:
+	Player player;
+	bubble BUBBLE;
+	Enemy enemy;
+	Thunder thunder;
+
 	int gGameImg[14];
 	int gStageState;
+	gStage gstage;
 	struct StageDate
 	{
 		int flg;
 		int x, y;
-
 	};
-	/*int gPlayerImg;*/
+
 public:
 	//コンストラクタ
 	GameMain() {

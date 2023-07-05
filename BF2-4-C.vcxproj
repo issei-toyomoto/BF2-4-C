@@ -140,17 +140,30 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AppMain.cpp" />
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="bubble.cpp" />
+    <ClCompile Include="Fish.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="InputKey.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="Thunderbolt.cpp" />
+    <ClCompile Include="Stage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractScene.h" />
+    <ClInclude Include="bubble.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Fish.h" />
     <ClInclude Include="FPS.h" />
     <ClInclude Include="GameMain.h" />
+    <ClInclude Include="Stage.h" />
     <ClInclude Include="InputKey.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="Thunderbolt.h" />
+    <ClInclude Include="StageImg.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
