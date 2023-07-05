@@ -23,15 +23,6 @@ AbstractScene* GameMain::Update()
 	BUBBLE.UpdateBubble();
 	enemy.Update();
 
-#ifdef DEBUG
-	
-	if (CheckHitKey(KEY_INPUT_1)) {
-
-		return new gStage1();
-	}
-
-AbstractScene* GameMain::Update()
-{
 	if (CheckHitKey(KEY_INPUT_1)) {
 		gStageState = 1;
 	}
@@ -51,22 +42,17 @@ AbstractScene* GameMain::Update()
 		return nullptr;
 
 	}
-#endif // DEBUG
 	return this;
 }
 
 void GameMain::Draw()const
 {
-
-
 	player.Draw();
 	BUBBLE.GenerationBubble();
 	enemy.Draw();
 	thunder.Draw();
-#ifdef DEBUG
+
 	DrawFormatString(10, 30, C_RED, "1キーでステージ１へ");
-#endif // DEBUG	
-}
 
 	/*ステージ遷移*/
 	switch (gStageState)
@@ -136,4 +122,5 @@ void GameMain::Draw()const
 		break;
 	}
 	/*gstage.DrawStage1();*/
+
 }
