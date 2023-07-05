@@ -143,17 +143,14 @@
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="InputKey.cpp" />
     <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="Stage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractScene.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="FPS.h" />
     <ClInclude Include="GameMain.h" />
-    <ClInclude Include="Stage.h" />
     <ClInclude Include="InputKey.h" />
     <ClInclude Include="SceneManager.h" />
-    <ClInclude Include="StageImg.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

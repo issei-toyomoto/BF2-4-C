@@ -2,7 +2,6 @@
 #include "GameMain.h"
 #include "Common.h"
 #include "stdio.h"
-#include "Stage.h"
 
 
 AbstractScene* GameMain::Update()
