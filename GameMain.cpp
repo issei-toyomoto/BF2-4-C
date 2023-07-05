@@ -39,7 +39,7 @@ void GameMain::Draw()const
 	player.Draw();
 	BUBBLE.GenerationBubble();
 	enemy.Draw();
-
+	thunder.Draw();
 #ifdef DEBUG
 	DrawFormatString(10, 30, C_RED, "1キーでステージ１へ");
 #endif // DEBUG	

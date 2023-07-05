@@ -3,6 +3,13 @@
 #define _USE_MATH_DEFINES
 #include<math.h>
 
+
+void Thunder::Draw() const {
+	DrawGraph(100, 100, gCloudImg, TRUE);
+	DrawGraph(150, 150, gThunderImg, TRUE);
+	
+}
+
 void Thunder::ChangeAngle()
 {
 	float rad = ThunderAngle * (float)M_PI * 2;
@@ -11,7 +18,9 @@ void Thunder::ChangeAngle()
 }
 
 void Thunder::MoveThunder() {
+	
 	if(ThunderFlg != 2) {
+
 		ThunderX += ThunderMoveX;
 		ThunderY += ThunderMoveY;
 	}
@@ -41,9 +50,8 @@ void Thunder::MoveThunder() {
 }
 
 
-	//gCloudImg;
-	//	//àÓç»ÇÃï`âÊ
-	//	DrawCircle(Thunder::ThunderX, Thunder::ThunderY, 4, 0xFFD700, TRUE);
+	
+	
 	
 
 

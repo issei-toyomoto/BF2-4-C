@@ -3,8 +3,9 @@
 class Thunder
 {
 private:
-	int gCloudImg = LoadGraph("Stage_Cloud01.png");
-	int ThunderX, ThunderY;// 雷の座標
+	int gCloudImg = LoadGraph("images/Stage_Cloud01.png");
+	int gThunderImg= DrawBox(ThunderX, ThunderY, ThunderX +10, ThunderY + 10, GetColor(255, 0, 0), TRUE);
+	int ThunderX=125, ThunderY=125;// 雷の座標
 	int ThunderMoveX, ThunderMoveY;
 	int Speed;// 雷の速度
 	float ThunderAngle = 0.575f;// 雷の角度
@@ -13,6 +14,7 @@ private:
 	void ChangeAngle();
 	void MoveThunder();
 
+public:
 	//コンストラクタ
 	Thunder() {};
 

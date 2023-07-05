@@ -3,13 +3,14 @@
 #include "Player.h"
 #include"bubble.h"
 #include "Enemy.h"
-
+#include"Thunderbolt.h"
 class GameMain :public AbstractScene
 {
 private:
 	Player player;
 	bubble BUBBLE;
 	Enemy enemy;
+	Thunder thunder;
 public:
 	//コンストラクタ
 	GameMain() {};
