@@ -144,11 +144,11 @@
     <ClCompile Include="bubble.cpp" />
     <ClCompile Include="Fish.cpp" />
     <ClCompile Include="GameMain.cpp" />
-    <ClCompile Include="Stage.cpp" />
     <ClCompile Include="InputKey.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Thunderbolt.cpp" />
+    <ClCompile Include="Stage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractScene.h" />
