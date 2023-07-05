@@ -7,7 +7,7 @@
 
 Player::Player() 
 {
-	LoadDivGraph("image/Player/Player_animation_d.png", 32, 8, 4, 64, 64, PlayerImg);//‰æ‘œ“Ç‚Ýž‚Ý
+	LoadDivGraph("image/Player/Player_Animation.png", 32, 8, 4, 64, 64, PlayerImg);//‰æ‘œ“Ç‚Ýž‚Ý
 	FPSCnt = 0;
 	NowPlayerImg = P_Img_Wait_Ballon_2_0;
 	BalloonNum = 2;
@@ -32,6 +32,8 @@ void Player::Update(int Stage) /***•`‰æˆÈŠO***/
 	InputKey::GetJoyStickX(XStick);
 	InputKey::GetJoyStickY(YStick);
 	GetMousePoint(&MoX, &MoY);
+
+	/*UpdateStageCollision();*/
 
 	//X•ûŒü
 	UpdatePlayerX();
@@ -132,9 +134,9 @@ void Player::UpdatePlayerY()
 		}
 		PlayerState = P_State_Fly;
 	}
-	/*else if (PlayerY >= 420 - 64) {
+	else if (PlayerY >= 420 - 64) {
 		VectorY = 0;
-	}*/
+	}
 
 	if (InputKey::GetKeyDown(PAD_INPUT_A)) {
 		VectorY = -20.0f;
@@ -287,10 +289,10 @@ void Player::UpdatePlayerImgWait()
 
 void Player::UpdatePlayerImgThunder() 
 {
-	if (FPSCnt % 4 == 0 || FPSCnt % 4 == 1) {
+	if (FPSCnt % 6 == 0 || FPSCnt % 6 == 1 || FPSCnt % 6 == 2) {
 		NowPlayerImg = P_Img_Thunder_0;
 	}
-	else if (FPSCnt % 4 == 2 || FPSCnt % 4 == 3) {
+	else if (FPSCnt % 6 == 3 || FPSCnt % 6 == 4 || FPSCnt % 6 ==5) {
 		NowPlayerImg = P_Img_Thunder_1;
 	}
 }
