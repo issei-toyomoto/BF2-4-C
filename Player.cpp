@@ -16,7 +16,7 @@ Player::Player()
 	PlayerY = 400;
 	VectorX = 0;
 	VectorY = 0;
-	CanMoveFlg = true;
+	Angle = -1;
 }
 
 
@@ -31,10 +31,8 @@ void Player::Update() /***描画以外***/
 	InputKey::GetJoyStickY(YStick);
 
 	//X方向
-	if (CanMoveFlg == true) {
-		UpdatePlayerX();
-		PlayerX += VectorX;
-	}
+	UpdatePlayerX();
+	PlayerX += VectorX;
 
 	//Y方向
 	UpdatePlayerY();
@@ -44,7 +42,7 @@ void Player::Update() /***描画以外***/
 	if (PlayerState == P_State_Wait) {//待機状態
 		UpdatePlayerImgWait();
 	}
-	else if (PlayerState == P_State_Run || PlayerState == P_State_RunStop) {//走る
+	else if (PlayerState == P_State_Run) {//走る
 		UpdatePlayerImgRun();
 	}
 	else if (PlayerState == P_State_Fly) {//飛ぶ
@@ -53,21 +51,15 @@ void Player::Update() /***描画以外***/
 	else if (PlayerState == P_State_Thunder) {//雷に当たる
 		UpdatePlayerImgThunder();
 	}
-	else if (PlayerState == P_State_Dead) {
+	else if (PlayerState == P_State_Dead) {//死亡時アニメーション
 		UpdatePlayerImgDead();
 	}
 
 
-	//１秒たったらフレームカウント
+	//１秒たったらフレームカウントリセット
 	if (FPSCnt > 60) {
 		FPSCnt = 0;
 	}
-
-
-#ifdef DEBUG
-
-#endif // DEBUG
-
 }
 
 void Player::Draw() const /***描画***/
@@ -87,8 +79,9 @@ void Player::Draw() const /***描画***/
 	DrawFormatString(400, 10, C_WHITE, "FPS:%d", FPSCnt);
 	DrawFormatString(400, 30, C_WHITE, "XStick:%d YStick:%d", XStick, YStick);
 	DrawFormatString(400, 50, C_WHITE, "Balloon:%d", BalloonNum);
-	DrawFormatString(400, 70, C_WHITE, "XV:%d YV:%d", VectorX,VectorY);
-	DrawFormatString(400, 90, C_WHITE, "X:%d Y:%d", PlayerX, PlayerY);
+	DrawFormatString(400, 70, C_WHITE, "XV:%.2f YV:%.2f", VectorX,VectorY);
+	DrawFormatString(400, 90, C_WHITE, "X:%.2f Y:%.2f", PlayerX, PlayerY);
+	DrawFormatString(400, 110, C_WHITE, "Angle:%d(0:右 1;左)", Angle);
 #endif // DEBUG
 }
 
@@ -120,7 +113,11 @@ void Player::UpdatePlayerImgRun()
 		}
 	}
 
-	if (VectorX == 0) {
+	//反対方向に向かうときの処理
+	if (Angle == Right && VectorX < 0) {
+		NowPlayerImg = P_Img_RunStop_Ballon_2_3;
+	}
+	else if (Angle == Left && VectorX > 0) {
 		NowPlayerImg = P_Img_RunStop_Ballon_2_3;
 	}
 }
@@ -128,17 +125,23 @@ void Player::UpdatePlayerImgRun()
 void Player::UpdatePlayerX() 
 {
 	if (XStick > 0) {//右
-		VectorX = VectorX + 1;
 		PlayerState = P_State_Run;
 		Angle = Right;
+		VectorX = VectorX + 0.1f;
+		if (VectorX >= 4.0f) {//速度制限
+			VectorX = 4.0f;
+		}
 	}
 	else if (XStick < 0) {//左
-		VectorX = VectorX + -1;
 		PlayerState = P_State_Run;
 		Angle = Left;
+		VectorX = VectorX + -0.1f;
+		if (VectorX <= -4.0f) {//速度制限
+			VectorX = -4.0f;
+		}
 	}
-	else if (XStick == 0) {
-		VectorX = 0;
+	else if (XStick == 0) {//待機
+		VectorX *= 0.95f;//慣性
 		PlayerState = P_State_Wait;
 	}
 }
@@ -147,10 +150,10 @@ void Player::UpdatePlayerY()
 {
 	if (PlayerY < 400) {
 		if (BalloonNum == 1) {
-			VectorY = 2;
+			VectorY = 2.0f;
 		}
 		else if (BalloonNum == 2) {
-			VectorY = 1;
+			VectorY = 1.0f;
 		}
 		PlayerState = P_State_Fly;
 	}
@@ -159,11 +162,11 @@ void Player::UpdatePlayerY()
 	}
 
 	if (InputKey::GetKeyDown(PAD_INPUT_A)) {
-		VectorY = -20;
+		VectorY = -20.0f;
 	}
 
 	if (InputKey::GetKey(PAD_INPUT_B)) {
-		VectorY = -5;
+		VectorY = -5.0f;
 	}
 }
 

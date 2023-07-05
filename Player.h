@@ -44,12 +44,11 @@
 #define P_State_Fly     2 //浮く
 #define P_State_Dead    3 //落下
 #define P_State_Thunder 4 //雷に当たる
-#define P_State_RunStop 5 //走るのをやめる
 
 #define Init_BallonNum 2//風船の初期数
 
-#define Right 0 //右
-#define Left  1 //左
+#define Right  0 //右
+#define Left   1 //左
 
 class Player
 {
@@ -59,10 +58,10 @@ private:
 	int PlayerImg[32];	//プレイヤー画像
 	int NowPlayerImg;	//現在のプレイヤー画像配列の要素
 
-	int PlayerX;		//プレイヤーX座標
-	int PlayerY;		//プレイヤーY座標
-	int VectorX;		//ベクトルX
-	int VectorY;		//ベクトルY
+	float PlayerX;		//プレイヤーX座標
+	float PlayerY;		//プレイヤーY座標
+	float VectorX;		//ベクトルX
+	float VectorY;		//ベクトルY
 	int Angle;			//向いてる方向
 	
 	int PlayerState;	//プレイヤーの状態
@@ -71,7 +70,9 @@ private:
 	int XStick;//ステック上下
 	int YStick;//ステック左右
 
-	bool CanMoveFlg;
+	bool RunFlg;//(true:走る false;走ってない)
+	bool FlyFlg;//(true; 飛ぶ false: 飛んでいない)
+
 public:
 	//コンストラクタ
 	Player();
