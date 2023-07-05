@@ -38,6 +38,9 @@
 #define P_Img_Thunder_0 29
 #define P_Img_Thunder_1 30
 //*******************************************//
+// 画像サイズ（６４×６４）
+#define P_Img_Size 64
+
 //プレイヤーの状態
 #define P_State_Wait    0 //待機状態
 #define P_State_Run     1 //走る
@@ -49,6 +52,22 @@
 
 #define Right  0 //右
 #define Left   1 //左
+
+//ステージ座標
+#define S_Ground_0_XU 0			//左下の台
+#define S_Ground_0_YU 420
+#define S_Ground_0_XL 155
+#define S_Ground_0_YL 455
+
+#define S_Sky_Ground_0_XU 180	//中央の台
+#define S_Sky_Ground_0_YU 250
+#define S_Sky_Ground_0_XL 460
+#define S_Sky_Ground_0_YL 265
+
+#define S_Ground_1_XU 460		//右下の台
+#define S_Ground_1_YU 420
+#define S_Ground_1_XL 620
+#define S_Ground_1_YL 455
 
 class Player
 {
@@ -70,8 +89,14 @@ private:
 	int XStick;//ステック上下
 	int YStick;//ステック左右
 
+	int MoX;
+	int MoY;
+
+	int NowStage;
+
 	bool RunFlg;//(true:走る false;走ってない)
-	bool FlyFlg;//(true; 飛ぶ false: 飛んでいない)
+	bool FlyFlg;//(true;飛ぶ false: 飛んでいない)
+	bool Ground;//(true:地面の上 false:地面の上ではない)
 
 public:
 	//コンストラクタ
@@ -79,7 +104,7 @@ public:
 	//デストラクタ
 	~Player() {};
 	//描画以外の更新を実装する
-	void Update();
+	void Update(int Stage);
 	//描画の更新を実装する
 	void Draw() const;
 
@@ -87,6 +112,9 @@ public:
 	void UpdatePlayerX();
 	//移動処理（Y方向）
 	void UpdatePlayerY();
+
+	//ステージとの当たり判定処理
+	void UpdateStageCollision();
 
 	//移動（地面）の画像処理
 	void UpdatePlayerImgRun();
