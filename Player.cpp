@@ -136,8 +136,11 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 		}
 		PlayerState = P_State_Fly;//プレイヤーのステータスを飛ぶに変更
 	}
+	else if (PlayerY >= 0) {//画面上（跳ね返り係数0.8）
+		VectorY *= 0.8;
+	}
 
-	if (InputKey::GetKeyDown(PAD_INPUT_A)) {//Aボタンを押したら１回だけ羽ばたく
+	if (InputKey::GetKeyDown(PAD_INPUT_A)) {//Aボタンを押したら１回だけ羽ばたく(※１フレームしか入力を取っていない）
 		VectorY = -20.0f;
 	}
 
