@@ -3,8 +3,8 @@
 
 Enemy::Enemy()
 {
-	EnemyX = 300;
-	EnemyY = 250;
+	EnemyX = ENEMY_X;
+	EnemyY = ENEMY_Y;
 	EnemyState = 0;
 	EnemyFlg = 0;
 	EnemyLife = 3;
@@ -25,9 +25,10 @@ void Enemy::Update()
 {
 	FPScnt++;
 
-	if (StartFlg == 0 && i < 3)
+	if (StartFlg == 0 && i < 4)
 	{
-			StartMove();	
+			StartMove();
+			i += 0.2f;
 	}
 	else if(StartFlg != 0 && EnemyState == 0)
 	{
@@ -35,8 +36,8 @@ void Enemy::Update()
 	}
 	else
 	{
-		EnemyX = 300;
-		EnemyY = 250;
+		EnemyX = ENEMY_X;
+		EnemyY = ENEMY_Y;
 		EnemyState = 0;
 		StartFlg = 0;
 	}
@@ -60,9 +61,13 @@ void Enemy::Draw() const
 		if (StartFlg == 0)
 		{
 			DrawGraph(EnemyX, EnemyY, EnemyImg[EnemyFlg], TRUE);
+			DrawGraph(EnemyX + 85, EnemyY, EnemyImg[EnemyFlg], TRUE);
+			DrawGraph(EnemyX + 170, EnemyY, EnemyImg[EnemyFlg], TRUE);
 		}
 		else
 		{
+			DrawGraph(EnemyX, EnemyY, EnemyImg[8], TRUE);
+			DrawGraph(EnemyX, EnemyY, EnemyImg[8], TRUE);
 			DrawGraph(EnemyX, EnemyY, EnemyImg[8], TRUE);
 		}
 	}
@@ -108,7 +113,7 @@ void Enemy::EnemyMove()
 
 void Enemy::StartMove()
 {
-		if (i == 0)
+		if (i <= 0)
 		{
 			if (FPScnt > 0 && FPScnt < 20) {
 				EnemyFlg = 0;
@@ -118,10 +123,9 @@ void Enemy::StartMove()
 			}
 			else if (FPScnt > 41 && FPScnt < 60) {
 				EnemyFlg = 2;
-				i++;
 			}
 		}
-		else if(i == 1)
+		else if(i <= 1)
 		{
 			if (FPScnt > 0 && FPScnt < 20) {
 				EnemyFlg = 3;
@@ -131,7 +135,6 @@ void Enemy::StartMove()
 			}
 			else if (FPScnt > 41 && FPScnt < 60) {
 				EnemyFlg = 5;
-				i++;
 			}
 		}
 		else
@@ -139,12 +142,12 @@ void Enemy::StartMove()
 			if (FPScnt > 0 && FPScnt < 20) {
 				EnemyFlg = 6;
 			}
-			else if (FPScnt > 21 && FPScnt < 40) {
+			else if (FPScnt > 20 && FPScnt < 40) {
 				EnemyFlg = 7;
 			}
 			else if (FPScnt > 41 && FPScnt < 60) {
 				EnemyFlg = 7;
-				i++;
 			}
 		}
+
 }
