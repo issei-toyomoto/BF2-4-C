@@ -4,6 +4,7 @@
 #include "Common.h"
 
 #define DEBUG
+#define Y_DEBUG
 
 Player::Player() 
 {
@@ -15,7 +16,7 @@ Player::Player()
 	PlayerX = 0;
 	PlayerY = 420 - P_Img_Size;
 	VectorX = 0;
-	VectorY = 0;
+	VectorY = -1;
 	Angle = -1;
 }
 
@@ -31,9 +32,10 @@ void Player::Update(int Stage) /***描画以外***/
 	GetJoypadAnalogInput(&XStick, &YStick, DX_INPUT_PAD1);
 	InputKey::GetJoyStickX(XStick);
 	InputKey::GetJoyStickY(YStick);
+	//マウスカーソル情報取得
 	GetMousePoint(&MoX, &MoY);
 
-	/*UpdateStageCollision();*/
+	UpdateStageCollision();//プレイヤーとステージの当たり判定
 
 	//X方向
 	UpdatePlayerX();
@@ -69,10 +71,10 @@ void Player::Update(int Stage) /***描画以外***/
 
 void Player::Draw() const /***描画***/
 {
-	if (Angle == Left) {
+	if (Angle == Left) {//左方向に向いている時
 		DrawGraph(PlayerX, PlayerY, PlayerImg[NowPlayerImg], TRUE);
 	}
-	else if (Angle == Right) {
+	else if (Angle == Right) {//右方向に向いている時
 		DrawTurnGraph(PlayerX, PlayerY, PlayerImg[NowPlayerImg], TRUE);
 	}
 	else {
@@ -92,73 +94,77 @@ void Player::Draw() const /***描画***/
 	DrawBox(PlayerX, PlayerY, PlayerX + 64, PlayerY + 64, C_RED,FALSE);
 	DrawLine(PlayerX, PlayerY, PlayerX + 64, PlayerY + 64, C_RED, 1);
 	//プレイヤーサイズ
-	DrawBox(PlayerX + 12, PlayerY + 14, PlayerX + 52, PlayerY + 64, C_WHITE, FALSE);
+	DrawBox(PlayerX + 17, PlayerY + 14, PlayerX + 40, PlayerY + 64, C_WHITE, FALSE);
 	//風船
-	DrawBox(PlayerX + 12, PlayerY + 14, PlayerX + 52, PlayerY + 38, C_BLUE,FALSE);
+	DrawBox(PlayerX + 12, PlayerY + 14, PlayerX + 52, PlayerY + 38, C_GREEN,FALSE);
 #endif //DEBUG
 
 }
 
-void Player::UpdatePlayerX() 
+void Player::UpdatePlayerX() //*プレイヤーのX座標処理*//
 {
 	if (XStick > 0) {//右
-		PlayerState = P_State_Run;
-		Angle = Right;
-		VectorX = VectorX + 0.1f;
-		if (VectorX >= 4.0f) {//速度制限
+		PlayerState = P_State_Run;	//プレイヤーのステータスを走るに変更
+		Angle = Right;				//向いている方向を右に変更
+		VectorX = VectorX + 0.1f;	//初速度＋速度
+		if (VectorX >= 4.0f) {		//速度制限
 			VectorX = 4.0f;
 		}
 	}
 	else if (XStick < 0) {//左
-		PlayerState = P_State_Run;
-		Angle = Left;
-		VectorX = VectorX + -0.1f;
-		if (VectorX <= -4.0f) {//速度制限
+		PlayerState = P_State_Run;	//プレイヤーのステータスを走るに変更
+		Angle = Left;				//向いている方向を左に変更
+		VectorX = VectorX + -0.1f;	//初速度＋速度
+		if (VectorX <= -4.0f) {		//速度制限
 			VectorX = -4.0f;
 		}
 	}
 	else if (XStick == 0) {//待機
-		VectorX *= 0.95f;//慣性
-		PlayerState = P_State_Wait;
+		VectorX *= 0.95f;			//慣性
+		PlayerState = P_State_Wait;	//プレイヤーのステータスを待機に変更
 	}
 }
 
-void Player::UpdatePlayerY() 
+void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 {
 	if (PlayerY < 420 - P_Img_Size) {
-		if (BalloonNum == 1) {
+		if (BalloonNum == 1) {//風船１個
 			VectorY = 2.0f;
 		}
-		else if (BalloonNum == 2) {
+		else if (BalloonNum == 2) {//風船２個
 			VectorY = 1.0f;
 		}
-		PlayerState = P_State_Fly;
-	}
-	else if (PlayerY >= 420 - 64) {
-		VectorY = 0;
+		PlayerState = P_State_Fly;//プレイヤーのステータスを飛ぶに変更
 	}
 
-	if (InputKey::GetKeyDown(PAD_INPUT_A)) {
+	if (InputKey::GetKeyDown(PAD_INPUT_A)) {//Aボタンを押したら１回だけ羽ばたく
 		VectorY = -20.0f;
 	}
 
-	if (InputKey::GetKey(PAD_INPUT_B)) {
+	if (InputKey::GetKey(PAD_INPUT_B)) {//Bボタンを押したら押している間羽ばたく
 		VectorY = -5.0f;
 	}
+
+#ifdef Y_DEBUG
+	if (PlayerY >= 420 - P_Img_Size) {
+		VectorY = 0;
+	}
+#endif // Y_DEBUG
+
 }
 
-void Player::UpdateStageCollision() 
+void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 {
+	//プレイヤーの矩形の座標
 	int PXU, PYU;//左上
 	int PXL, PYL;//右下
-
 	PXU = PlayerX + 12;//左上X
-	PYU = PlayerX + 14;//左上Y
+	PYU = PlayerY + 14;//左上Y
 	PXL = PlayerX + 52;//右下X
-	PYL = PlayerX + 64;//右下Y
+	PYL = PlayerY + 64;//右下Y
 
 	if (NowStage == 1) {//ステージ１でのステージとの当たり判定
-		if (PXU <= S_Ground_0_XL && PXL >= S_Ground_0_XU && PYU <= S_Ground_0_YU && PYL >= S_Ground_0_YU) {//左下の台
+		if (PYL >= S_Ground_0_YU && PXU >= S_Ground_0_XL && PXL <= S_Ground_0_XU) {//左下の台、地面の上
 			VectorY = 0;
 		}
 	}
@@ -176,7 +182,7 @@ void Player::UpdateStageCollision()
 	}
 }
 
-void Player::UpdatePlayerImgRun()
+void Player::UpdatePlayerImgRun()//*走るアニメーション処理*//
 {
 	//走る（風船１個）
 	if (BalloonNum == 1) {
@@ -213,7 +219,7 @@ void Player::UpdatePlayerImgRun()
 	}
 }
 
-void Player::UpdatePlayerImgFly() 
+void Player::UpdatePlayerImgFly() //*飛ぶアニメーション処理*//
 {
 	//風船１個
 	if (InputKey::GetKeyDown(PAD_INPUT_A) || InputKey::GetKey(PAD_INPUT_B)) {
@@ -258,17 +264,17 @@ void Player::UpdatePlayerImgFly()
 	}
 }
 
-void Player::UpdatePlayerImgWait() 
+void Player::UpdatePlayerImgWait() //*待機アニメーション処理*//
 {
 	//待機状態（風船１個）
 	if (BalloonNum == 1) {
-		if (FPSCnt > 0 && FPSCnt < 20) {
+		if (FPSCnt >= 0 && FPSCnt <= 20) {
 			NowPlayerImg = P_Img_Wait_Ballon_1_0;
 		}
-		else if (FPSCnt > 21 && FPSCnt < 40) {
+		else if (FPSCnt >= 21 && FPSCnt <= 40) {
 			NowPlayerImg = P_Img_Wait_Ballon_1_1;
 		}
-		else if (FPSCnt > 41 && FPSCnt < 60) {
+		else if (FPSCnt >= 41 && FPSCnt <= 60) {
 			NowPlayerImg = P_Img_Wait_Ballon_1_2;
 		}
 	}
@@ -287,7 +293,7 @@ void Player::UpdatePlayerImgWait()
 	}
 }
 
-void Player::UpdatePlayerImgThunder() 
+void Player::UpdatePlayerImgThunder() //*雷に当たるアニメーション処理*//
 {
 	if (FPSCnt % 6 == 0 || FPSCnt % 6 == 1 || FPSCnt % 6 == 2) {
 		NowPlayerImg = P_Img_Thunder_0;
@@ -297,7 +303,7 @@ void Player::UpdatePlayerImgThunder()
 	}
 }
 
-void Player::UpdatePlayerImgDead() 
+void Player::UpdatePlayerImgDead() //*死亡時アニメーション処理*//
 {
 	if (FPSCnt % 9 == 0 || FPSCnt % 9 == 1 || FPSCnt % 9 == 2) {
 		NowPlayerImg = P_Img_Dead_0;
