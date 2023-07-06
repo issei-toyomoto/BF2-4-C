@@ -4,7 +4,6 @@
 #include "Common.h"
 
 #define DEBUG
-#define Y_DEBUG
 
 Player::Player() 
 {
@@ -136,9 +135,12 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 		}
 		PlayerState = P_State_Fly;//プレイヤーのステータスを飛ぶに変更
 	}
+	else if (PlayerY >= 420 - P_Img_Size) {
+		VectorY = 0;
+	}
 	else if (PlayerY <= 0) {//画面上（跳ね返り係数0.8）
 		DrawFormatString(200, 100, C_RED, "ok");
-		VectorY *= 0;
+		VectorY = 0;
 	}
 
 	if (InputKey::GetKeyDown(PAD_INPUT_A)) {//Aボタンを押したら１回だけ羽ばたく(※１フレームしか入力を取っていない）
@@ -148,13 +150,6 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 	if (InputKey::GetKey(PAD_INPUT_B)) {//Bボタンを押したら押している間羽ばたく
 		VectorY = -5.0f;
 	}
-
-#ifdef Y_DEBUG
-	/*if (PlayerY >= 420 - P_Img_Size) {
-		VectorY = 0;
-	}*/
-#endif // Y_DEBUG
-
 }
 
 void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
