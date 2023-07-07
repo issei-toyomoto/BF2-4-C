@@ -3,7 +3,8 @@
 #include "Common.h"
 #include "stdio.h"
 #include "Player.h"
-
+#include"bubble.h"
+#include"Thunderbolt.h"
 #define DEBUG
 
 //GameMain::GameMain() 
