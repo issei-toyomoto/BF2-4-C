@@ -138,17 +138,19 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 	else if (PlayerY >= 420 - P_Img_Size) {
 		VectorY = 0;
 	}
-	else if (PlayerY <= 0) {//画面上（跳ね返り係数0.8）
-		DrawFormatString(200, 100, C_RED, "ok");
-		VectorY = 0;
-	}
 
 	if (InputKey::GetKeyDown(PAD_INPUT_A)) {//Aボタンを押したら１回だけ羽ばたく(※１フレームしか入力を取っていない）
 		VectorY = -20.0f;
 	}
 
 	if (InputKey::GetKey(PAD_INPUT_B)) {//Bボタンを押したら押している間羽ばたく
-		VectorY = -5.0f;
+		if (PlayerY < 0) {//画面上
+			VectorY *= 0.8;
+		}
+		else {
+			VectorY = -5.0f;
+		}
+		
 	}
 }
 
