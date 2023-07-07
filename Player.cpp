@@ -105,7 +105,7 @@ void Player::UpdatePlayerX() //*プレイヤーのX座標処理*//
 	if (XStick > 0) {//右
 		PlayerState = P_State_Run;	//プレイヤーのステータスを走るに変更
 		Angle = Right;				//向いている方向を右に変更
-		VectorX = VectorX + 0.1f;	//初速度＋速度
+		VectorX = VectorX + 0.1f;	//速度＋加速度
 		if (VectorX >= 4.0f) {		//速度制限
 			VectorX = 4.0f;
 		}
@@ -113,7 +113,7 @@ void Player::UpdatePlayerX() //*プレイヤーのX座標処理*//
 	else if (XStick < 0) {//左
 		PlayerState = P_State_Run;	//プレイヤーのステータスを走るに変更
 		Angle = Left;				//向いている方向を左に変更
-		VectorX = VectorX + -0.1f;	//初速度＋速度
+		VectorX = VectorX + -0.1f;	//速度＋加速度
 		if (VectorX <= -4.0f) {		//速度制限
 			VectorX = -4.0f;
 		}
@@ -140,7 +140,12 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 	}
 
 	if (InputKey::GetKeyDown(PAD_INPUT_A)) {//Aボタンを押したら１回だけ羽ばたく(※１フレームしか入力を取っていない）
-		VectorY = -20.0f;
+		if (PlayerX < 0) {//画面上
+			VectorX *= 0.8;
+		}
+		else {
+			VectorY = -20.0f;
+		}
 	}
 
 	if (InputKey::GetKey(PAD_INPUT_B)) {//Bボタンを押したら押している間羽ばたく
@@ -150,7 +155,6 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 		else {
 			VectorY = -5.0f;
 		}
-		
 	}
 }
 
