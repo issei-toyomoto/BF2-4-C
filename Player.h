@@ -53,22 +53,6 @@
 #define Right  0 //右
 #define Left   1 //左
 
-//ステージ座標
-#define S_Ground_0_XU 0			//左下の台
-#define S_Ground_0_YU 420
-#define S_Ground_0_XL 155
-#define S_Ground_0_YL 455
-
-#define S_Sky_Ground_0_XU 180	//中央の台
-#define S_Sky_Ground_0_YU 250
-#define S_Sky_Ground_0_XL 460
-#define S_Sky_Ground_0_YL 265
-
-#define S_Ground_1_XU 460		//右下の台
-#define S_Ground_1_YU 420
-#define S_Ground_1_XL 620
-#define S_Ground_1_YL 455
-
 class Player
 {
 private:
@@ -86,13 +70,13 @@ private:
 	int PlayerState;	//プレイヤーの状態
 	int BalloonNum;		//現在の風船の数
 
-	int XStick;//ステック上下
-	int YStick;//ステック左右
+	int XStick;			//ステック上下
+	int YStick;			//ステック左右
 
-	int MoX;
-	int MoY;
+	int MoX;			//マウスカーソルX座標
+	int MoY;			//マウスカーソルY座標
 
-	int NowStage;
+	int NowStage;		//現在のステージ
 
 	bool RunFlg;//(true:走る false;走ってない)
 	bool FlyFlg;//(true;飛ぶ false: 飛んでいない)

@@ -72,30 +72,30 @@ void Player::Draw() const /***描画***/
 {
 	//*画面内*//
 	if (Angle == Left) {//左方向に向いている時
-		DrawGraph(PlayerX, PlayerY, PlayerImg[NowPlayerImg], TRUE);
+		DrawGraph((int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
 	}
 	else if (Angle == Right) {//右方向に向いている時
-		DrawTurnGraph(PlayerX, PlayerY, PlayerImg[NowPlayerImg], TRUE);
+		DrawTurnGraph((int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
 	}
 	else {
-		DrawGraph(PlayerX, PlayerY, PlayerImg[NowPlayerImg], TRUE);
+		DrawGraph((int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
 	}
 
 	//*画面外*//
 	if (PlayerX < 0) {
 		if (Angle == Left) {
-			DrawGraph(640 + PlayerX, PlayerY, PlayerImg[NowPlayerImg], TRUE);
+			DrawGraph(640 + (int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
 		}
 		else if (Angle == Right) {
-			DrawTurnGraph(640 + PlayerX, PlayerY, PlayerImg[NowPlayerImg], TRUE);
+			DrawTurnGraph(640 + (int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
 		}
 	}
 	else if (PlayerX > 640 - P_Img_Size) {
 		if (Angle == Left) {
-			DrawGraph(PlayerX - 640, PlayerY, PlayerImg[NowPlayerImg], TRUE);
+			DrawGraph((int)PlayerX - 640, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
 		}
 		else if (Angle == Right) {
-			DrawTurnGraph(PlayerX - 640, PlayerY, PlayerImg[NowPlayerImg], TRUE);
+			DrawTurnGraph((int)PlayerX - 640, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
 		}
 	}
 
@@ -110,12 +110,12 @@ void Player::Draw() const /***描画***/
 	DrawFormatString(400, 150, C_WHITE, "Stage:%d", NowStage);
 
 	//プレイヤー画像サイズ
-	DrawBox(PlayerX, PlayerY, PlayerX + 64, PlayerY + 64, C_RED,FALSE);
-	DrawLine(PlayerX, PlayerY, PlayerX + 64, PlayerY + 64, C_RED, 1);
+	DrawBox((int)PlayerX, (int)PlayerY, (int)PlayerX + 64, (int)PlayerY + 64, C_RED,FALSE);
+	DrawLine((int)PlayerX, (int)PlayerY, (int)PlayerX + 64, (int)PlayerY + 64, C_RED, 1);
 	//プレイヤーサイズ
-	DrawBox(PlayerX + 17, PlayerY + 14, PlayerX + 40, PlayerY + 64, C_WHITE, FALSE);
+	DrawBox((int)PlayerX + 17, (int)PlayerY + 14, (int)PlayerX + 40, (int)PlayerY + 64, C_WHITE, FALSE);
 	//風船
-	DrawBox(PlayerX + 12, PlayerY + 14, PlayerX + 52, PlayerY + 38, C_GREEN,FALSE);
+	DrawBox((int)PlayerX + 12, (int)PlayerY + 14, (int)PlayerX + 52, (int)PlayerY + 38, C_GREEN,FALSE);
 #endif //DEBUG
 
 }
@@ -139,10 +139,11 @@ void Player::UpdatePlayerX() //*プレイヤーのX座標処理*//
 		}
 	}
 	else if (XStick == 0) {//待機
-		VectorX *= 0.95f;			//慣性
+		VectorX *= 0.94f;			//慣性
 		PlayerState = P_State_Wait;	//プレイヤーのステータスを待機に変更
 	}
 
+	//画面端のX座標処理
 	if (PlayerX < - P_Img_Size) {
 		PlayerX = 640 - P_Img_Size;
 	}
@@ -168,8 +169,8 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 	}
 
 	if (InputKey::GetKeyDown(PAD_INPUT_A)) {//Aボタンを押したら１回だけ羽ばたく(※１フレームしか入力を取っていない）
-		if (PlayerX < 0) {//画面上
-			VectorX *= 0.8;
+		if (PlayerX < 0) {//画面上（未完成）
+			VectorX *= 0.8f;
 		}
 		else {
 			VectorY = -20.0f;
@@ -177,8 +178,8 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 	}
 
 	if (InputKey::GetKey(PAD_INPUT_B)) {//Bボタンを押したら押している間羽ばたく
-		if (PlayerY < 0) {//画面上
-			VectorY *= 0.8;
+		if (PlayerY < 0) {//画面上（未完成）
+			VectorY *= 0.8f;
 		}
 		else {
 			VectorY = -5.0f;
@@ -191,15 +192,13 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 	//プレイヤーの矩形の座標
 	int PXU, PYU;//左上
 	int PXL, PYL;//右下
-	PXU = PlayerX + 12;//左上X
-	PYU = PlayerY + 14;//左上Y
-	PXL = PlayerX + 52;//右下X
-	PYL = PlayerY + 64;//右下Y
+	PXU = (int)PlayerX + 12;//左上X
+	PYU = (int)PlayerY + 14;//左上Y
+	PXL = (int)PlayerX + 52;//右下X
+	PYL = (int)PlayerY + 64;//右下Y
 
 	if (NowStage == 1) {//ステージ１でのステージとの当たり判定
-		if (PYL >= S_Ground_0_YU && PXU >= S_Ground_0_XL && PXL <= S_Ground_0_XU) {//左下の台、地面の上
-			VectorY = 0;
-		}
+		
 	}
 	else if (NowStage == 2) {//ステージ１でのステージとの当たり判定
 
@@ -244,10 +243,10 @@ void Player::UpdatePlayerImgRun()//*走るアニメーション処理*//
 	}
 
 	//反対方向に向かうときの処理
-	if (Angle == Right && VectorX < 0) {
+	if (Angle == Right && VectorX < 0) {//右方向
 		NowPlayerImg = P_Img_RunStop_Ballon_2_3;
 	}
-	else if (Angle == Left && VectorX > 0) {
+	else if (Angle == Left && VectorX > 0) {//左方向
 		NowPlayerImg = P_Img_RunStop_Ballon_2_3;
 	}
 }
@@ -328,7 +327,7 @@ void Player::UpdatePlayerImgWait() //*待機アニメーション処理*//
 
 void Player::UpdatePlayerImgThunder() //*雷に当たるアニメーション処理*//
 {
-	if (FPSCnt % 6 == 0 || FPSCnt % 6 == 1 || FPSCnt % 6 == 2) {
+	if (FPSCnt % 6 == 0 || FPSCnt % 6 == 1 || FPSCnt % 6 == 2) {//２フレームで画像変更
 		NowPlayerImg = P_Img_Thunder_0;
 	}
 	else if (FPSCnt % 6 == 3 || FPSCnt % 6 == 4 || FPSCnt % 6 ==5) {
@@ -338,7 +337,7 @@ void Player::UpdatePlayerImgThunder() //*雷に当たるアニメーション処理*//
 
 void Player::UpdatePlayerImgDead() //*死亡時アニメーション処理*//
 {
-	if (FPSCnt % 9 == 0 || FPSCnt % 9 == 1 || FPSCnt % 9 == 2) {
+	if (FPSCnt % 9 == 0 || FPSCnt % 9 == 1 || FPSCnt % 9 == 2) {//２フレームで画像変更
 		NowPlayerImg = P_Img_Dead_0;
 	}
 	else if (FPSCnt % 9 == 3 || FPSCnt % 9 == 4 || FPSCnt % 9 == 5) {

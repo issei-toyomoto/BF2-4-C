@@ -47,10 +47,10 @@ AbstractScene* GameMain::Update()
 
 void GameMain::Draw()const
 {
-	player.Draw();
-	BUBBLE.GenerationBubble();
-	enemy.Draw();
 	thunder.Draw();
+	BUBBLE.GenerationBubble();
+	player.Draw();
+	enemy.Draw();
 
 	/*ステージ遷移*/
 	switch (gStageState)
@@ -117,15 +117,35 @@ void GameMain::Draw()const
 	/*gstage.DrawStage1();*/
 
 #ifdef DEBUG
-	//ステージ画像(ステージ１)
-	DrawBox(0, 420, 155, 455, C_RED, FALSE);
-	DrawLine(0, 420, 155, 455, C_RED, 1);
-
-	DrawBox(180, 250, 460, 265, C_RED, FALSE);
-	DrawLine(180, 250, 460, 265, C_RED, 1);
-
-	DrawBox(460, 420, 620, 455, C_RED, FALSE);
-	DrawLine(460, 420, 620, 455, C_RED, 1);
+	//ステージの当たり判定(ステージ１)
+	if (gStageState == 1) {
+		//左下
+		DrawBox(0, 420, 155, 455, C_RED, FALSE);
+		DrawLine(0, 420, 155, 455, C_RED, 1);
+		//中央
+		DrawBox(180, 250, 460, 265, C_RED, FALSE);
+		DrawLine(180, 250, 460, 265, C_RED, 1);
+		//右下
+		DrawBox(460, 420, 620, 455, C_RED, FALSE);
+		DrawLine(460, 420, 620, 455, C_RED, 1);
+	}
+	else if (gStageState == 2) {
+		//左下
+		DrawBox(0, 420, 155, 455, C_RED, FALSE);
+		DrawLine(0, 420, 155, 455, C_RED, 1);
+		//中央
+		DrawBox(180, 250, 460, 265, C_RED, FALSE);
+		DrawLine(180, 250, 460, 265, C_RED, 1);
+		//右下
+		DrawBox(460, 420, 620, 455, C_RED, FALSE);
+		DrawLine(460, 420, 620, 455, C_RED, 1);
+		//左上
+		DrawBox(50, 100, 170, 115, C_RED, FALSE);
+		DrawLine(50, 100, 170, 115, C_RED, FALSE);
+		//左下
+		DrawBox(445, 100, 570, 115, C_RED, FALSE);
+		DrawLine(445, 100, 570, 115, C_RED, FALSE);
+	}
 #endif // DEBUG
 
 }
