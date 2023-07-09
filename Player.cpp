@@ -70,6 +70,7 @@ void Player::Update(int Stage) /***描画以外***/
 
 void Player::Draw() const /***描画***/
 {
+	//*画面内*//
 	if (Angle == Left) {//左方向に向いている時
 		DrawGraph(PlayerX, PlayerY, PlayerImg[NowPlayerImg], TRUE);
 	}
@@ -79,6 +80,25 @@ void Player::Draw() const /***描画***/
 	else {
 		DrawGraph(PlayerX, PlayerY, PlayerImg[NowPlayerImg], TRUE);
 	}
+
+	//*画面外*//
+	if (PlayerX < 0) {
+		if (Angle == Left) {
+			DrawGraph(640 + PlayerX, PlayerY, PlayerImg[NowPlayerImg], TRUE);
+		}
+		else if (Angle == Right) {
+			DrawTurnGraph(640 + PlayerX, PlayerY, PlayerImg[NowPlayerImg], TRUE);
+		}
+	}
+	else if (PlayerX > 640 - P_Img_Size) {
+		if (Angle == Left) {
+			DrawGraph(PlayerX - 640, PlayerY, PlayerImg[NowPlayerImg], TRUE);
+		}
+		else if (Angle == Right) {
+			DrawTurnGraph(PlayerX - 640, PlayerY, PlayerImg[NowPlayerImg], TRUE);
+		}
+	}
+
 #ifdef DEBUG
 	DrawFormatString(400, 10, C_WHITE, "FPS:%d", FPSCnt);						//フレームカウント
 	DrawFormatString(400, 30, C_WHITE, "XStick:%d YStick:%d", XStick, YStick);  //ステックの値
@@ -122,6 +142,14 @@ void Player::UpdatePlayerX() //*プレイヤーのX座標処理*//
 		VectorX *= 0.95f;			//慣性
 		PlayerState = P_State_Wait;	//プレイヤーのステータスを待機に変更
 	}
+
+	if (PlayerX < - P_Img_Size) {
+		PlayerX = 640 - P_Img_Size;
+	}
+	else if (PlayerX > 640) {
+		PlayerX = 0;
+	}
+
 }
 
 void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
