@@ -53,6 +53,12 @@
 #define Right  0 //右
 #define Left   1 //左
 
+#define ON_FlyBtn  true	//飛ぶボタンを押している
+#define OFF_FlyBtn false//飛ぶボタンを押していない
+
+#define Ground     true	//地面と接触している
+#define Not_Ground false//地面と接触していない
+
 class Player
 {
 private:
@@ -78,9 +84,8 @@ private:
 
 	int NowStage;		//現在のステージ
 
-	bool RunFlg;//(true:走る false;走ってない)
-	bool FlyFlg;//(true;飛ぶ false: 飛んでいない)
-	bool Ground;//(true:地面の上 false:地面の上ではない)
+	bool FlyBtnFlg;		//(true;飛ぶボタンを押している false:飛ぶボタンを押していない)
+	bool GroundFlg;		//(true:地面に接触している     false:地面に接触していない    )
 
 public:
 	//コンストラクタ

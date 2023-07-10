@@ -17,6 +17,8 @@ Player::Player()
 	VectorX = 0;
 	VectorY = -1;
 	Angle = -1;
+	FlyBtnFlg = OFF_FlyBtn;
+	GroundFlg = Not_Ground;
 }
 
 
@@ -37,7 +39,18 @@ void Player::Update(int Stage) /***描画以外***/
 	UpdateStageCollision();//プレイヤーとステージの当たり判定
 
 	//X方向
-	UpdatePlayerX();
+	if (FlyBtnFlg == ON_FlyBtn || GroundFlg == Ground) {
+		UpdatePlayerX();
+	}
+	else {
+		//画面端のX座標処理
+		if (PlayerX < -(P_Img_Size)) {//右端
+			PlayerX = 640 - P_Img_Size;
+		}
+		else if (PlayerX > 640) {//左端
+			PlayerX = 0;
+		}
+	}
 	PlayerX += VectorX;
 
 	//Y方向
@@ -107,13 +120,15 @@ void Player::Draw() const /***描画***/
 	DrawFormatString(400, 90, C_WHITE, "X:%.2f Y:%.2f", PlayerX, PlayerY);		//プレイヤー座標
 	DrawFormatString(400, 110, C_WHITE, "Angle:%d(0:右 1;左)", Angle);			//向いている方向
 	DrawFormatString(400, 130, C_WHITE, "MX:%d MY:%d", MoX, MoY);				//マウスカーソルの座標
-	DrawFormatString(400, 150, C_WHITE, "Stage:%d", NowStage);
+	DrawFormatString(400, 150, C_WHITE, "Stage:%d", NowStage);					//現在のステージ
+	DrawFormatString(400, 170, C_WHITE, "FlyBtn:%d(0:false 1:true)", FlyBtnFlg);//飛ぶボタンを押しているかどうか
+	DrawFormatString(400, 190, C_WHITE, "GroundFlg:%d(0:Not 1:On)", GroundFlg);
 
 	//プレイヤー画像サイズ
 	DrawBox((int)PlayerX, (int)PlayerY, (int)PlayerX + 64, (int)PlayerY + 64, C_RED,FALSE);
 	DrawLine((int)PlayerX, (int)PlayerY, (int)PlayerX + 64, (int)PlayerY + 64, C_RED, 1);
 	//プレイヤーサイズ
-	DrawBox((int)PlayerX + 17, (int)PlayerY + 14, (int)PlayerX + 40, (int)PlayerY + 64, C_WHITE, FALSE);
+	DrawBox((int)PlayerX + 18, (int)PlayerY + 14, (int)PlayerX + 40, (int)PlayerY + 64, C_WHITE, FALSE);
 	//風船
 	DrawBox((int)PlayerX + 12, (int)PlayerY + 14, (int)PlayerX + 52, (int)PlayerY + 38, C_GREEN,FALSE);
 #endif //DEBUG
@@ -125,92 +140,178 @@ void Player::UpdatePlayerX() //*プレイヤーのX座標処理*//
 	if (XStick > 0) {//右
 		PlayerState = P_State_Run;	//プレイヤーのステータスを走るに変更
 		Angle = Right;				//向いている方向を右に変更
-		VectorX = VectorX + 0.1f;	//速度＋加速度
-		if (VectorX >= 4.0f) {		//速度制限
-			VectorX = 4.0f;
+		VectorX = VectorX + 0.3f;	//速度＋加速度
+		if (VectorX >= 3.0f) {		//速度制限
+			VectorX = 3.0f;
 		}
 	}
 	else if (XStick < 0) {//左
 		PlayerState = P_State_Run;	//プレイヤーのステータスを走るに変更
 		Angle = Left;				//向いている方向を左に変更
-		VectorX = VectorX + -0.1f;	//速度＋加速度
-		if (VectorX <= -4.0f) {		//速度制限
-			VectorX = -4.0f;
+		VectorX = VectorX + -0.3f;	//速度＋加速度
+		if (VectorX <= -3.0f) {		//速度制限
+			VectorX = -3.0f;
 		}
 	}
 	else if (XStick == 0) {//待機
-		VectorX *= 0.94f;			//慣性
+		VectorX *= 0.89;			//慣性
 		PlayerState = P_State_Wait;	//プレイヤーのステータスを待機に変更
 	}
 
 	//画面端のX座標処理
-	if (PlayerX < - P_Img_Size) {
+	if (PlayerX < -(P_Img_Size)) {//右端
 		PlayerX = 640 - P_Img_Size;
 	}
-	else if (PlayerX > 640) {
+	else if (PlayerX > 640) {//左端
 		PlayerX = 0;
 	}
-
 }
 
 void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 {
-	if (PlayerY < 420 - P_Img_Size) {
-		if (BalloonNum == 1) {//風船１個
-			VectorY = 2.0f;
+	//落下処理
+	if (GroundFlg == Not_Ground) {
+		if (PlayerY < _SCREEN_WIDHT_) {
+			if (BalloonNum == 1) {//風船１個
+				VectorY = VectorY + 0.4f;
+				if (VectorY >= 4.0f) {//速度制限
+					VectorY = 4.0f;
+				}
+			}
+			else if (BalloonNum == 2) {//風船２個
+				VectorY =VectorY + 0.4f;
+				if (VectorY >= 2.0f) {//速度制限
+					VectorY = 2.0f;
+				}
+			}
+			PlayerState = P_State_Fly;//プレイヤーのステータスを飛ぶに変更
 		}
-		else if (BalloonNum == 2) {//風船２個
-			VectorY = 1.0f;
-		}
-		PlayerState = P_State_Fly;//プレイヤーのステータスを飛ぶに変更
-	}
-	else if (PlayerY >= 420 - P_Img_Size) {
-		VectorY = 0;
 	}
 
 	if (InputKey::GetKeyDown(PAD_INPUT_A)) {//Aボタンを押したら１回だけ羽ばたく(※１フレームしか入力を取っていない）
-		if (PlayerX < 0) {//画面上（未完成）
-			VectorX *= 0.8f;
+		FlyBtnFlg = ON_FlyBtn;
+		if (PlayerY < 0) {//画面上（未完成）
+			VectorY *= 0.8f;
 		}
 		else {
 			VectorY = -20.0f;
 		}
 	}
-
-	if (InputKey::GetKey(PAD_INPUT_B)) {//Bボタンを押したら押している間羽ばたく
+	else if (InputKey::GetKey(PAD_INPUT_B)) {//Bボタンを押したら押している間羽ばたく
+		FlyBtnFlg = ON_FlyBtn;
 		if (PlayerY < 0) {//画面上（未完成）
-			VectorY *= 0.8f;
+			VectorY = VectorY * 0.8f;
 		}
 		else {
 			VectorY = -5.0f;
 		}
+	}
+	else {
+		FlyBtnFlg = OFF_FlyBtn;
 	}
 }
 
 void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 {
 	//プレイヤーの矩形の座標
-	int PXU, PYU;//左上
-	int PXL, PYL;//右下
-	PXU = (int)PlayerX + 12;//左上X
-	PYU = (int)PlayerY + 14;//左上Y
-	PXL = (int)PlayerX + 52;//右下X
-	PYL = (int)PlayerY + 64;//右下Y
+	int PXU_Left,  PYU_Left;//左上
+	int PXL_Right, PYL_Right;//右下
+	PXU_Left  = (int)PlayerX + 18;//左上X
+	PYU_Left  = (int)PlayerY + 14;//左上Y
+	PXL_Right = (int)PlayerX + 40;//右下X
+	PYL_Right = (int)PlayerY + 64;//右下Y
 
 	if (NowStage == 1) {//ステージ１でのステージとの当たり判定
 		
+		if (PYL_Right >= S_Ground_Left_YU) {
+			if (PXL_Right >= -P_Img_Size && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
+				GroundFlg = Ground;
+				VectorY = 0;
+			}
+			else if (PXL_Right >= S_Ground_Right_XU && PXU_Left <= S_Ground_Right_XL + P_Img_Size) {//右下の台（上辺）
+				GroundFlg = Ground;
+				VectorY = 0;
+			}
+			else {
+				GroundFlg = Not_Ground;
+			}
+		}
+		else {
+			GroundFlg = Not_Ground;
+		}
+		
 	}
 	else if (NowStage == 2) {//ステージ１でのステージとの当たり判定
-
+		if (PYL_Right >= S_Ground_Left_YU) {
+			if (PXL_Right >= -P_Img_Size && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
+				GroundFlg = Ground;
+				VectorY = 0;
+			}
+			else if (PXL_Right >= S_Ground_Right_XU && PXU_Left <= S_Ground_Right_XL + P_Img_Size) {//右下の台（上辺）
+				GroundFlg = Ground;
+				VectorY = 0;
+			}
+			else {
+				GroundFlg = Not_Ground;
+			}
+		}
+		else {
+			GroundFlg = Not_Ground;
+		}
 	}
 	else if (NowStage == 3) {//ステージ１でのステージとの当たり判定
-
+		if (PYL_Right >= S_Ground_Left_YU) {
+			if (PXL_Right >= -P_Img_Size && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
+				GroundFlg = Ground;
+				VectorY = 0;
+			}
+			else if (PXL_Right >= S_Ground_Right_XU && PXU_Left <= S_Ground_Right_XL + P_Img_Size) {//右下の台（上辺）
+				GroundFlg = Ground;
+				VectorY = 0;
+			}
+			else {
+				GroundFlg = Not_Ground;
+			}
+		}
+		else {
+			GroundFlg = Not_Ground;
+		}
 	}
 	else if (NowStage == 4) {//ステージ１でのステージとの当たり判定
-
+		if (PYL_Right >= S_Ground_Left_YU) {
+			if (PXL_Right >= -P_Img_Size && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
+				GroundFlg = Ground;
+				VectorY = 0;
+			}
+			else if (PXL_Right >= S_Ground_Right_XU && PXU_Left <= S_Ground_Right_XL + P_Img_Size) {//右下の台（上辺）
+				GroundFlg = Ground;
+				VectorY = 0;
+			}
+			else {
+				GroundFlg = Not_Ground;
+			}
+		}
+		else {
+			GroundFlg = Not_Ground;
+		}
 	}
 	else if (NowStage == 5) {//ステージ１でのステージとの当たり判定
-
+		if (PYL_Right >= S_Ground_Left_YU) {
+			if (PXL_Right >= -P_Img_Size && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
+				GroundFlg = Ground;
+				VectorY = 0;
+			}
+			else if (PXL_Right >= S_Ground_Right_XU && PXU_Left <= S_Ground_Right_XL + P_Img_Size) {//右下の台（上辺）
+				GroundFlg = Ground;
+				VectorY = 0;
+			}
+			else {
+				GroundFlg = Not_Ground;
+			}
+		}
+		else {
+			GroundFlg = Not_Ground;
+		}
 	}
 }
 
