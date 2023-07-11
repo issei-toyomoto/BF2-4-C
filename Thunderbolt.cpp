@@ -2,12 +2,13 @@
 #include"Thunderbolt.h"
 #define _USE_MATH_DEFINES
 #include<math.h>
-
+#include"bubble.h"
 
 void Thunder::Draw() const {
 	DrawGraph(100, 100, gCloudImg, TRUE);
 	DrawGraph(150, 150, gThunderImg, TRUE);
-	
+	DrawBox((int)ThunderX, (int)ThunderY, (int)ThunderX + 10, (int)ThunderY + 10, GetColor(255, 0, 0), TRUE);
+
 }
 
 void Thunder::ChangeAngle()
@@ -18,7 +19,11 @@ void Thunder::ChangeAngle()
 }
 
 void Thunder::MoveThunder() {
+	if (WaitTime >= 59) {
+		ThunderMoveX--;
+	}
 	
+
 	if(ThunderFlg != 2) {
 
 		ThunderX += ThunderMoveX;
