@@ -67,8 +67,8 @@ private:
 	int PlayerImg[32];	//プレイヤー画像
 	int NowPlayerImg;	//現在のプレイヤー画像配列の要素
 
-	float PlayerX;		//プレイヤーX座標
-	float PlayerY;		//プレイヤーY座標
+	float PlayerX;		//プレイヤーX座標(画像の左上X座標)
+	float PlayerY;		//プレイヤーY座標(画像の左上Y座標)
 	float VectorX;		//ベクトルX
 	float VectorY;		//ベクトルY
 	int Angle;			//向いてる方向
@@ -119,4 +119,6 @@ public:
 
 	//死亡時の画像処理
 	void UpdatePlayerImgDead();
+
+	int GetPlayerX(int X);
 };

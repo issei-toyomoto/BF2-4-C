@@ -50,6 +50,14 @@ void Player::Update(int Stage) /***描画以外***/
 		else if (PlayerX > 640) {//左端
 			PlayerX = 0;
 		}
+
+		//ステックが傾けている方向にキャラクターのアングルを変える処理
+		if (XStick > 0) {
+			Angle = Right;
+		}
+		else if (XStick < 0) {
+			Angle = Left;
+		}
 	}
 	PlayerX += VectorX;
 
@@ -191,10 +199,10 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 	if (InputKey::GetKeyDown(PAD_INPUT_A)) {//Aボタンを押したら１回だけ羽ばたく(※１フレームしか入力を取っていない）
 		FlyBtnFlg = ON_FlyBtn;
 		if (PlayerY < 0) {//画面上（未完成）
-			VectorY *= 0.8f;
+			VectorY = VectorY * 0.8f;
 		}
 		else {
-			VectorY = -20.0f;
+			VectorY = -5.0f;
 		}
 	}
 	else if (InputKey::GetKey(PAD_INPUT_B)) {//Bボタンを押したら押している間羽ばたく
@@ -221,19 +229,32 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 	PXL_Right = (int)PlayerX + 40;//右下X
 	PYL_Right = (int)PlayerY + 64;//右下Y
 
-	if (NowStage == 1) {//ステージ１でのステージとの当たり判定
-		
-		if (PYL_Right >= S_Ground_Left_YU) {
-			if (PXL_Right >= -P_Img_Size && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
+	if (NowStage == 1) {//ステージ１でのステージとの当たり判定(地面に埋まるバグあり)
+		if (PYL_Right >= S_Ground_Left_YU) {//左下の台と右下の台のY座標は一緒
+			if (PXL_Right >= -P_Img_Size && PXU_Left <= S_Ground_Left_XL) {//左下の台
 				GroundFlg = Ground;
 				VectorY = 0;
 			}
-			else if (PXL_Right >= S_Ground_Right_XU && PXU_Left <= S_Ground_Right_XL + P_Img_Size) {//右下の台（上辺）
+			else if (PXL_Right >= S_Ground_Right_XU && PXU_Left <= S_Ground_Right_XL + P_Img_Size) {//右下の台
 				GroundFlg = Ground;
 				VectorY = 0;
 			}
 			else {
 				GroundFlg = Not_Ground;
+			}
+		}
+		else if (PYL_Right >= S_Sky_Ground_0_YU && PYU_Left <= S_Sky_Ground_0_YL) {//浮いている中央の台
+			if (PXU_Left <= S_Sky_Ground_0_XL && PXL_Right >= S_Sky_Ground_0_XU) {
+				GroundFlg = Ground;
+				VectorY = 0;
+			}
+			else {
+				GroundFlg = Not_Ground;
+			}
+		}
+		else if (PYL_Right <= S_Ground_Left_YU) {
+			if (PXU_Left <= S_Ground_Left_XL) {
+				
 			}
 		}
 		else {
@@ -248,6 +269,15 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 				VectorY = 0;
 			}
 			else if (PXL_Right >= S_Ground_Right_XU && PXU_Left <= S_Ground_Right_XL + P_Img_Size) {//右下の台（上辺）
+				GroundFlg = Ground;
+				VectorY = 0;
+			}
+			else {
+				GroundFlg = Not_Ground;
+			}
+		}
+		else if (PYL_Right >= S_Sky_Ground_0_YU && PYU_Left <= S_Sky_Ground_0_YL) {//浮いている中央の台
+			if (PXU_Left <= S_Sky_Ground_0_XL && PXL_Right >= S_Sky_Ground_0_XU) {
 				GroundFlg = Ground;
 				VectorY = 0;
 			}
@@ -447,4 +477,9 @@ void Player::UpdatePlayerImgDead() //*死亡時アニメーション処理*//
 	else if (FPSCnt % 9 == 6 || FPSCnt % 9 == 7 || FPSCnt % 9 == 8) {
 		NowPlayerImg = P_Img_Dead_2;
 	}
+}
+
+int Player::GetPlayerX (int X){
+	X = PlayerX;
+	return X;
 }
