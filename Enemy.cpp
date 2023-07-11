@@ -13,7 +13,7 @@ Enemy::Enemy()
 	FPScnt = 0;
 	i = 0;
 
-	LoadDivGraph("image/Enemy/Enemy_P_Animation.png", 24, 8, 3, 64, 64, EnemyImg);//‰æ‘œ“Ç‚İ‚İ
+	LoadDivGraph("image/Enemy/Enemy_P_Animation.png", 18, 6, 3, 64, 64, EnemyImg);//‰æ‘œ“Ç‚İ‚İ
 }
 
 Enemy::~Enemy()
