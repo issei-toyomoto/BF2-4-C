@@ -13,6 +13,8 @@ Fish::Fish() {
 	FishRand = 0;
 	FishFlg = FALSE;
 	f_Count = 120;
+	P_X = p.GetPlayerX();
+	P_Y = p.GetPlayerY();
 }
 
 //ãõê∂ê¨(Draw)

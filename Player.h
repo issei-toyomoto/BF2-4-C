@@ -50,8 +50,8 @@
 
 #define Init_BallonNum 2//風船の初期数
 
-#define Right  0 //右
-#define Left   1 //左
+#define P_Right  0 //右
+#define P_Left   1 //左
 
 #define ON_FlyBtn  true	//飛ぶボタンを押している
 #define OFF_FlyBtn false//飛ぶボタンを押していない
@@ -120,5 +120,6 @@ public:
 	//死亡時の画像処理
 	void UpdatePlayerImgDead();
 
-	int GetPlayerX(int X);
+	float GetPlayerX();
+	float GetPlayerY();
 };

@@ -53,10 +53,10 @@ void Player::Update(int Stage) /***描画以外***/
 
 		//ステックが傾けている方向にキャラクターのアングルを変える処理
 		if (XStick > 0) {
-			Angle = Right;
+			Angle = P_Right;
 		}
 		else if (XStick < 0) {
-			Angle = Left;
+			Angle = P_Left;
 		}
 	}
 	PlayerX += VectorX;
@@ -92,10 +92,10 @@ void Player::Update(int Stage) /***描画以外***/
 void Player::Draw() const /***描画***/
 {
 	//*画面内*//
-	if (Angle == Left) {//左方向に向いている時
+	if (Angle == P_Left) {//左方向に向いている時
 		DrawGraph((int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
 	}
-	else if (Angle == Right) {//右方向に向いている時
+	else if (Angle == P_Right) {//右方向に向いている時
 		DrawTurnGraph((int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
 	}
 	else {
@@ -104,18 +104,18 @@ void Player::Draw() const /***描画***/
 
 	//*画面外*//
 	if (PlayerX < 0) {
-		if (Angle == Left) {
+		if (Angle == P_Left) {
 			DrawGraph(640 + (int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
 		}
-		else if (Angle == Right) {
+		else if (Angle == P_Right) {
 			DrawTurnGraph(640 + (int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
 		}
 	}
 	else if (PlayerX > 640 - P_Img_Size) {
-		if (Angle == Left) {
+		if (Angle == P_Left) {
 			DrawGraph((int)PlayerX - 640, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
 		}
-		else if (Angle == Right) {
+		else if (Angle == P_Right) {
 			DrawTurnGraph((int)PlayerX - 640, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
 		}
 	}
@@ -147,7 +147,7 @@ void Player::UpdatePlayerX() //*プレイヤーのX座標処理*//
 {
 	if (XStick > 0) {//右
 		PlayerState = P_State_Run;	//プレイヤーのステータスを走るに変更
-		Angle = Right;				//向いている方向を右に変更
+		Angle = P_Right;				//向いている方向を右に変更
 		VectorX = VectorX + 0.3f;	//速度＋加速度
 		if (VectorX >= 3.0f) {		//速度制限
 			VectorX = 3.0f;
@@ -155,14 +155,14 @@ void Player::UpdatePlayerX() //*プレイヤーのX座標処理*//
 	}
 	else if (XStick < 0) {//左
 		PlayerState = P_State_Run;	//プレイヤーのステータスを走るに変更
-		Angle = Left;				//向いている方向を左に変更
+		Angle = P_Left;				//向いている方向を左に変更
 		VectorX = VectorX + -0.3f;	//速度＋加速度
 		if (VectorX <= -3.0f) {		//速度制限
 			VectorX = -3.0f;
 		}
 	}
 	else if (XStick == 0) {//待機
-		VectorX *= 0.89;			//慣性
+		VectorX *= 0.89f;			//慣性
 		PlayerState = P_State_Wait;	//プレイヤーのステータスを待機に変更
 	}
 
@@ -374,10 +374,10 @@ void Player::UpdatePlayerImgRun()//*走るアニメーション処理*//
 	}
 
 	//反対方向に向かうときの処理
-	if (Angle == Right && VectorX < 0) {//右方向
+	if (Angle == P_Right && VectorX < 0) {//右方向
 		NowPlayerImg = P_Img_RunStop_Ballon_2_3;
 	}
-	else if (Angle == Left && VectorX > 0) {//左方向
+	else if (Angle == P_Left && VectorX > 0) {//左方向
 		NowPlayerImg = P_Img_RunStop_Ballon_2_3;
 	}
 }
@@ -479,7 +479,12 @@ void Player::UpdatePlayerImgDead() //*死亡時アニメーション処理*//
 	}
 }
 
-int Player::GetPlayerX (int X){
-	X = PlayerX;
+float Player::GetPlayerX (){
+	float X = PlayerX;
 	return X;
+}
+
+float Player::GetPlayerY() {
+	float Y = PlayerY;
+	return Y;
 }
