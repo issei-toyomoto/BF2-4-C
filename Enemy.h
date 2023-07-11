@@ -20,7 +20,7 @@ private:
 	int EnemyImg[24];
 	int FPScnt;
 	int WaitTime;
-	float i;
+	int i;
 
 public:
 	Enemy();   // コンストラクタ
@@ -29,6 +29,7 @@ public:
 	void Enemyballoon();
 	void EnemyMove();
 	void StartMove();
+	void EnemyCollision();
 
 	//描画以外の更新を実装する
 	void Update();
