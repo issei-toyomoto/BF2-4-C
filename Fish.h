@@ -1,4 +1,5 @@
 #pragma once
+#include"Player.h"
 class Fish
 {
 private:
@@ -9,10 +10,13 @@ private:
 	int FishRand;
 	int f_PosX, f_PosY;
 	bool FishFlg;
-	/*int FishImage;*/
+	int FishImage[10];
+	Player p;
+	float P_X;
+	float P_Y;
 public:
 	Fish();		//コンストラクタ
-	void CreateFish();	//魚生成
-	void FishArea();	//出現エリア判定
+	void Draw();	//魚生成
+	void Update();	//出現エリア判定
 	void MoveFish();	//魚移動
 };

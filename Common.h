@@ -20,7 +20,7 @@
 
 #define S_Ground_Right_XU 460	//右下の台
 #define S_Ground_Right_YU 420
-#define S_Ground_Right_XL 620
+#define S_Ground_Right_XL 640
 #define S_Ground_Right_YL 455
 
 #define S_Sky_Ground_0_XU 180	//中央の台

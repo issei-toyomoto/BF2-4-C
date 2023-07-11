@@ -3,8 +3,8 @@ class bubble  {
 private:
 	int i;
 	int y;
-	int bubbleX=320;// シャボン玉のX軸
-	int bubbleY=480;// シャボン玉のY軸
+	float bubbleX=320;// シャボン玉のX軸
+	float bubbleY=480;// シャボン玉のY軸
 	int FPSCount=0; // フレームカウント
 	int VectorBubbleX=-1;
 	
