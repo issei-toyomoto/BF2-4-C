@@ -3,7 +3,7 @@
 #include"Common.h"
 void bubble::GenerationBubble() const{
 
-	DrawBox(bubbleX, bubbleY, bubbleX+10, bubbleY +10, GetColor(255, 0, 0), TRUE);
+	DrawBox((int)bubbleX, (int)bubbleY, (int)bubbleX+10, (int)bubbleY +10, GetColor(255, 0, 0), TRUE);
 	//DrawFormatString(10, 100, C_WHITE, "%d", bubbleX);
 }	
 void bubble::UpdateBubble()
@@ -11,22 +11,22 @@ void bubble::UpdateBubble()
 	
 	FPSCount++;
 	
-	//bubbleY-=2;
+	bubbleY-=0.25;
 
 	
 
 	
 	
-	/*if (FPSCount > 30) {
-		bubbleX -= 12;
+	if (FPSCount <= 29) {
+		bubbleX -= 1.5;
 	}
-	else {
-		bubbleX += 5.5;
+	if (FPSCount >= 30 && FPSCount <= 60 ) {
+		bubbleX += 1.5;
 	}
-	if (FPSCount > 50) {
-		bubbleX += 15;
+
+	if (FPSCount == 60) {
 		FPSCount = 0;
-	}*/
+	}
 
 	
 
