@@ -12,6 +12,8 @@ private:
 	bool FishFlg;
 	int FishImage[10];
 	Player p;
+	float P_X;
+	float P_Y;
 public:
 	Fish();		//コンストラクタ
 	void Draw();	//魚生成

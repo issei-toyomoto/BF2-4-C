@@ -50,8 +50,14 @@
 
 #define Init_BallonNum 2//風船の初期数
 
-#define Right  0 //右
-#define Left   1 //左
+#define P_Right  0 //右
+#define P_Left   1 //左
+
+#define ON_FlyBtn  true	//飛ぶボタンを押している
+#define OFF_FlyBtn false//飛ぶボタンを押していない
+
+#define Ground     true	//地面と接触している
+#define Not_Ground false//地面と接触していない
 
 class Player
 {
@@ -61,8 +67,8 @@ private:
 	int PlayerImg[32];	//プレイヤー画像
 	int NowPlayerImg;	//現在のプレイヤー画像配列の要素
 
-	float PlayerX;		//プレイヤーX座標
-	float PlayerY;		//プレイヤーY座標
+	float PlayerX;		//プレイヤーX座標(画像の左上X座標)
+	float PlayerY;		//プレイヤーY座標(画像の左上Y座標)
 	float VectorX;		//ベクトルX
 	float VectorY;		//ベクトルY
 	int Angle;			//向いてる方向
@@ -78,9 +84,8 @@ private:
 
 	int NowStage;		//現在のステージ
 
-	bool RunFlg;//(true:走る false;走ってない)
-	bool FlyFlg;//(true;飛ぶ false: 飛んでいない)
-	bool Ground;//(true:地面の上 false:地面の上ではない)
+	bool FlyBtnFlg;		//(true;飛ぶボタンを押している false:飛ぶボタンを押していない)
+	bool GroundFlg;		//(true:地面に接触している     false:地面に接触していない    )
 
 public:
 	//コンストラクタ
@@ -114,4 +119,7 @@ public:
 
 	//死亡時の画像処理
 	void UpdatePlayerImgDead();
+
+	float GetPlayerX();
+	float GetPlayerY();
 };
