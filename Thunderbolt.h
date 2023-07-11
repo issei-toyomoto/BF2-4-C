@@ -12,9 +12,11 @@ private:
 	int ThunderFlg; // 雷の状態（0...移動中 1...物に接触 2...スタート状態）
 	int WaitTime;// 待ち時間
 	void ChangeAngle();
+	
+public:
+
 	void MoveThunder();
 
-public:
 	//コンストラクタ
 	Thunder() {};
 
