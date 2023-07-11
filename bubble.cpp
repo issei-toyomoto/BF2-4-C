@@ -1,9 +1,12 @@
 #include"bubble.h"
 #include"Dxlib.h"
 #include"Common.h"
+bubble::bubble() {
+	LoadDivGraph("images/Stage_BubbleAnimation.png", 4, 4, 1, 64, 64, BubbleImg);//âÊëúì«Ç›çûÇ›
+}
 void bubble::GenerationBubble() const{
-
-	DrawBox((int)bubbleX, (int)bubbleY, (int)bubbleX+10, (int)bubbleY +10, GetColor(255, 0, 0), TRUE);
+	DrawGraph((int)bubbleX, (int)bubbleY, BubbleImg[3], TRUE);
+	//DrawBox((int)bubbleX, (int)bubbleY, (int)bubbleX+10, (int)bubbleY +10, GetColor(255, 0, 0), TRUE);
 	//DrawFormatString(10, 100, C_WHITE, "%d", bubbleX);
 }	
 void bubble::UpdateBubble()
