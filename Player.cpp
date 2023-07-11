@@ -211,7 +211,7 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 			VectorY = VectorY * 0.8f;
 		}
 		else {
-			VectorY = -5.0f;
+			VectorY = -2.0f;
 		}
 	}
 	else {
@@ -250,11 +250,6 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 			}
 			else {
 				GroundFlg = Not_Ground;
-			}
-		}
-		else if (PYL_Right <= S_Ground_Left_YU) {
-			if (PXU_Left <= S_Ground_Left_XL) {
-				
 			}
 		}
 		else {
