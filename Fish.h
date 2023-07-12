@@ -14,9 +14,10 @@ private:
 	Player p;
 	float P_X;
 	float P_Y;
+	int Target;
 public:
 	Fish();		//コンストラクタ
-	void Draw();	//魚生成
+	void Draw() const;	//魚生成
 	void Update();	//出現エリア判定
 	void MoveFish();	//魚移動
 };
