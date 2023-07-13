@@ -8,7 +8,7 @@ Enemy::Enemy()
 	enemy.state = 0;
 	enemy.life = 3;
 	enemy.flg = 0;
-	enemy.speed = 2;
+	enemy.speed = 0.4f;
 	StartFlg = 0;
 	WaitTime = 0;
 	FPScnt = 0;
@@ -52,20 +52,20 @@ void Enemy::Update()
 void Enemy::Draw() const
 {
 #ifdef _DEBUG
-	DrawFormatString(50, 50, 0xffffff, "EnX:%d EnY:%d", enemy.x, enemy.y);
+	DrawFormatString(50, 50, 0xffffff, "EnX:%f EnY:%f", enemy.x, enemy.y);
 	DrawFormatString(50, 70, 0xffffff, "Enflg:%d", enemy.flg);
 	DrawFormatString(50, 90, 0xffffff, "WaitTime:%d", FPScnt);
 	if (enemy.state == 0)
 	{
 		if (StartFlg == 0)
 		{
-			DrawBox(enemy.x, enemy.y + 25, enemy.x + 50, enemy.y + 64, 0xffffff, FALSE);
-			DrawBox(enemy.x + 85, enemy.y + 25, enemy.x + 50 + 85, enemy.y + 64, 0xffffff, FALSE);
-			DrawBox(enemy.x + 170, enemy.y + 25, enemy.x + 50 + 170, enemy.y + 64, 0xffffff, FALSE);
+			DrawBox((int)enemy.x, (int)enemy.y + 25, (int)enemy.x + 50, (int)enemy.y + 64, 0xffffff, FALSE);
+			DrawBox((int)enemy.x + 85, (int)enemy.y + 25, (int)enemy.x + 50 + 85, (int)enemy.y + 64, 0xffffff, FALSE);
+			DrawBox((int)enemy.x + 170, (int)enemy.y + 25, (int)enemy.x + 50 + 170, (int)enemy.y + 64, 0xffffff, FALSE);
 		}
 		else
 		{
-			DrawBox(enemy.x + 10, enemy.y + 10, enemy.x + 55, enemy.y + 65, 0xffffff, FALSE);
+			DrawBox((int)enemy.x + 10, (int)enemy.y + 12, (int)enemy.x + 55, (int)enemy.y + 65, 0xffffff, FALSE);
 			/*DrawBox(EnemyX + 95, EnemyY + 10, EnemyX + 55 + 85, EnemyY + 64, 0xffffff, FALSE);
 			DrawBox(EnemyX + 180, EnemyY + 10, EnemyX + 55 + 170, EnemyY + 64, 0xffffff, FALSE);*/
 
@@ -76,13 +76,13 @@ void Enemy::Draw() const
 	{
 		if (StartFlg == 0)
 		{
-			DrawGraph(enemy.x, enemy.y, EnemyImg[enemy.flg], TRUE);
-			DrawGraph(enemy.x + 85, enemy.y, EnemyImg[enemy.flg], TRUE);
-			DrawGraph(enemy.x + 170, enemy.y, EnemyImg[enemy.flg], TRUE);
+			DrawGraph((int)enemy.x, (int)enemy.y, EnemyImg[enemy.flg], TRUE);
+			DrawGraph((int)enemy.x + 85, (int)enemy.y, EnemyImg[enemy.flg], TRUE);
+			DrawGraph((int)enemy.x + 170, (int)enemy.y, EnemyImg[enemy.flg], TRUE);
 		}
 		else
 		{
-			DrawGraph(enemy.x, enemy.y, EnemyImg[enemy.flg], TRUE);
+			DrawGraph((int)enemy.x, (int)enemy.y, EnemyImg[enemy.flg], TRUE);
 			/*DrawGraph(EnemyX + 85, EnemyY, EnemyImg[8], TRUE);
 			DrawGraph(EnemyX + 170, EnemyY, EnemyImg[8], TRUE);*/
 		}
