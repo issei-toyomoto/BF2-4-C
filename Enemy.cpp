@@ -14,6 +14,9 @@ Enemy::Enemy()
 	FPScnt = 0;           // FPSカウント
 	i = 0;                // スタート時、敵のモーション管理用
 
+	Px = player.GetPlayerX();
+	Py = player.GetPlayerY();
+
 	LoadDivGraph("image/Enemy/Enemy_P_Animation.png", 18, 6, 3, 64, 64, EnemyImg);  //画像読み込み
 }
 
@@ -94,7 +97,15 @@ void Enemy::Draw() const
 		else
 		{
 			// スタート以外
-			DrawGraph((int)enemy.x, (int)enemy.y, EnemyImg[enemy.flg], TRUE);
+			if (Px >= enemy.x)
+			{
+				DrawTurnGraph((int)enemy.x, (int)enemy.y, EnemyImg[enemy.flg], TRUE);
+			}
+			else
+			{
+				DrawGraph((int)enemy.x, (int)enemy.y, EnemyImg[enemy.flg], TRUE);
+			}
+			
 			/*DrawGraph(EnemyX + 85, EnemyY, EnemyImg[8], TRUE);
 			DrawGraph(EnemyX + 170, EnemyY, EnemyImg[8], TRUE);*/
 		}
@@ -121,16 +132,17 @@ void Enemy::EnemyMove()
 	// 敵のX座標
 	if (enemy.x <= 0)
 	{
-		enemy.speed = -enemy.speed;
+		enemy.x = 640;
 	}
 	else if (enemy.x > 640)
 	{
-		enemy.speed = -enemy.speed;
+		enemy.x = 0;
 	}
 
 	// 敵のY座標範囲
 	if (enemy.y <= -15)
 	{
+		enemy.y = -15;
 		enemy.speed = -enemy.speed;
 	}
 	else if (enemy.y > 480)
@@ -143,11 +155,12 @@ void Enemy::EnemyMove()
 		enemy.speed = enemy.speed;
 	}
 
+	if(Px )
 	// X座標加算
-	enemy.x += enemy.speed;
+	enemy.x++;
 
 	// Y座標減算
-	enemy.y -= enemy.speed;
+	enemy.y--;
 }
 
 // 敵のスタート処理
