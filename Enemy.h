@@ -25,7 +25,7 @@ private:
 	EnemyData enemy;   // 敵のデータ(変数宣言)
 
 	Player player;     // プレイヤーオブジェクト化
-	int Px,Py;         // プレイヤーのX座標、Y座標
+	float Px,Py;         // プレイヤーのX座標、Y座標
 
 public:
 	Enemy();   // コンストラクタ
