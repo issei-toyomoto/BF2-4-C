@@ -5,22 +5,17 @@
 
 struct EnemyData
 {
-	int x;
-	int y;
+	float x;
+	float y;
 	int state;
 	int life;
 	int flg;
-	int speed;
+	float speed;
 };
 
 class Enemy
 {
 private:
-	/*int EnemyX;
-	int EnemyY;
-	int EnemyState;
-	int EnemyLife;
-	int EnemyFlg;*/
 	int StartFlg;
 	int EnemyImg[24];
 	int FPScnt;

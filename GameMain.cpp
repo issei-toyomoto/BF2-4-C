@@ -22,6 +22,7 @@ AbstractScene* GameMain::Update()
 	player.Update(gStageState);
 	BUBBLE.UpdateBubble();
 	enemy.Update();
+	thunder.MoveThunder();
 
 	if (CheckHitKey(KEY_INPUT_1)) {
 		gStageState = 1;
