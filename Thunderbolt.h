@@ -4,7 +4,8 @@ class Thunder
 {
 private:
 	int gCloudImg = LoadGraph("images/Stage_Cloud01.png");
-	int gThunderImg= DrawBox(ThunderX, ThunderY, ThunderX +10, ThunderY + 10, GetColor(255, 0, 0), TRUE);
+	int gThunderImg[2];
+
 	int ThunderX=125, ThunderY=125;// 雷の座標
 	int ThunderMoveX, ThunderMoveY;
 	int Speed;// 雷の速度
@@ -18,7 +19,7 @@ public:
 	void MoveThunder();
 
 	//コンストラクタ
-	Thunder() {};
+	Thunder ();
 
 	//デストラクタ
 	~Thunder() {};

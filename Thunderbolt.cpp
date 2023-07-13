@@ -4,15 +4,22 @@
 #include<math.h>
 #include"bubble.h"
 
+Thunder::Thunder(){
+	LoadDivGraph("images/Stage_ThunderEffectAnimation", 4, 4, 1, 64, 64, gThunderImg);//âÊëúì«Ç›çûÇ›
+}
+
 void Thunder::Draw() const {
 	DrawGraph(100, 100, gCloudImg, TRUE);
-	DrawGraph(150, 150, gThunderImg, TRUE);
-	DrawBox((int)ThunderX, (int)ThunderY, (int)ThunderX + 10, (int)ThunderY + 10, GetColor(255, 0, 0), TRUE);
+	
+	DrawGraph(200, 150, gThunderImg[2], TRUE);
 
 }
 
 void Thunder::Update()
 {
+	ChangeAngle();
+
+	MoveThunder();
 
 }
 
