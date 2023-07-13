@@ -5,13 +5,15 @@
 #include"bubble.h"
 
 Thunder::Thunder(){
-	LoadDivGraph("images/Stage_ThunderEffectAnimation", 4, 4, 1, 64, 64, gThunderImg);//‰æ‘œ“Ç‚İ‚İ
+	if (LoadDivGraph("images/Stage_ThunderEffectAnimation.png", 3, 3, 1, 32, 32, gThunderImg) == -1) {
+		DrawFormatString(114, 514, GetColor(0, 0, 0), "a");
+	}//‰æ‘œ“Ç‚İ‚İ
 }
 
 void Thunder::Draw() const {
 	DrawGraph(100, 100, gCloudImg, TRUE);
 	
-	DrawGraph(200, 150, gThunderImg[2], TRUE);
+	DrawGraph(100, 200, gThunderImg[0], TRUE);
 
 }
 
