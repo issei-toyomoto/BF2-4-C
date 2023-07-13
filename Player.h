@@ -120,6 +120,7 @@ public:
 	//死亡時の画像処理
 	void UpdatePlayerImgDead();
 
+	//プレイヤーの座標取得
 	float GetPlayerX();
 	float GetPlayerY();
 };
