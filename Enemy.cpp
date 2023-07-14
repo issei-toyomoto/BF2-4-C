@@ -1,4 +1,5 @@
 #include "Enemy.h"
+#include "Player.h"
 #include "DxLib.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -15,8 +16,8 @@ Enemy::Enemy()
 	StartFlg = 0;         // スタート状態か判定する用
 	FPScnt = 0;           // FPSカウント
 	i = 0;                // スタート時、敵のモーション管理用
-	Px = 0;
-	Py = 0;
+	Px = Player::PlayerX;
+	Py = Player::PlayerY;
 
 	LoadDivGraph("image/Enemy/Enemy_P_Animation.png", 18, 6, 3, 64, 64, EnemyImg);  //画像読み込み
 }
@@ -31,6 +32,9 @@ Enemy::~Enemy()
 void Enemy::Update()
 {
 	FPScnt++;
+
+	Px = Player::PlayerX;
+	Py = Player::PlayerY;
 
 	if (StartFlg == 0 && i < 4)
 	{
@@ -63,6 +67,7 @@ void Enemy::Draw() const
 	DrawFormatString(50, 50, 0xffffff, "EnX:%f EnY:%f", enemy.x, enemy.y);
 	DrawFormatString(50, 70, 0xffffff, "Enflg:%d", enemy.flg);
 	DrawFormatString(50, 100, 0xffffff, "Px:%f", Px);
+	DrawFormatString(50, 130, 0xffffff, "Py:%f", Py);
 
 	// 敵の当たり判定表示
 	if (enemy.state == 0)
