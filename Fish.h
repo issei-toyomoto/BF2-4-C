@@ -8,7 +8,8 @@ private:
 	int f_Count;
 	int Second;
 	int FishRand;
-	float f_PosX, f_PosY;
+	float f_PosX;
+	float f_PosY;
 	bool FishFlg;
 	int FishImage[10];
 	int FishAnim;
