@@ -6,7 +6,6 @@
 
 Thunder::Thunder(){
 	if (LoadDivGraph("images/Stage_ThunderEffectAnimation.png", 3, 3, 1, 32, 32, gThunderImg) == -1) {
-		DrawFormatString(114, 514, GetColor(0, 0, 0), "a");
 	}//‰æ‘œ“Ç‚İ‚İ
 }
 
