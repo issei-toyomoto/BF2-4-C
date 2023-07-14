@@ -181,44 +181,44 @@ void Enemy::StartMove()
 {
 		if (i == 0)
 		{
-			if (FPScnt > 0 && FPScnt < 15 || FPScnt > 31 && FPScnt < 45) 
+			if (FPScnt > 0 && FPScnt < 15 || FPScnt > 31 && FPScnt < 45)
 			{
 				enemy.flg = 0;
 			}
-			else if (FPScnt > 16 && FPScnt < 30 || FPScnt > 46 && FPScnt < 60)
+			else
 			{
 				enemy.flg = 1;
 			}
 		}
 		else if(i == 1)
 		{
-			if (FPScnt > 0 && FPScnt < 15 || FPScnt > 31 && FPScnt < 45) 
+			if (FPScnt > 0 && FPScnt < 15 || FPScnt > 31 && FPScnt < 45)
 			{
 				enemy.flg = 2;
 			}
-			else if (FPScnt > 16 && FPScnt < 30 || FPScnt > 46 && FPScnt < 60) 
+			else
 			{
 				enemy.flg = 3;
 			}
 		}
 		else if(i == 2)
 		{
-			if (FPScnt > 0 && FPScnt < 15 || FPScnt > 31 && FPScnt < 45) 
+			if (FPScnt > 0 && FPScnt < 15 || FPScnt > 31 && FPScnt < 45)
 			{
 				enemy.flg = 4;
 			}
-			else if (FPScnt > 16 && FPScnt < 30 || FPScnt > 46 && FPScnt < 60) 
+			else
 			{
 				enemy.flg = 5;
 			}
 		}
 		else if (i == 3)
 		{
-			if (FPScnt > 0 && FPScnt < 15 || FPScnt > 31 && FPScnt < 45) 
+			if (FPScnt > 0 && FPScnt < 15 || FPScnt > 31 && FPScnt < 45)
 			{
 				enemy.flg = 6;
 			}
-			else if (FPScnt > 16 && FPScnt < 30 || FPScnt > 46 && FPScnt < 60) 
+			else
 			{
 				enemy.flg = 7;
 				StartFlg = 1;
