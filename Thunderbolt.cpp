@@ -9,13 +9,6 @@ Thunder::Thunder(){
 	}//âÊëúì«Ç›çûÇ›
 }
 
-void Thunder::Draw() const {
-	DrawGraph(100, 100, gCloudImg, TRUE);
-	
-	DrawGraph(100, 200, gThunderImg[0], TRUE);
-
-}
-
 void Thunder::Update()
 {
 	ChangeAngle();
@@ -23,6 +16,15 @@ void Thunder::Update()
 	MoveThunder();
 
 }
+
+
+void Thunder::Draw() const {
+	DrawGraph(100, 100, gCloudImg, TRUE);
+	
+	DrawGraph(100, 200, gThunderImg[0], TRUE);
+
+}
+
 
 void Thunder::ChangeAngle()
 {
