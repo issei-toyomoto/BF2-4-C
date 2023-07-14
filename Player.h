@@ -62,7 +62,7 @@
 #define Touch      true	//地面以外に触れている
 #define Not_Touch  false//地面以外に触れてない
 
-#define WaitFrame 5//Aボタンのインターバル
+#define WaitFraem 5//Aボタンのインターバル
 
 class Player
 {
@@ -95,7 +95,6 @@ private:
 	bool TouchFlg;		//(treu:地面以外に触れている   false:地面以外に触れていない　)
 
 public:
-
 	static float PlayerX;	//プレイヤーX座標(画像の左上X座標)
 	static float PlayerY;	//プレイヤーY座標(画像の左上Y座標)
 
