@@ -4,6 +4,7 @@
 #include "bubble.h"
 #include "Enemy.h"
 #include "Thunderbolt.h"
+#include "Fish.h"
 
 class GameMain :public AbstractScene
 {
@@ -12,6 +13,7 @@ private:
 	bubble BUBBLE;
 	Enemy enemy;
 	Thunder thunder;
+	Fish fish;
 
 	int gGameImg[14];
 	int gStageState;
