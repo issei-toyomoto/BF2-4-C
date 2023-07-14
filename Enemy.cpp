@@ -152,7 +152,7 @@ void Enemy::EnemyMove()
 	// “G‚ÌYÀ•W”ÍˆÍ
 	if (enemy.y <= -15)
 	{
-		enemy.y = enemy.y * 1.5f;
+		enemy.y = enemy.y * 0.8f;
 	}
 	else if (enemy.y > 480)
 	{
