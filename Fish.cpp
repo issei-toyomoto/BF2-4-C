@@ -5,9 +5,8 @@
 //コンストラクタ
 Fish::Fish() {
 	LoadDivGraph("image/Enemy/Enemy_FishAnimation.png",10,5,2,64,64,FishImage);
-	WaitTime=0;
-	f_PosX=0;
-	f_PosY=360;
+	f_PosX = 150;
+	f_PosY = 389;
 	Count = 0;
 	Second = 0;
 	FishRand = 0;
@@ -24,16 +23,16 @@ void Fish::Draw() const {
 	if (FishFlg==TRUE) {
 		//魚画像(アニメーション)
 		switch (FishAnim) {
-		case 5:
+		case 6:
 			DrawGraph((int)f_PosX, (int)f_PosY, FishImage[0], TRUE);
 			break;
-		case 4:
+		case 5:
 			DrawGraph((int)f_PosX, (int)f_PosY, FishImage[1], TRUE);
 			break;
-		case 3:
+		case 4:
 			DrawGraph((int)f_PosX, (int)f_PosY, FishImage[2], TRUE);
 			break;
-		case 2:
+		case 3:
 			switch (Target) {
 			case 1:
 				DrawGraph((int)f_PosX, (int)f_PosY, FishImage[6], TRUE);
@@ -42,6 +41,10 @@ void Fish::Draw() const {
 				//	DrawGraph(f_PosX,f_PosY,FishImage[EnemyFlg],TRUE);
 				//	break;
 			}
+			break;
+		case 2:
+			DrawGraph((int)f_PosX, (int)f_PosY, FishImage[3], TRUE);
+			break;
 		case 1:
 			DrawGraph((int)f_PosX, (int)f_PosY, FishImage[4], TRUE);
 			break;
@@ -66,7 +69,7 @@ void Fish::Update() {
 			Count = 0;
 			Second = 2;
 			//魚出現
-			if (FishRand <= 29) {
+			if (FishRand <= 99/*29*/) {
 				FishFlg = TRUE;
 				MoveFish();
 			}
@@ -79,6 +82,12 @@ void Fish::Update() {
 		if (FishFlg == TRUE&&f_Count<120) {
 			MoveFish();
 		}
+	}
+	else if (P_Y < 350) {
+		FishFlg = FALSE;
+		Target = 0;
+		Second = 0;
+		f_Count = 120;
 	}
 }
 
@@ -99,8 +108,13 @@ void Fish::MoveFish() {
 	if (P_Y >= 350) {
 		Target = 1;
 		FishAnim = f_Count / 17;
-		f_PosX = P_X;
-		f_Count = f_Count - 1;
+		/*f_PosX = P_X;*/
+		if (FishAnim == 4) {
+			
+		}
+		else if (FishAnim != 4) {
+			f_Count = f_Count - 1;
+		}
 		if (f_Count <= 0) {
 			//PlayerLife = 0;
 			FishFlg = FALSE;
@@ -108,5 +122,11 @@ void Fish::MoveFish() {
 			Second = 0;
 			f_Count = 120;
 		}
+	}
+	else if (P_Y < 350) {
+		FishFlg = FALSE;
+		Target = 0;
+		Second = 0;
+		f_Count = 120;
 	}
 }

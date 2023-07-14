@@ -3,7 +3,6 @@
 class Fish
 {
 private:
-	int WaitTime;
 	int Count;
 	int f_Count;
 	int Second;
