@@ -63,6 +63,7 @@
 #define Not_Touch  false//地面以外に触れてない
 
 #define WaitFraem 5//Aボタンのインターバル
+#define FivePx 5 //5px太くする（当たり判定）
 
 class Player
 {
