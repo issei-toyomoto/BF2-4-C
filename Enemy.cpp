@@ -1,5 +1,7 @@
 #include "Enemy.h"
 #include "DxLib.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 // コンストラクタ
 Enemy::Enemy()
@@ -13,6 +15,8 @@ Enemy::Enemy()
 	StartFlg = 0;         // スタート状態か判定する用
 	FPScnt = 0;           // FPSカウント
 	i = 0;                // スタート時、敵のモーション管理用
+	Px = 0;
+	Py = 0;
 
 	LoadDivGraph("image/Enemy/Enemy_P_Animation.png", 18, 6, 3, 64, 64, EnemyImg);  //画像読み込み
 }
@@ -30,7 +34,7 @@ void Enemy::Update()
 
 	if (StartFlg == 0 && i < 4)
 	{
-			StartMove();
+		StartMove();
 	}
 	else if(StartFlg != 0 && enemy.state == 0)
 	{
@@ -58,6 +62,7 @@ void Enemy::Draw() const
 #ifdef _DEBUG
 	DrawFormatString(50, 50, 0xffffff, "EnX:%f EnY:%f", enemy.x, enemy.y);
 	DrawFormatString(50, 70, 0xffffff, "Enflg:%d", enemy.flg);
+	DrawFormatString(50, 100, 0xffffff, "Px:%f", Px);
 
 	// 敵の当たり判定表示
 	if (enemy.state == 0)
@@ -82,7 +87,7 @@ void Enemy::Draw() const
 #endif // DEBUG
 
 	// 敵画像の表示
-	if (enemy.state == 0)
+	if (enemy.life != 0)
 	{
 		if (StartFlg == 0)
 		{
@@ -94,9 +99,25 @@ void Enemy::Draw() const
 		else
 		{
 			// スタート以外
-			DrawGraph((int)enemy.x, (int)enemy.y, EnemyImg[enemy.flg], TRUE);
-			/*DrawGraph(EnemyX + 85, EnemyY, EnemyImg[8], TRUE);
-			DrawGraph(EnemyX + 170, EnemyY, EnemyImg[8], TRUE);*/
+			// 画面内
+			if (Px >= enemy.x)
+			{
+				DrawTurnGraph((int)enemy.x, (int)enemy.y, EnemyImg[enemy.flg], TRUE);
+			}
+			else
+			{
+				DrawGraph((int)enemy.x, (int)enemy.y, EnemyImg[enemy.flg], TRUE);
+			}
+			
+			// 画面外
+			if (enemy.x < 0)
+			{
+				DrawGraph(640 + (int)enemy.x, (int)enemy.y, EnemyImg[enemy.flg], TRUE);
+			}
+			else if (enemy.x > 640 - 64)
+			{
+				DrawGraph((int)enemy.x - 640, (int)enemy.y, EnemyImg[enemy.flg], TRUE);
+			}
 		}
 	}
 }
@@ -121,22 +142,22 @@ void Enemy::EnemyMove()
 	// 敵のX座標
 	if (enemy.x <= 0)
 	{
-		enemy.speed = -enemy.speed;
+		enemy.x = 640;
 	}
 	else if (enemy.x > 640)
 	{
-		enemy.speed = -enemy.speed;
+		enemy.x = 0;
 	}
 
 	// 敵のY座標範囲
 	if (enemy.y <= -15)
 	{
-		enemy.speed = -enemy.speed;
+		enemy.y = enemy.y * 1.5f;
 	}
 	else if (enemy.y > 480)
 	{
-		enemy.speed = enemy.speed;
-		enemy.state += 1;
+		enemy.y = ENEMY_Y;
+		enemy.life = 0;
 	}
 	else
 	{
