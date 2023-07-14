@@ -253,7 +253,7 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 
 			if (PYL_Right > S_Ground_Right_YU) {//右下の台（側面）
 				if (PXL_Right >= S_Ground_Right_XU) {
-					VectorX *= -1;
+					VectorX *= -1.0f;
 				}
 			}
 		}
