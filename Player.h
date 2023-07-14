@@ -61,6 +61,9 @@
 
 #define Touch      true	//地面以外に触れている
 #define Not_Touch  false//地面以外に触れてない
+
+#define WaitFrame 5//Aボタンのインターバル
+
 class Player
 {
 private:
@@ -69,11 +72,9 @@ private:
 	int PlayerImg[32];	//プレイヤー画像
 	int NowPlayerImg;	//現在のプレイヤー画像配列の要素
 
-	float PlayerX;		//プレイヤーX座標(画像の左上X座標)
-	float PlayerY;		//プレイヤーY座標(画像の左上Y座標)
-	float VectorX;		//ベクトルX
-	float VectorY;		//ベクトルY
-	int Angle;			//向いてる方向
+	float VectorX;			//ベクトルX
+	float VectorY;			//ベクトルY
+	int Angle;				//向いてる方向
 	
 	int PlayerState;	//プレイヤーの状態
 	int BalloonNum;		//現在の風船の数
@@ -86,11 +87,18 @@ private:
 
 	int NowStage;		//現在のステージ
 
+	static int NowFraem;//現在のフレーム
+	static int OldFraem;//計測開始時のフレーム
+
 	bool FlyBtnFlg;		//(true;飛ぶボタンを押している false:飛ぶボタンを押していない)
 	bool GroundFlg;		//(true:地面に接触している     false:地面に接触していない    )
 	bool TouchFlg;		//(treu:地面以外に触れている   false:地面以外に触れていない　)
 
 public:
+
+	static float PlayerX;	//プレイヤーX座標(画像の左上X座標)
+	static float PlayerY;	//プレイヤーY座標(画像の左上Y座標)
+
 	//コンストラクタ
 	Player();
 	//デストラクタ

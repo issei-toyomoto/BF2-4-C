@@ -1,5 +1,4 @@
 #pragma once
-#include "Player.h"
 
 #define ENEMY_X 200
 #define ENEMY_Y 185
@@ -24,7 +23,6 @@ private:
 	int i;             // スタート時、敵のモーション管理用
 	EnemyData enemy;   // 敵のデータ(変数宣言)
 
-	Player player;     // プレイヤーオブジェクト化
 	float Px,Py;         // プレイヤーのX座標、Y座標
 
 public:
