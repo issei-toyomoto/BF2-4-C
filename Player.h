@@ -72,8 +72,6 @@ private:
 	int PlayerImg[32];	//プレイヤー画像
 	int NowPlayerImg;	//現在のプレイヤー画像配列の要素
 
-	static float PlayerX;	//プレイヤーX座標(画像の左上X座標)
-	static float PlayerY;	//プレイヤーY座標(画像の左上Y座標)
 	float VectorX;			//ベクトルX
 	float VectorY;			//ベクトルY
 	int Angle;				//向いてる方向
@@ -97,6 +95,10 @@ private:
 	bool TouchFlg;		//(treu:地面以外に触れている   false:地面以外に触れていない　)
 
 public:
+
+	static float PlayerX;	//プレイヤーX座標(画像の左上X座標)
+	static float PlayerY;	//プレイヤーY座標(画像の左上Y座標)
+
 	//コンストラクタ
 	Player();
 	//デストラクタ
