@@ -126,7 +126,7 @@ void Player::Draw() const /***描画***/
 	DrawFormatString(400, 50, C_WHITE, "Balloon:%d", BalloonNum);				//風船の数
 	DrawFormatString(400, 70, C_WHITE, "XV:%.2f YV:%.2f", VectorX, VectorY);	//加速度
 	DrawFormatString(400, 90, C_WHITE, "X:%.2f Y:%.2f", PlayerX, PlayerY);		//プレイヤー座標
-	DrawFormatString(400, 110, C_WHITE, "Angle:%d(0:右 1;左)", Angle);			//向いている方向
+	DrawFormatString(400, 110, C_WHITE, "Angle:%d(1;左 0:右)", Angle);			//向いている方向
 	DrawFormatString(400, 130, C_WHITE, "MX:%d MY:%d", MoX, MoY);				//マウスカーソルの座標
 	DrawFormatString(400, 150, C_WHITE, "Stage:%d", NowStage);					//現在のステージ
 	DrawFormatString(400, 170, C_WHITE, "FlyBtn:%d(0:off 1:on)", FlyBtnFlg);//飛ぶボタンを押しているかどうか
@@ -229,29 +229,35 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 	PXL_Right = (int)PlayerX + 40;//右下X
 	PYL_Right = (int)PlayerY + 64;//右下Y
 
-	if (NowStage == 1) {//ステージ１でのステージとの当たり判定(地面に埋まるバグあり)
+	if (NowStage == 1) {//ステージ１でのステージとの当たり判定(地面に埋まる＆地面に引っかかるバグあり)
 
 		//台の側面＆下辺//
 		if (GroundFlg == Not_Ground) {
 			if (PXL_Right >= S_Sky_Ground_0_XU && PXU_Left <= S_Sky_Ground_0_XL) {//浮いている中央の台（側面）
-				if (PYU_Left <= S_Sky_Ground_0_YL && PYL_Right > S_Sky_Ground_0_YU) {
+				if (PYU_Left <= S_Sky_Ground_0_YL && PYL_Right >= S_Sky_Ground_0_YU) {
 					VectorX *= -1.0f;
+				}
+			}
+
+			if (PYU_Left < S_Sky_Ground_0_YL && PYL_Right > S_Sky_Ground_0_YU) {//浮いている中央の台（下辺）
+				if (PXL_Right >= S_Sky_Ground_0_XU && PXU_Left <= S_Sky_Ground_0_XL) {
+					VectorY *= -1.0f;
 				}
 			}
 
 			if (PYL_Right > S_Ground_Left_YU) {//左下の台（側面）
 				if (PXU_Left <= S_Ground_Left_XL) {
-					VectorX *= -1;
+					VectorX *= -1.0f;
 				}
 			}
 
-			if (PYL_Right > S_Ground_Right_YU) {
+			if (PYL_Right > S_Ground_Right_YU) {//右下の台（側面）
 				if (PXL_Right >= S_Ground_Right_XU) {
-					VectorY *= -1;
+					VectorX *= -1.0f;
 				}
 			}
 		}
-
+		
 		//台の上辺//
 		if (PYL_Right >= S_Ground_Left_YU) {//左下の台と右下の台のY座標は一緒
 			if (PXL_Right >= -P_Img_Size && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
@@ -278,8 +284,7 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 		else {
 			GroundFlg = Not_Ground;
 		}
-		
-		
+
 	}
 	else if (NowStage == 2) {//ステージ１でのステージとの当たり判定(未完成)
 		if (PYL_Right >= S_Ground_Left_YU) {
