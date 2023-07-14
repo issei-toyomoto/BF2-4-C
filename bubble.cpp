@@ -17,9 +17,6 @@ void bubble::UpdateBubble()
 	bubbleY-=0.25;
 
 	
-
-	
-	
 	if (FPSCount <= 29) {
 		bubbleX -= 1.5;
 	}
@@ -31,17 +28,4 @@ void bubble::UpdateBubble()
 		FPSCount = 0;
 	}
 
-	
-
-	
-
-	/*if (FPSCount % 60 == 0) {
-		bubbleY -= 10;
-		if (FPSCount % 30 == 0) {
-			bubbleX -= 10;
-		}
-		else {
-			bubbleX +=10;
-		}
-	}*/
 }
