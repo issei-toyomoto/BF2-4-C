@@ -19,8 +19,8 @@ Player::Player()
 	Angle = -1;
 	FlyBtnFlg = OFF_FlyBtn;
 	GroundFlg = Not_Ground;
+	TouchFlg = Not_Touch;
 }
-
 
 void Player::Update(int Stage) /***描画以外***/
 {
@@ -129,14 +129,17 @@ void Player::Draw() const /***描画***/
 	DrawFormatString(400, 110, C_WHITE, "Angle:%d(1;左 0:右)", Angle);			//向いている方向
 	DrawFormatString(400, 130, C_WHITE, "MX:%d MY:%d", MoX, MoY);				//マウスカーソルの座標
 	DrawFormatString(400, 150, C_WHITE, "Stage:%d", NowStage);					//現在のステージ
-	DrawFormatString(400, 170, C_WHITE, "FlyBtn:%d(0:off 1:on)", FlyBtnFlg);//飛ぶボタンを押しているかどうか
-	DrawFormatString(400, 190, C_WHITE, "GroundFlg:%d(0:not 1:on)", GroundFlg);
+	DrawFormatString(400, 170, C_WHITE, "FlyBtn:%d(0:off 1:on)", FlyBtnFlg);	//飛ぶボタンを押しているか
+	DrawFormatString(400, 190, C_WHITE, "GroundFlg:%d(0:not 1:on)", GroundFlg);	//地面に触れているか
+	DrawFormatString(400, 210, C_WHITE, "TouchFlg;%d(0:not 1:on)", TouchFlg);	//地面以外に触れている
 
 	//プレイヤー画像サイズ
 	DrawBox((int)PlayerX, (int)PlayerY, (int)PlayerX + 64, (int)PlayerY + 64, C_RED,FALSE);
 	DrawLine((int)PlayerX, (int)PlayerY, (int)PlayerX + 64, (int)PlayerY + 64, C_RED, 1);
 	//プレイヤーサイズ
 	DrawBox((int)PlayerX + 18, (int)PlayerY + 14, (int)PlayerX + 40, (int)PlayerY + 64, C_WHITE, FALSE);
+	//プレイヤーの下辺
+	DrawLine((int)PlayerX + 14, (int)PlayerY + 64, (int)PlayerX + 40, (int)PlayerY + 64, C_GREEN, 2);
 	//風船
 	DrawBox((int)PlayerX + 12, (int)PlayerY + 14, (int)PlayerX + 52, (int)PlayerY + 38, C_GREEN,FALSE);
 #endif //DEBUG
@@ -164,6 +167,10 @@ void Player::UpdatePlayerX() //*プレイヤーのX座標処理*//
 	else if (XStick == 0) {//待機
 		VectorX *= 0.89f;			//慣性
 		PlayerState = P_State_Wait;	//プレイヤーのステータスを待機に変更
+	}
+
+	if (TouchFlg == Touch) {
+		VectorX *= -1;
 	}
 
 	//画面端のX座標処理
@@ -194,6 +201,9 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 			}
 			PlayerState = P_State_Fly;//プレイヤーのステータスを飛ぶに変更
 		}
+	}
+	else if (GroundFlg == Ground) {
+		VectorY = 0;
 	}
 
 	if (InputKey::GetKeyDown(PAD_INPUT_A)) {//Aボタンを押したら１回だけ羽ばたく(※１フレームしか入力を取っていない）
@@ -230,63 +240,29 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 	PYL_Right = (int)PlayerY + 64;//右下Y
 
 	if (NowStage == 1) {//ステージ１でのステージとの当たり判定(地面に埋まる＆地面に引っかかるバグあり)
-
-		//台の側面＆下辺//
 		if (GroundFlg == Not_Ground) {
-			if (PXL_Right >= S_Sky_Ground_0_XU && PXU_Left <= S_Sky_Ground_0_XL) {//浮いている中央の台（側面）
-				if (PYU_Left <= S_Sky_Ground_0_YL && PYL_Right >= S_Sky_Ground_0_YU) {
-					VectorX *= -1.0f;
-				}
-			}
-
-			if (PYU_Left < S_Sky_Ground_0_YL && PYL_Right > S_Sky_Ground_0_YU) {//浮いている中央の台（下辺）
-				if (PXL_Right >= S_Sky_Ground_0_XU && PXU_Left <= S_Sky_Ground_0_XL) {
-					VectorY *= -1.0f;
-				}
-			}
-
-			if (PYL_Right > S_Ground_Left_YU) {//左下の台（側面）
-				if (PXU_Left <= S_Ground_Left_XL) {
-					VectorX *= -1.0f;
-				}
-			}
-
-			if (PYL_Right > S_Ground_Right_YU) {//右下の台（側面）
-				if (PXL_Right >= S_Ground_Right_XU) {
-					VectorX *= -1.0f;
-				}
-			}
-		}
-		
-		//台の上辺//
-		if (PYL_Right >= S_Ground_Left_YU) {//左下の台と右下の台のY座標は一緒
-			if (PXL_Right >= -P_Img_Size && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
-				GroundFlg = Ground;
-				VectorY = 0;
-			}
-			else if (PXL_Right >= S_Ground_Right_XU && PXU_Left <= S_Ground_Right_XL + P_Img_Size) {//右下の台（上辺）
-				GroundFlg = Ground;
-				VectorY = 0;
+			if (PXU_Left == S_Ground_Left_XL && PYL_Right > S_Ground_Left_YU) {
+				TouchFlg = Touch;
 			}
 			else {
-				GroundFlg = Not_Ground;
+				TouchFlg = Not_Touch;
 			}
 		}
-		else if (PYL_Right >= S_Sky_Ground_0_YU && PYU_Left <= S_Sky_Ground_0_YL) {//浮いている中央の台（上辺）
-			if (PXU_Left <= S_Sky_Ground_0_XL && PXL_Right >= S_Sky_Ground_0_XU) {
-				GroundFlg = Ground;
-				VectorY = 0;
-			}
-			else {
-				GroundFlg = Not_Ground;
-			}
+
+		if (PYL_Right == S_Ground_Left_YU && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
+			GroundFlg = Ground;
+		}
+		else if(PYL_Right == S_Ground_Right_YU && PXL_Right >= S_Ground_Right_XU){//右下の台（上辺）
+			GroundFlg = Ground;
+		}
+		else if (PYL_Right == S_Sky_Ground_0_YU && PXU_Left <= S_Sky_Ground_0_XL && PXL_Right >= S_Sky_Ground_0_XU) {//浮いている中央の台（上辺）
+			GroundFlg = Ground;
 		}
 		else {
 			GroundFlg = Not_Ground;
 		}
-
 	}
-	else if (NowStage == 2) {//ステージ１でのステージとの当たり判定(未完成)
+	else if (NowStage == 2) {//ステージ２でのステージとの当たり判定(未完成)
 		if (PYL_Right >= S_Ground_Left_YU) {
 			if (PXL_Right >= -P_Img_Size && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
 				GroundFlg = Ground;
@@ -313,7 +289,7 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 			GroundFlg = Not_Ground;
 		}
 	}
-	else if (NowStage == 3) {//ステージ１でのステージとの当たり判定
+	else if (NowStage == 3) {//ステージ３でのステージとの当たり判定
 		if (PYL_Right >= S_Ground_Left_YU) {
 			if (PXL_Right >= -P_Img_Size && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
 				GroundFlg = Ground;
@@ -331,7 +307,7 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 			GroundFlg = Not_Ground;
 		}
 	}
-	else if (NowStage == 4) {//ステージ１でのステージとの当たり判定
+	else if (NowStage == 4) {//ステージ４でのステージとの当たり判定
 		if (PYL_Right >= S_Ground_Left_YU) {
 			if (PXL_Right >= -P_Img_Size && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
 				GroundFlg = Ground;
@@ -349,7 +325,7 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 			GroundFlg = Not_Ground;
 		}
 	}
-	else if (NowStage == 5) {//ステージ１でのステージとの当たり判定
+	else if (NowStage == 5) {//ステージ５でのステージとの当たり判定
 		if (PYL_Right >= S_Ground_Left_YU) {
 			if (PXL_Right >= -P_Img_Size && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
 				GroundFlg = Ground;
@@ -504,11 +480,11 @@ void Player::UpdatePlayerImgDead() //*死亡時アニメーション処理*//
 }
 
 float Player::GetPlayerX (){
-	float X = PlayerX;
+	static float X = PlayerX;
 	return X;
 }
 
 float Player::GetPlayerY() {
-	float Y = PlayerY;
+	static float Y = PlayerY;
 	return Y;
 }

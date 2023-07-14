@@ -59,6 +59,8 @@
 #define Ground     true	//地面と接触している
 #define Not_Ground false//地面と接触していない
 
+#define Touch      true	//地面以外に触れている
+#define Not_Touch  false//地面以外に触れてない
 class Player
 {
 private:
@@ -86,6 +88,7 @@ private:
 
 	bool FlyBtnFlg;		//(true;飛ぶボタンを押している false:飛ぶボタンを押していない)
 	bool GroundFlg;		//(true:地面に接触している     false:地面に接触していない    )
+	bool TouchFlg;		//(treu:地面以外に触れている   false:地面以外に触れていない　)
 
 public:
 	//コンストラクタ
