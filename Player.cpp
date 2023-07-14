@@ -5,6 +5,12 @@
 
 #define DEBUG
 
+int Player::OldFraem;
+int Player::NowFraem;
+
+float Player::PlayerX;
+float Player::PlayerY;
+
 Player::Player() 
 {
 	LoadDivGraph("image/Player/Player_Animation.png", 32, 8, 4, 64, 64, PlayerImg);//画像読み込み
@@ -20,6 +26,8 @@ Player::Player()
 	FlyBtnFlg = OFF_FlyBtn;
 	GroundFlg = Not_Ground;
 	TouchFlg = Not_Touch;
+	/*NowFraem = 0;*/
+	OldFraem = 0;
 }
 
 void Player::Update(int Stage) /***描画以外***/
@@ -188,31 +196,39 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 	if (GroundFlg == Not_Ground) {
 		if (PlayerY < _SCREEN_WIDHT_) {
 			if (BalloonNum == 1) {//風船１個
-				VectorY = VectorY + 0.4f;
+				VectorY = VectorY + 0.04f;
 				if (VectorY >= 4.0f) {//速度制限
 					VectorY = 4.0f;
 				}
 			}
 			else if (BalloonNum == 2) {//風船２個
-				VectorY =VectorY + 0.4f;
+				VectorY = VectorY + 0.04f;
 				if (VectorY >= 2.0f) {//速度制限
 					VectorY = 2.0f;
 				}
 			}
-			PlayerState = P_State_Fly;//プレイヤーのステータスを飛ぶに変更
+			
 		}
 	}
 	else if (GroundFlg == Ground) {
 		VectorY = 0;
 	}
 
+	if (FlyBtnFlg == ON_FlyBtn) {
+		PlayerState = P_State_Fly;//プレイヤーのステータスを飛ぶに変更
+	}
+
 	if (InputKey::GetKeyDown(PAD_INPUT_A)) {//Aボタンを押したら１回だけ羽ばたく(※１フレームしか入力を取っていない）
 		FlyBtnFlg = ON_FlyBtn;
+		
 		if (PlayerY < 0) {//画面上（未完成）
 			VectorY = VectorY * 0.8f;
 		}
 		else {
-			VectorY = -5.0f;
+			VectorY = VectorY + -0.1f;
+			if (VectorY <= -2.0f) {
+				VectorY = -2.0f;
+			}
 		}
 	}
 	else if (InputKey::GetKey(PAD_INPUT_B)) {//Bボタンを押したら押している間羽ばたく
@@ -221,7 +237,10 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 			VectorY = VectorY * 0.8f;
 		}
 		else {
-			VectorY = -2.0f;
+			VectorY = VectorY + -0.1f;
+			if (VectorY <= -2.0f) {
+				VectorY = -2.0f;
+			}
 		}
 	}
 	else {
@@ -249,10 +268,10 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 			}
 		}
 
-		if (PYL_Right == S_Ground_Left_YU && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
+		if (PYL_Right >= S_Ground_Left_YU && PYL_Right<=S_Ground_Left_YU + 5 && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
 			GroundFlg = Ground;
 		}
-		else if(PYL_Right == S_Ground_Right_YU && PXL_Right >= S_Ground_Right_XU){//右下の台（上辺）
+		else if(PYL_Right >= S_Ground_Right_YU && PYL_Right <= S_Ground_Right_YU + 5 && PXL_Right >= S_Ground_Right_XU){//右下の台（上辺）
 			GroundFlg = Ground;
 		}
 		else if (PYL_Right == S_Sky_Ground_0_YU && PXU_Left <= S_Sky_Ground_0_XL && PXL_Right >= S_Sky_Ground_0_XU) {//浮いている中央の台（上辺）
