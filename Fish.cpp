@@ -1,6 +1,7 @@
 #include"DxLib.h"
 #include"Fish.h"
 #include<math.h>
+#include"Player.h"
 
 //コンストラクタ
 Fish::Fish() {
@@ -95,6 +96,7 @@ void Fish::Update() {
 void Fish::MoveFish() {
 	P_X = p.GetPlayerX();
 	P_Y = p.GetPlayerY();
+	int i = 30;
 	//攻撃対象が敵
 	/*if (enemyY > 600) {
 		f_PosX = enemyX;
@@ -107,10 +109,14 @@ void Fish::MoveFish() {
 	//攻撃対象がプレイヤー
 	if (P_Y >= 350) {
 		Target = 1;
-		FishAnim = f_Count / 17;
+		FishAnim = f_Count / 20;
 		/*f_PosX = P_X;*/
 		if (FishAnim == 4) {
-			
+			f_PosY = P_Y + i;
+			i--;
+			if (i == 0) {
+				i = 30;
+			}
 		}
 		else if (FishAnim != 4) {
 			f_Count = f_Count - 1;
