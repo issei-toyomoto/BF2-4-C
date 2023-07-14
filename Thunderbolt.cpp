@@ -11,6 +11,11 @@ void Thunder::Draw() const {
 
 }
 
+void Thunder::Update()
+{
+
+}
+
 void Thunder::ChangeAngle()
 {
 	float rad = ThunderAngle * (float)M_PI * 2;
@@ -19,10 +24,8 @@ void Thunder::ChangeAngle()
 }
 
 void Thunder::MoveThunder() {
-	if (WaitTime >= 59) {
-		ThunderMoveX--;
-	}
-	
+	ThunderX += 1;
+	ThunderY += 1; 
 
 	if(ThunderFlg != 2) {
 

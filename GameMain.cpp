@@ -24,6 +24,7 @@ AbstractScene* GameMain::Update()
 	BUBBLE.UpdateBubble();
 	enemy.Update();
 	fish.Update();
+	thunder.MoveThunder();
 
 	if (CheckHitKey(KEY_INPUT_1)) {
 		gStageState = 1;
@@ -123,25 +124,25 @@ void GameMain::Draw()const
 	//ステージの当たり判定(ステージ１)
 	if (gStageState == 1) {
 		//左下
-		DrawBox(0, 420, 155, 455, C_RED, FALSE);
-		DrawLine(0, 420, 155, 455, C_RED, 1);
+		DrawBox(S_Ground_Left_XU, S_Ground_Left_YU, S_Ground_Left_XL, S_Ground_Left_YL, C_RED, FALSE);
+		DrawLine(S_Ground_Left_XU, S_Ground_Left_YU, S_Ground_Left_XL, S_Ground_Left_YL, C_RED, 1);
 		//中央
-		DrawBox(180, 250, 460, 265, C_RED, FALSE);
-		DrawLine(180, 250, 460, 265, C_RED, 1);
+		DrawBox(S_Sky_Ground_0_XU, S_Sky_Ground_0_YU, S_Sky_Ground_0_XL, S_Sky_Ground_0_YL, C_RED, FALSE);
+		DrawLine(S_Sky_Ground_0_XU, S_Sky_Ground_0_YU, S_Sky_Ground_0_XL, S_Sky_Ground_0_YL, C_RED, 1);
 		//右下
-		DrawBox(460, 420, 620, 455, C_RED, FALSE);
-		DrawLine(460, 420, 620, 455, C_RED, 1);
+		DrawBox(S_Ground_Right_XU, S_Ground_Right_YU, S_Ground_Right_XL, S_Ground_Right_YL, C_RED, FALSE);
+		DrawLine(S_Ground_Right_XU, S_Ground_Right_YU, S_Ground_Right_XL, S_Ground_Right_YL, C_RED, 1);
 	}
 	else if (gStageState == 2) {
 		//左下
-		DrawBox(0, 420, 155, 455, C_RED, FALSE);
-		DrawLine(0, 420, 155, 455, C_RED, 1);
+		DrawBox(S_Ground_Left_XU, S_Ground_Left_YU, S_Ground_Left_XL, S_Ground_Left_YL, C_RED, FALSE);
+		DrawLine(S_Ground_Left_XU, S_Ground_Left_YU, S_Ground_Left_XL, S_Ground_Left_YL, C_RED, 1);
 		//中央
-		DrawBox(180, 250, 460, 265, C_RED, FALSE);
-		DrawLine(180, 250, 460, 265, C_RED, 1);
+		DrawBox(S_Sky_Ground_0_XU, S_Sky_Ground_0_YU, S_Sky_Ground_0_XL, S_Sky_Ground_0_YL, C_RED, FALSE);
+		DrawLine(S_Sky_Ground_0_XU, S_Sky_Ground_0_YU, S_Sky_Ground_0_XL, S_Sky_Ground_0_YL, C_RED, 1);
 		//右下
-		DrawBox(460, 420, 620, 455, C_RED, FALSE);
-		DrawLine(460, 420, 620, 455, C_RED, 1);
+		DrawBox(S_Ground_Right_XU, S_Ground_Right_YU, S_Ground_Right_XL, S_Ground_Right_YL, C_RED, FALSE);
+		DrawLine(S_Ground_Right_XU, S_Ground_Right_YU, S_Ground_Right_XL, S_Ground_Right_YL, C_RED, 1);
 		//左上
 		DrawBox(50, 100, 170, 115, C_RED, FALSE);
 		DrawLine(50, 100, 170, 115, C_RED, FALSE);
