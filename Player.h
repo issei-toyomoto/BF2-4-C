@@ -94,6 +94,7 @@ private:
 	bool FlyBtnFlg;		//(true;飛ぶボタンを押している false:飛ぶボタンを押していない)
 	bool GroundFlg;		//(true:地面に接触している     false:地面に接触していない    )
 	bool TouchFlg;		//(treu:地面以外に触れている   false:地面以外に触れていない　)
+	bool ABtnFlg;
 
 public:
 	static float PlayerX;	//プレイヤーX座標(画像の左上X座標)

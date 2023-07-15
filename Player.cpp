@@ -241,17 +241,7 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 	}
 
 	if (InputKey::GetKeyDown(PAD_INPUT_A)) {//Aボタンを押したら１回だけ羽ばたく(※１フレームしか入力を取っていない）
-		FlyBtnFlg = ON_FlyBtn;
-
-		if (PlayerY < 0) {//画面上（未完成）
-			VectorY = VectorY * 0.8f;
-		}
-		else {
-			VectorY = VectorY + -0.1f;
-			if (VectorY <= -2.0f) {
-				VectorY = -2.0f;
-			}
-		}
+		ABtnFlg = true;
 	}
 	else if (InputKey::GetKey(PAD_INPUT_B)) {//Bボタンを押したら押している間羽ばたく
 		FlyBtnFlg = ON_FlyBtn;
@@ -265,9 +255,32 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 			}
 		}
 	}
+	else if (ABtnFlg == true) {
+		int Cnt = 0;
+
+		while (Cnt <= 60) {
+			FlyBtnFlg = ON_FlyBtn;
+			if (PlayerY < 0) {//画面上（未完成）
+				VectorY = VectorY * 0.8f;
+			}
+			else {
+				VectorY = VectorY + -0.1f;
+				if (VectorY <= -2.0f) {
+					VectorY = -2.0f;
+				}
+			}
+			Cnt++;
+		}
+
+		if (Cnt >= 60) {
+			ABtnFlg = false;
+		}
+	}
 	else {
 		FlyBtnFlg = OFF_FlyBtn;
 	}
+
+	
 }
 
 void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
