@@ -236,7 +236,7 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 		VectorY = 0;
 	}
 
-	if (FlyBtnFlg == ON_FlyBtn) {
+	if (FlyBtnFlg == ON_FlyBtn || GroundFlg == Not_Ground) {
 		PlayerState = P_State_Fly;//プレイヤーのステータスを飛ぶに変更
 	}
 
