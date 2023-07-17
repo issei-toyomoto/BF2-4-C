@@ -193,7 +193,7 @@ void Player::UpdatePlayerX() //*プレイヤーのX座標処理*//
 			VectorX *= 0.89f;			//慣性
 		}
 		else if (GroundFlg == Not_Ground) {
-			VectorX *= 0.999f;			//慣性
+			VectorX *= 0.99f;//慣性
 		}
 		
 		PlayerState = P_State_Wait;	//プレイヤーのステータスを待機に変更
@@ -219,14 +219,14 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 		if (PlayerY < _SCREEN_WIDHT_) {
 			if (BalloonNum == 1) {//風船１個
 				VectorY = VectorY + 0.04f;
-				if (VectorY >= 4.0f) {//速度制限
-					VectorY = 4.0f;
+				if (VectorY >= 6.0f) {//速度制限
+					VectorY = 6.0f;
 				}
 			}
 			else if (BalloonNum == 2) {//風船２個
 				VectorY = VectorY + 0.04f;
-				if (VectorY >= 2.0f) {//速度制限
-					VectorY = 2.0f;
+				if (VectorY >= 4.0f) {//速度制限
+					VectorY = 4.0f;
 				}
 			}
 			
@@ -240,40 +240,18 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 		PlayerState = P_State_Fly;//プレイヤーのステータスを飛ぶに変更
 	}
 
-	if (InputKey::GetKeyDown(PAD_INPUT_A)) {//Aボタンを押したら１回だけ羽ばたく(※１フレームしか入力を取っていない）
-		ABtnFlg = true;
+	if (InputKey::GetKeyDown(PAD_INPUT_A)) {//Aボタンを押したら１回だけ羽ばたく
+		FlyBtnFlg = ON_FlyBtn;
+		VectorY = VectorY + -0.8f;
+		if (VectorY <= -3.0f) {
+			VectorY = -3.0f;
+		}
 	}
 	else if (InputKey::GetKey(PAD_INPUT_B)) {//Bボタンを押したら押している間羽ばたく
 		FlyBtnFlg = ON_FlyBtn;
-		if (PlayerY < 0) {//画面上（未完成）
-			VectorY = VectorY * 0.8f;
-		}
-		else {
-			VectorY = VectorY + -0.1f;
-			if (VectorY <= -2.0f) {
-				VectorY = -2.0f;
-			}
-		}
-	}
-	else if (ABtnFlg == true) {
-		int Cnt = 0;
-
-		while (Cnt <= 60) {
-			FlyBtnFlg = ON_FlyBtn;
-			if (PlayerY < 0) {//画面上（未完成）
-				VectorY = VectorY * 0.8f;
-			}
-			else {
-				VectorY = VectorY + -0.1f;
-				if (VectorY <= -2.0f) {
-					VectorY = -2.0f;
-				}
-			}
-			Cnt++;
-		}
-
-		if (Cnt >= 60) {
-			ABtnFlg = false;
+		VectorY = VectorY + -0.35f;
+		if (VectorY <= -3.0f) {
+			VectorY = -3.0f;
 		}
 	}
 	else {
@@ -295,7 +273,7 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 
 	if (NowStage == 1) {//ステージ１でのステージとの当たり判定(地面に埋まる＆地面に引っかかるバグあり)
 		if (GroundFlg == Not_Ground) {
-			if (PXU_Left == S_Ground_Left_XL && PYL_Right > S_Ground_Left_YU) {
+			if (PXU_Left <= S_Ground_Left_XL && PYL_Right >= S_Ground_Left_YU + FivePx) {//左下の台（側面）
 				TouchFlg = Touch;
 			}
 			else {
