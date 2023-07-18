@@ -13,10 +13,11 @@ Fish::Fish() {
 	FishRand = 0;
 	FishFlg = FALSE;
 	f_Count = 120;
-	P_X = p.GetPlayerX();
-	P_Y = p.GetPlayerY();
+	P_X = Player::PlayerX;
+	P_Y = Player::PlayerY;
 	Target = 0;
 	FishAnim = 0;
+	Tracking = 120;
 }
 
 //魚生成
@@ -58,8 +59,8 @@ void Fish::Draw() const {
 
 //出現エリア
 void Fish::Update() {
-	P_X = p.GetPlayerX();
-	P_Y = p.GetPlayerY();
+	P_X = Player::PlayerX;
+	P_Y = Player::PlayerY;
 	//出現エリア判定
 	if (P_Y >= 350 /*|| enemyY > 600*/) {
 		Count++;
@@ -88,15 +89,15 @@ void Fish::Update() {
 		FishFlg = FALSE;
 		Target = 0;
 		Second = 0;
+		Tracking = 120;
 		f_Count = 120;
 	}
 }
 
 //魚移動
 void Fish::MoveFish() {
-	P_X = p.GetPlayerX();
-	P_Y = p.GetPlayerY();
-	int i = 30;
+	P_X = Player::PlayerX;
+	P_Y = Player::PlayerY;
 	//攻撃対象が敵
 	/*if (enemyY > 600) {
 		f_PosX = enemyX;
@@ -109,24 +110,27 @@ void Fish::MoveFish() {
 	//攻撃対象がプレイヤー
 	if (P_Y >= 350) {
 		Target = 1;
-		FishAnim = f_Count / 20;
+		f_PosX = P_X + Tracking;
+		FishAnim = f_Count / 17;
 		/*f_PosX = P_X;*/
-		if (FishAnim == 4) {
-			f_PosY = P_Y + i;
-			i--;
-			if (i == 0) {
-				i = 30;
+		if (FishAnim >= 4) {
+			if (Tracking > 0) {
+				Tracking = Tracking - 4;
+				if (FishAnim == 4 && Tracking == 0) {
+					//PlayerLife = 0;
+					f_Count = f_Count - 17;
+				}
 			}
 		}
-		else if (FishAnim != 4) {
+		if (FishAnim != 4) {
 			f_Count = f_Count - 1;
 		}
 		if (f_Count <= 0) {
-			//PlayerLife = 0;
 			FishFlg = FALSE;
 			Target = 0;
 			Second = 0;
 			f_Count = 120;
+			Tracking = 120;
 		}
 	}
 	else if (P_Y < 350) {
@@ -134,5 +138,6 @@ void Fish::MoveFish() {
 		Target = 0;
 		Second = 0;
 		f_Count = 120;
+		Tracking = 120;
 	}
 }

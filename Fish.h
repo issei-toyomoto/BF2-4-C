@@ -16,6 +16,7 @@ private:
 	float P_X;
 	float P_Y;
 	int Target;
+	int Tracking;
 public:
 	Fish();		//コンストラクタ
 	void Draw() const;	//魚生成
