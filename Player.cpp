@@ -294,6 +294,9 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 					}
 				}
 			}
+			else if (PYU_Left <= _SCREEN_HEIGHT_) {
+				VectorY *= -0.8f;
+			}
 			else {
 				TouchFlg = Not_Touch;
 			}
