@@ -105,7 +105,7 @@ void Enemy::Draw() const
 		{
 			// スタート以外
 			// 画面内
-			if (Px >= enemy.x)
+			if (Px >= enemy.x + 10)
 			{
 				DrawTurnGraph((int)enemy.x, (int)enemy.y, EnemyImg[enemy.flg], TRUE);
 			}
@@ -130,21 +130,8 @@ void Enemy::Draw() const
 // 敵の移動処理
 void Enemy::EnemyMove()
 {
-	// パタパタ手を動かすモーション
-	if (FPScnt > 0 && FPScnt < 5 || FPScnt > 11 && FPScnt < 15 || FPScnt > 21 && FPScnt < 25)
-	{
-		enemy.flg = 8;
-	}
-	else if (FPScnt > 31 && FPScnt < 35 || FPScnt > 41 && FPScnt < 45 || FPScnt > 51 && FPScnt < 55)
-	{
-		enemy.flg = 8;
-	}
-	else
-	{
-		enemy.flg = 9;
-	}
 
-	// 敵のX座標
+	// 敵のX座標範囲
 	if (enemy.x <= 0)
 	{
 		enemy.x = 640;
@@ -159,21 +146,47 @@ void Enemy::EnemyMove()
 	{
 		enemy.y = enemy.y * 0.8f;
 	}
-	else if (enemy.y > 480)
+	else if (enemy.y > 356)
 	{
-		enemy.y = ENEMY_Y;
-		enemy.life = 0;
+		enemy.speed = enemy.speed;
+		enemy.y = 356;
+	}
+
+
+	// プレイヤーが敵より右にいるときは右に移動
+	if (Px >= enemy.x)
+	{
+		// X座標加算
+		enemy.x += enemy.speed;
+
 	}
 	else
 	{
-		enemy.speed = enemy.speed;
+		// プレイヤーが敵より左にいるときは左に移動
+		// X座標減算
+		enemy.x -= enemy.speed;
+
 	}
 
-	// X座標加算
-	enemy.x += enemy.speed;
 
-	// Y座標減算
-	enemy.y -= enemy.speed;
+	// プレイヤーが敵より上にいるときは浮上する
+	if (Py < enemy.y)
+	{
+		EnemyUp();
+
+		// Y座標減算
+		enemy.y -= enemy.speed;
+	}
+	else 
+	{
+		EnemyDown();
+
+		// Y座標減算
+		enemy.y += enemy.speed;
+
+	}
+
+	
 }
 
 // 敵のスタート処理
@@ -225,6 +238,44 @@ void Enemy::StartMove()
 				i = 0;
 			}
 		}
+}
+
+// 敵の浮上モーション処理
+void Enemy::EnemyUp()
+{
+	// パタパタ手を動かすモーション
+	if (FPScnt > 0 && FPScnt < 5 || FPScnt > 11 && FPScnt < 15 || FPScnt > 21 && FPScnt < 25)
+	{
+		enemy.flg = 8;
+	}
+	else if (FPScnt > 31 && FPScnt < 35 || FPScnt > 41 && FPScnt < 45 || FPScnt > 51 && FPScnt < 55)
+	{
+		enemy.flg = 8;
+	}
+	else
+	{
+		enemy.flg = 9;
+	}
+}
+
+// 敵の降下モーション処理
+void Enemy::EnemyDown()
+{
+	// 降下モーション
+	if (FPScnt > 6 && FPScnt < 10 || FPScnt > 26 && FPScnt < 30 || FPScnt > 46 && FPScnt < 50)
+	{
+		enemy.flg = 11;
+	}
+	else if (FPScnt > 16 && FPScnt < 20 || FPScnt > 36 && FPScnt < 40 || FPScnt > 56 && FPScnt < 60)
+	{
+		enemy.flg = 12;
+	}
+	else
+	{
+		enemy.flg = 10;
+
+		// 10 11 10 12 10 
+	}
 }
 
 // 敵とステージの当たり判定処理

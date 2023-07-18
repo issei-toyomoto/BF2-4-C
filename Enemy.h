@@ -31,6 +31,8 @@ public:
 
 	void EnemyMove();       // 敵の移動処理
 	void StartMove();       // 敵のスタート処理
+	void EnemyUp();         // 敵の浮上モーション処理
+	void EnemyDown();       // 敵の降下モーション処理
 	void EnemyCollision();  // 敵とステージの当たり判定処理
 
 	//描画以外の更新を実装する
