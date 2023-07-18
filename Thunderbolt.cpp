@@ -6,15 +6,7 @@
 
 Thunder::Thunder(){
 	if (LoadDivGraph("images/Stage_ThunderEffectAnimation.png", 3, 3, 1, 32, 32, gThunderImg) == -1) {
-		DrawFormatString(114, 514, GetColor(0, 0, 0), "a");
 	}//âÊëúì«Ç›çûÇ›
-}
-
-void Thunder::Draw() const {
-	DrawGraph(100, 100, gCloudImg, TRUE);
-	
-	DrawGraph(100, 200, gThunderImg[0], TRUE);
-
 }
 
 void Thunder::Update()
@@ -24,6 +16,15 @@ void Thunder::Update()
 	MoveThunder();
 
 }
+
+
+void Thunder::Draw() const {
+	DrawGraph(100, 100, gCloudImg, TRUE);
+	
+	DrawGraph(100, 200, gThunderImg[0], TRUE);
+
+}
+
 
 void Thunder::ChangeAngle()
 {
