@@ -62,7 +62,6 @@
 #define Touch      true	//地面以外に触れている
 #define Not_Touch  false//地面以外に触れてない
 
-#define WaitFraem 5//Aボタンのインターバル
 #define FivePx 5 //5px太くする（当たり判定）
 
 class Player
@@ -94,6 +93,7 @@ private:
 	bool FlyBtnFlg;		//(true;飛ぶボタンを押している false:飛ぶボタンを押していない)
 	bool GroundFlg;		//(true:地面に接触している     false:地面に接触していない    )
 	bool TouchFlg;		//(treu:地面以外に触れている   false:地面以外に触れていない　)
+	bool Abtn;
 
 public:
 	static float PlayerX;	//プレイヤーX座標(画像の左上X座標)
@@ -134,4 +134,5 @@ public:
 	//プレイヤーの座標取得
 	float GetPlayerX();
 	float GetPlayerY();
+
 };

@@ -26,6 +26,7 @@ Player::Player()
 	FlyBtnFlg = OFF_FlyBtn;
 	GroundFlg = Not_Ground;
 	TouchFlg = Not_Touch;
+	Abtn = false;
 	/*NowFraem = 0;*/
 	OldFraem = 0;
 }
@@ -90,6 +91,11 @@ void Player::Update(int Stage) /***描画以外***/
 		UpdatePlayerImgDead();
 	}
 
+	if (InputKey::GetKeyDown(PAD_INPUT_A) == FALSE) {//Aボタンを押してから１ｓたったらAbtnをＦＡＬＳＥに戻す処理を書く（予定）
+		if (Abtn == true) {
+			Abtn = false;
+		}
+	}
 
 	//１秒たったらフレームカウントリセット
 	if (FPSCnt > 60) {
@@ -140,6 +146,7 @@ void Player::Draw() const /***描画***/
 	DrawFormatString(400, 170, C_WHITE, "FlyBtn:%d(0:off 1:on)", FlyBtnFlg);	//飛ぶボタンを押しているか
 	DrawFormatString(400, 190, C_WHITE, "GroundFlg:%d(0:not 1:on)", GroundFlg);	//地面に触れているか
 	DrawFormatString(400, 210, C_WHITE, "TouchFlg;%d(0:not 1:on)", TouchFlg);	//地面以外に触れている
+	DrawFormatString(400, 230, C_WHITE, "Abtn;%d(0:not 1:on)", Abtn);	//地面以外に触れている
 
 	//プレイヤー画像サイズ
 	DrawBox((int)PlayerX, (int)PlayerY, (int)PlayerX + 64, (int)PlayerY + 64, C_RED,FALSE);
@@ -166,10 +173,18 @@ void Player::UpdatePlayerX() //*プレイヤーのX座標処理*//
 			}
 		}
 		else if (GroundFlg == Not_Ground) {//空中
-			VectorX = VectorX + 0.1f;	//速度＋加速度
-			if (VectorX >= 4.0f) {		//速度制限
-				VectorX = 4.0f;
+			if (Abtn == true) {
+				VectorX = VectorX + 0.8f;	//速度＋加速度
+				if (VectorX >= 3.0f) {		//速度制限
+					VectorX = 3.0f;
+				}
 			}
+			else {
+				VectorX = VectorX + 0.1f;	//速度＋加速度
+				if (VectorX >= 3.0f) {		//速度制限
+					VectorX = 3.0f;
+				}
+			}		
 		}
 	}
 	else if (XStick < 0) {//左
@@ -182,9 +197,17 @@ void Player::UpdatePlayerX() //*プレイヤーのX座標処理*//
 			}
 		}
 		else if (GroundFlg == Not_Ground) {//空中
-			VectorX = VectorX + -0.1f;	//速度＋加速度
-			if (VectorX <= -3.0f) {		//速度制限
-				VectorX = -3.0f;
+			if (Abtn == true) {
+				VectorX = VectorX + -0.8f;	//速度＋加速度
+				if (VectorX <= -3.0f) {		//速度制限
+					VectorX = -3.0f;
+				}
+			}
+			else {
+				VectorX = VectorX + -0.1f;	//速度＋加速度
+				if (VectorX <= -3.0f) {		//速度制限
+					VectorX = -3.0f;
+				}
 			}
 		}
 	}
@@ -242,10 +265,11 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 		if (VectorY <= -3.0f) {
 			VectorY = -3.0f;
 		}
+		Abtn = true;
 	}
 	else if (InputKey::GetKey(PAD_INPUT_B)) {//Bボタンを押したら押している間羽ばたく
 		FlyBtnFlg = ON_FlyBtn;
-		VectorY = VectorY + -0.35f;
+		VectorY = VectorY + -0.1f;
 		if (VectorY <= -3.0f) {
 			VectorY = -3.0f;
 		}
@@ -481,7 +505,7 @@ void Player::UpdatePlayerImgFly() //*飛ぶアニメーション処理*//
 	}
 	
 	//風船２個
-	if (InputKey::GetKeyDown(PAD_INPUT_A) || InputKey::GetKey(PAD_INPUT_B)) {
+	if (InputKey::GetKey(PAD_INPUT_B) == TRUE) {
 		if (BalloonNum == 2) {
 			if (FPSCnt % 8 == 0 || FPSCnt % 8 == 1) {//２フレームで次の画像
 				NowPlayerImg = P_Img_Fly_Ballon_2_0;
@@ -494,6 +518,24 @@ void Player::UpdatePlayerImgFly() //*飛ぶアニメーション処理*//
 			}
 			else if (FPSCnt % 8 == 6 || FPSCnt % 8 == 7) {
 				NowPlayerImg = P_Img_Fly_Ballon_2_3;
+			}
+		}
+	}
+	else if (Abtn == TRUE) {
+		if (BalloonNum == 2) {
+			for (int i = 0; i <= 60; i++) {
+				if (i % 8 == 0 || i % 8 == 1) {//２フレームで次の画像
+					NowPlayerImg = P_Img_Fly_Ballon_2_0;
+				}
+				else if (i % 8 == 2 || i % 8 == 3) {
+					NowPlayerImg = P_Img_Fly_Ballon_2_1;
+				}
+				else if (i % 8 == 4 || i % 8 == 5) {
+					NowPlayerImg = P_Img_Fly_Ballon_2_2;
+				}
+				else if (i % 8 == 6 || i % 8 == 7) {
+					NowPlayerImg = P_Img_Fly_Ballon_2_3;
+				}
 			}
 		}
 	}
