@@ -6,6 +6,7 @@
 #include"bubble.h"
 #include"Thunderbolt.h"
 #include"Fish.h"
+#include"Stage.h"
 #define DEBUG
 
 //GameMain::GameMain() 
@@ -25,6 +26,7 @@ AbstractScene* GameMain::Update()
 	enemy.Update();
 	fish.Update();
 	thunder.MoveThunder();
+	stage.Draw();
 
 	if (CheckHitKey(KEY_INPUT_1)) {
 		gStageState = 1;
@@ -59,7 +61,7 @@ void GameMain::Draw()const
 	/*ステージ遷移*/
 	switch (gStageState)
 	{
-	case 1:
+	case 1: // ステージ1
 		DrawFormatString(50, 0, C_RED, "各ステージに対応した数字(1～5)キーを押すことで押したキーのステージへ");
 		DrawFormatString(10, 30, C_RED, "6キーで強制終了");
 		DrawGraph(S_Ground_Left_XU, S_Ground_Left_YU, gGameImg[8], TRUE);
@@ -68,7 +70,7 @@ void GameMain::Draw()const
 		DrawGraph(160, 455, gGameImg[12], TRUE);
 		DrawFormatString(10, 30, C_RED, "6キーで強制終了");
 		break;
-	case 2:
+	case 2: // ステージ2
 		DrawFormatString(50, 06, C_RED, "各ステージに対応した数字(1～5)キーを押すことで押したキーのステージへ");
 		DrawFormatString(10, 30, C_RED, "6キーで強制終了");
 		DrawGraph(S_Sky_Ground_0_XU, S_Sky_Ground_0_YU, gGameImg[0], TRUE);
@@ -78,7 +80,7 @@ void GameMain::Draw()const
 		DrawGraph(S_Ground_Right_XU, S_Ground_Right_YU, gGameImg[10], TRUE);
 		DrawGraph(160, 455, gGameImg[12], TRUE);
 		break;
-	case 3:
+	case 3: // ステージ3
 		DrawFormatString(50, 0, C_RED, "各ステージに対応した数字(1～5)キーを押すことで押したキーのステージへ");
 		DrawFormatString(10, 30, C_RED, "6キーで強制終了");
 		DrawGraph(S3_Sky_Ground_1_XU, S3_Sky_Ground_1_YU, gGameImg[2], TRUE);
@@ -90,7 +92,7 @@ void GameMain::Draw()const
 		DrawGraph(S_Ground_Right_XU, S_Ground_Right_YU, gGameImg[10], TRUE);
 		DrawGraph(160, 455, gGameImg[12], TRUE);
 		break;
-	case 4:
+	case 4: // ステージ4
 		DrawFormatString(50, 0, C_RED, "各ステージに対応した数字(1～5)キーを押すことで押したキーのステージへ");
 		DrawFormatString(10, 30, C_RED, "6キーで強制終了");
 		DrawGraph(S4_Sky_Ground_0_XU, S4_Sky_Ground_0_YU, gGameImg[5], TRUE);
@@ -102,14 +104,14 @@ void GameMain::Draw()const
 		DrawGraph(S_Ground_Right_XU, S_Ground_Right_YU, gGameImg[11], TRUE);
 		DrawGraph(160, 455, gGameImg[12], TRUE);
 		break;
-	case 5:
+	case 5: // ステージ5
 		DrawFormatString(50, 0, C_RED, "各ステージに対応した数字(1～5)キーを押すことで押したキーのステージへ");
 		DrawFormatString(10, 30, C_RED, "6キーで強制終了");
 		DrawGraph(S5_Sky_Ground_0_XU, S5_Sky_Ground_0_YU, gGameImg[5], TRUE);
 		DrawGraph(S5_Sky_Ground_1_XU, S5_Sky_Ground_1_YU, gGameImg[5], TRUE);
 		DrawGraph(S5_Sky_Ground_2_XU, S5_Sky_Ground_2_YU, gGameImg[5], TRUE);
 		DrawGraph(S5_Sky_SGround_0_XU, S5_Sky_SGround_0_YU, gGameImg[6], TRUE);
-		DrawGraph(S5_Sky_SGround_1_XU, S5_Sky_Ground_1_YU, gGameImg[6], TRUE);
+		DrawGraph(S5_Sky_SGround_1_XU, S5_Sky_SGround_1_YU, gGameImg[6], TRUE);
 		DrawGraph(S5_Sky_SGround_2_XU, S5_Sky_SGround_2_YU, gGameImg[7], TRUE);
 		DrawGraph(S_Ground_Left_XU, S_Ground_Left_YU, gGameImg[9], TRUE);
 		DrawGraph(S_Ground_Right_XU, S_Ground_Right_YU, gGameImg[11], TRUE);
@@ -189,6 +191,45 @@ void GameMain::Draw()const
 		// 台1
 		DrawBox(S4_Sky_Ground_0_XU, S4_Sky_Ground_0_YU, S4_Sky_Ground_0_XL, S4_Sky_Ground_0_YL, C_RED, FALSE);
 		DrawLine(S4_Sky_Ground_0_XU, S4_Sky_Ground_0_YU, S4_Sky_Ground_0_XL, S4_Sky_Ground_0_YL, C_RED, 1);
+		// 台2
+		DrawBox(S4_Sky_Ground_1_XU, S4_Sky_Ground_1_YU, S4_Sky_Ground_1_XL, S4_Sky_Ground_1_YL, C_RED, FALSE);
+		DrawLine(S4_Sky_Ground_1_XU, S4_Sky_Ground_1_YU, S4_Sky_Ground_1_XL, S4_Sky_Ground_1_YL, C_RED, 1);
+		// 台3
+		DrawBox(S4_Sky_Ground_2_XU, S4_Sky_Ground_2_YU, S4_Sky_Ground_2_XL, S4_Sky_Ground_2_YL, C_RED, FALSE);
+		DrawLine(S4_Sky_Ground_2_XU, S4_Sky_Ground_2_YU, S4_Sky_Ground_2_XL, S4_Sky_Ground_2_YL, C_RED, 1);
+		// 台4
+		DrawBox(S4_Sky_Ground_3_XU, S4_Sky_Ground_3_YU, S4_Sky_Ground_3_XL, S4_Sky_Ground_3_YL, C_RED, FALSE);
+		DrawLine(S4_Sky_Ground_3_XU, S4_Sky_Ground_3_YU, S4_Sky_Ground_3_XL, S4_Sky_Ground_3_YL, C_RED, 1);
+		// 台5
+		DrawBox(S4_Sky_Ground_4_XU, S4_Sky_Ground_4_YU, S4_Sky_Ground_4_XL, S4_Sky_Ground_4_YL, C_RED, FALSE);
+		DrawLine(S4_Sky_Ground_4_XU, S4_Sky_Ground_4_YU, S4_Sky_Ground_4_XL, S4_Sky_Ground_4_YL, C_RED, 1);
+	}
+	else if(gStageState == 5) {
+		// 左下
+		DrawBox(S_Ground_Left_XU, S_Ground_Left_YU, S_Ground_Left_XL, S_Ground_Left_YL, C_RED, FALSE);
+		DrawLine(S_Ground_Left_XU, S_Ground_Left_YU, S_Ground_Left_XL, S_Ground_Left_YL, C_RED, 1);
+		//右下
+		DrawBox(S_Ground_Right_XU, S_Ground_Right_YU, S_Ground_Right_XL, S_Ground_Right_YL, C_RED, FALSE);
+		DrawLine(S_Ground_Right_XU, S_Ground_Right_YU, S_Ground_Right_XL, S_Ground_Right_YL, C_RED, 1);
+		// 鍾乳石1
+		DrawBox(S5_Sky_SGround_0_XU, S5_Sky_SGround_0_YU, S5_Sky_SGround_0_XL, S5_Sky_SGround_0_YL, C_RED, FALSE);
+		DrawLine(S5_Sky_SGround_0_XU, S5_Sky_SGround_0_YU, S5_Sky_SGround_0_XL, S5_Sky_SGround_0_YL, C_RED, 1);
+		// 鍾乳石2
+		DrawBox(S5_Sky_SGround_1_XU, S5_Sky_SGround_1_YU, S5_Sky_SGround_1_XL, S5_Sky_SGround_1_YL, C_RED, FALSE);
+		DrawLine(S5_Sky_SGround_1_XU, S5_Sky_SGround_1_YU, S5_Sky_SGround_1_XL, S5_Sky_SGround_1_YL, C_RED, 1);
+		// 鍾乳石3
+		DrawBox(S5_Sky_SGround_2_XU, S5_Sky_SGround_2_YU, S5_Sky_SGround_2_XL, S5_Sky_SGround_2_YL, C_RED, FALSE);
+		DrawLine(S5_Sky_SGround_2_XU, S5_Sky_SGround_2_YU, S5_Sky_SGround_2_XL, S5_Sky_SGround_2_YL, C_RED, 1);
+		// 台1
+		DrawBox(S5_Sky_Ground_0_XU, S5_Sky_Ground_0_YU, S5_Sky_Ground_0_XL, S5_Sky_Ground_0_YL, C_RED, FALSE);
+		DrawLine(S5_Sky_Ground_0_XU, S5_Sky_Ground_0_YU, S5_Sky_Ground_0_XL, S5_Sky_Ground_0_YL, C_RED, 1);
+		// 台2
+		DrawBox(S5_Sky_Ground_1_XU, S5_Sky_Ground_1_YU, S5_Sky_Ground_1_XL, S5_Sky_Ground_1_YL, C_RED, FALSE);
+		DrawLine(S5_Sky_Ground_1_XU, S5_Sky_Ground_1_YU, S5_Sky_Ground_1_XL, S5_Sky_Ground_1_YL, C_RED, 1);
+		// 台3
+		DrawBox(S5_Sky_Ground_2_XU, S5_Sky_Ground_2_YU, S5_Sky_Ground_2_XL, S5_Sky_Ground_2_YL, C_RED, FALSE);
+		DrawLine(S5_Sky_Ground_2_XU, S5_Sky_Ground_2_YU, S5_Sky_Ground_2_XL, S5_Sky_Ground_2_YL, C_RED, 1);
+
 	}
 #endif // DEBUG
 
