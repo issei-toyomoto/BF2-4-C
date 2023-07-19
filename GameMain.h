@@ -14,6 +14,7 @@ private:
 	Enemy enemy;
 	Thunder thunder;
 	Fish fish;
+	gStage stage;
 
 	int gGameImg[14];
 	int gStageState;
