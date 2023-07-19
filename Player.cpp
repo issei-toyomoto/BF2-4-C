@@ -4,6 +4,7 @@
 #include "Common.h"
 
 #define DEBUG
+#define DEBUG_bool
 
 int Player::OldFraem;
 int Player::NowFraem;
@@ -95,11 +96,22 @@ void Player::Update(int Stage) /***描画以外***/
 		if (Abtn == true) {
 			Abtn = false;
 		}
+		else if (Abtn == false) {
+			Anti_AbtnCnt++;
+		}
 	}
 
 	//１秒たったらフレームカウントリセット
 	if (FPSCnt > 60) {
 		FPSCnt = 0;
+	}
+
+	if (AbtnCnt > 60) {
+		AbtnCnt = 0;
+	}
+
+	if (Anti_AbtnCnt > 60) {
+		Anti_AbtnCnt = 0;
 	}
 }
 
@@ -143,10 +155,7 @@ void Player::Draw() const /***描画***/
 	DrawFormatString(400, 110, C_WHITE, "Angle:%d(1;左 0:右)", Angle);			//向いている方向
 	DrawFormatString(400, 130, C_WHITE, "MX:%d MY:%d", MoX, MoY);				//マウスカーソルの座標
 	DrawFormatString(400, 150, C_WHITE, "Stage:%d", NowStage);					//現在のステージ
-	DrawFormatString(400, 170, C_WHITE, "FlyBtn:%d(0:off 1:on)", FlyBtnFlg);	//飛ぶボタンを押しているか
-	DrawFormatString(400, 190, C_WHITE, "GroundFlg:%d(0:not 1:on)", GroundFlg);	//地面に触れているか
-	DrawFormatString(400, 210, C_WHITE, "TouchFlg;%d(0:not 1:on)", TouchFlg);	//地面以外に触れている
-	DrawFormatString(400, 230, C_WHITE, "Abtn;%d(0:not 1:on)", Abtn);	//地面以外に触れている
+	DrawFormatString(400, 250, C_WHITE, "AbtnCnt:%d Anti%d", AbtnCnt, Anti_AbtnCnt);//
 
 	//プレイヤー画像サイズ
 	DrawBox((int)PlayerX, (int)PlayerY, (int)PlayerX + 64, (int)PlayerY + 64, C_RED,FALSE);
@@ -158,6 +167,13 @@ void Player::Draw() const /***描画***/
 	//風船
 	DrawBox((int)PlayerX + 12, (int)PlayerY + 14, (int)PlayerX + 52, (int)PlayerY + 38, C_GREEN,FALSE);
 #endif //DEBUG
+
+#ifdef DEBUG_bool
+	DrawFormatString(400, 170, C_WHITE, "FlyBtn:%d(0:off 1:on)", FlyBtnFlg);	//飛ぶボタンを押しているか
+	DrawFormatString(400, 190, C_WHITE, "GroundFlg:%d(0:not 1:on)", GroundFlg);	//地面に触れているか
+	DrawFormatString(400, 210, C_WHITE, "TouchFlg;%d(0:not 1:on)", TouchFlg);	//地面以外に触れている
+	DrawFormatString(400, 230, C_WHITE, "Abtn;%d(0:not 1:on)", Abtn);			//Aボタンを押しているか
+#endif // DEBUG_bool
 
 }
 
@@ -216,7 +232,7 @@ void Player::UpdatePlayerX() //*プレイヤーのX座標処理*//
 			VectorX *= 0.89f;			//慣性
 		}
 		else if (GroundFlg == Not_Ground) {
-			VectorX *= 0.99f;//慣性
+			VectorX = VectorX;
 		}
 		
 		PlayerState = P_State_Wait;	//プレイヤーのステータスを待機に変更
@@ -261,6 +277,7 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 
 	if (InputKey::GetKeyDown(PAD_INPUT_A)) {//Aボタンを押したら１回だけ羽ばたく
 		FlyBtnFlg = ON_FlyBtn;
+		AbtnCnt++;
 		VectorY = VectorY + -0.8f;
 		if (VectorY <= -3.0f) {
 			VectorY = -3.0f;
@@ -295,31 +312,31 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 		if (GroundFlg == Not_Ground) {
 			if (PXU_Left <= S_Ground_Left_XL && PYL_Right >= S_Ground_Left_YU + FivePx) {//左下の台（側面）
 				TouchFlg = Touch;
-				VectorX *= -0.8f;//反発係数？
+				VectorX *= -0.6f;//反発係数？
 			}
 			else if (PXL_Right >= S_Ground_Right_XU && PYL_Right >= S_Ground_Right_YU + FivePx) {//右下の台（側面）
 				TouchFlg = Touch;
-				VectorX *= -0.8f;
+				VectorX *= -0.6f;
 			}
 			else if (PXL_Right >= S_Sky_Ground_0_XU && PXL_Right <= S_Sky_Ground_0_XU + FivePx &&PYL_Right >= S_Sky_Ground_0_YU + FivePx && PYU_Left <= S_Sky_Ground_0_YL) {//上の台の左（側面）
 				TouchFlg = Touch;
-				VectorX *= -0.8f;
+				VectorX *= -0.6f;
 			}
 			else if (PXU_Left >= S_Sky_Ground_0_XL && PXU_Left <= S_Sky_Ground_0_XL + FivePx && PYL_Right >= S_Sky_Ground_0_YU + FivePx && PYU_Left <= S_Sky_Ground_0_YL) {//上の台の右（側面）
 				TouchFlg = Touch;
-				VectorX *= -0.8f;
+				VectorX *= -0.6f;
 			}
 			else if (PYU_Left <= S_Sky_Ground_0_YL - FivePx && PYL_Right >= S_Sky_Ground_0_YU + FivePx) {//上の台（下辺）
 				if (PXU_Left <= S_Sky_Ground_0_XL && PXL_Right >= S_Sky_Ground_0_XU) {
 					TouchFlg = Touch;
-					VectorY *= -0.8f;
+					VectorY *= -0.6f;
 					if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に１足す
 						VectorY += 1.0f;
 					}
 				}
 			}
 			else if (PYU_Left <= 0) {//画面上の当たり判定
-				VectorY *= -0.8f;
+				VectorY *= -0.6f;
 				if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に１足す
 					VectorY += 1.0f;
 				}
@@ -579,7 +596,7 @@ void Player::UpdatePlayerImgThunder() //*雷に当たるアニメーション処理*//
 		NowPlayerImg = P_Img_Thunder_0;
 	}
 	else if (FPSCnt % 6 == 3 || FPSCnt % 6 == 4 || FPSCnt % 6 ==5) {
-		NowPlayerImg = P_Img_Thunder_1;
+		NowPlayerImg = P_Img_Dead_0;
 	}
 }
 
