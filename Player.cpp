@@ -294,6 +294,12 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 					}
 				}
 			}
+			else if (PYU_Left <= 0) {//画面上の当たり判定
+				VectorY *= -0.8f;
+				if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に１足す
+					VectorY += 1.0f;
+				}
+			}
 			else {
 				TouchFlg = Not_Touch;
 			}
