@@ -2,12 +2,13 @@
 
 void UI::Update()
 {
+	// TotalScore =  bubleScore + EnemyScore
 }
 
 void UI::Draw() const
 {
 	for (int i = 0; i < 6; i++) {
-		DrawGraph(50 + i * 20, 0, UINumber[0], TRUE);     // プレイヤースコアに反映されるUI
+		DrawGraph(50 + i * 20, 0, UINumber[i/* TotalScore*/], TRUE);     // プレイヤースコアに反映されるUI
 		DrawGraph(235 + i * 20, 0, UINumber[0], TRUE);     // ハイスコアに反映されるUI
 	}
 	DrawGraph(35, 7, UIScore, TRUE);
