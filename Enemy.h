@@ -2,8 +2,6 @@
 
 #define ENEMY_X 200
 #define ENEMY_Y 185
-#define ENEMY_W 55
-#define ENEMY_H 65
 #define ENEMY_MAX 3
 
 class Enemy
@@ -37,9 +35,7 @@ public:
 	void StartMove();       // 敵のスタート処理
 	void EnemyUp();         // 敵の浮上モーション処理
 	void EnemyDown();       // 敵の降下モーション処理
-	void EnemyCollision();  // 敵同士の当たり判定
 	void StageCollision();  // 敵とステージの当たり判定
-
 	
 	//描画以外の更新を実装する
 	void Update();

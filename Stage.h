@@ -27,7 +27,6 @@ private:
     int gGameState;
     
 public:
-    void Draw() const;
 
     void Update();
 

@@ -7,6 +7,7 @@ private:
 	/*static int key_flg;
 	static int now_key;
 	static int old_key;*/
+
 public:
 	static int key_flg;
 	static int now_key;
@@ -22,6 +23,7 @@ public:
 	static int Y_flg;
 	static int Y_now;
 	static int Y_old;
+
 public:
 	InputKey()
 	{

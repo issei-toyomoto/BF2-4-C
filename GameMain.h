@@ -5,17 +5,15 @@
 #include "Enemy.h"
 #include "Thunderbolt.h"
 #include "Fish.h"
-#include "Stage.h"
 
 class GameMain :public AbstractScene
 {
 private:
 	Player player;
 	bubble BUBBLE;
-	//Enemy enemy;
+	Enemy enemy;
 	Thunder thunder;
 	Fish fish;
-	gStage stage;
 
 	int gGameImg[14];
 	int gStageState;
