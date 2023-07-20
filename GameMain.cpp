@@ -50,7 +50,7 @@ AbstractScene* GameMain::Update()
 
 void GameMain::Draw()const
 {
-	stage.Draw();
+	//stage.Draw();
 	thunder.Draw();
 	BUBBLE.GenerationBubble();
 	player.Draw();
