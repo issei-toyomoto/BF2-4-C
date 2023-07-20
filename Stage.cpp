@@ -27,22 +27,22 @@ gStage::gStage()
 
 void gStage::StageState()
 {
-	switch (gGameState)
-	{
-	case 0:
-		DrawStage1();
-		return;
-	case 1:
-		DrawStage2();
-	case 2:
-		DrawStage3();
-	case 3:
-		DrawStage4();
-	case 4:
-		DrawStage5();
-	default:
-		break;
-	}
+	//switch (gGameState)
+	//{
+	//case 0:
+	//	DrawStage1();
+	//	return;
+	//case 1:
+	//	DrawStage2();
+	//case 2:
+	//	DrawStage3();
+	//case 3:
+	//	DrawStage4();
+	//case 4:
+	//	DrawStage5();
+	//default:
+	//	break;
+	//}
 }
 
 void gStage::Draw() const
@@ -52,8 +52,8 @@ void gStage::Draw() const
 
 void gStage::Update()
 {
-	InputKey::Update();
+	//InputKey::Update();
 
-	GetMousePoint(&MousePointx, &MousePointy);
+	//GetMousePoint(&MousePointx, &MousePointy);
 
 }

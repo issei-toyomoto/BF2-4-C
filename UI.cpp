@@ -1,5 +1,4 @@
 #include "UI.h"
-#include "GameMain.h"
 #include "DxLib.h"
 
 //UI::UI()
@@ -14,8 +13,8 @@ void UI::Update()
 {
 }
 
-void UI::Draw(void) const
+void UI::Draw() const
 {
-	DrawGraph(100, 100, UINumber[0], FALSE);
+	DrawGraph(100, 100, UINumber[0],TRUE);
 }
 
