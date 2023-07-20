@@ -57,3 +57,29 @@ void gStage::Update()
 	GetMousePoint(&MousePointx, &MousePointy);
 
 }
+
+//*関数の定義がなくコンパイルエラーをはいていたので追加しました。（豊元一成）*//
+void gStage::DrawStage1() const
+{
+
+}
+
+void gStage::DrawStage2() const
+{
+
+}
+
+void gStage::DrawStage3() const
+{
+
+}
+
+void gStage::DrawStage4() const
+{
+
+}
+
+void gStage::DrawStage5() const
+{
+
+}

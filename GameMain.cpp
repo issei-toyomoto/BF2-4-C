@@ -26,7 +26,6 @@ AbstractScene* GameMain::Update()
 	enemy.Update();
 	fish.Update();
 	thunder.MoveThunder();
-	stage.Draw();
 
 	if (CheckHitKey(KEY_INPUT_1)) {
 		gStageState = 1;
@@ -52,6 +51,7 @@ AbstractScene* GameMain::Update()
 
 void GameMain::Draw()const
 {
+	stage.Draw();
 	thunder.Draw();
 	BUBBLE.GenerationBubble();
 	player.Draw();

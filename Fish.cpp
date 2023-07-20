@@ -90,7 +90,7 @@ void Fish::Update() {
 	}
 	//プレイヤーが範囲外に出たとき
 	if (P_Y < 360 && FishFlg == TRUE) {
-		FishAnim == 4;
+		FishAnim = 4;
 		f_PosY = f_PosY + 2;
 		if (f_PosY >= 410) {
 			InitFish();
