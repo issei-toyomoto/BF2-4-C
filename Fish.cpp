@@ -25,16 +25,16 @@ void Fish::Draw() const {
 	if (FishFlg==TRUE) {
 		//‹›‰æ‘œ(ƒAƒjƒ[ƒVƒ‡ƒ“)
 		switch (FishAnim) {
-		case 6://‚P‚Q‚R`‚P‚O‚U
+		case 6:
 			DrawGraph((int)f_PosX, (int)f_PosY, FishImage[0], TRUE);
 			break;
-		case 5://‚P‚O‚T`‚W‚W
+		case 5:
 			DrawGraph((int)f_PosX, (int)f_PosY, FishImage[1], TRUE);
 			break;
-		case 4://‚W‚V`‚V‚O
+		case 4:
 			DrawGraph((int)f_PosX, (int)f_PosY, FishImage[2], TRUE);
 			break;
-		case 3://‚V‚O[‚P‚V
+		case 3:
 			switch (Target) {
 			case 0:
 				break;
@@ -46,13 +46,13 @@ void Fish::Draw() const {
 				//	break;
 			}
 			break;
-		case 2://‚T‚R`‚R‚T
+		case 2:
 			DrawGraph((int)f_PosX, (int)f_PosY, FishImage[3], TRUE);
 			break;
-		case 1://‚R‚S`‚P‚V
+		case 1:
 			DrawGraph((int)f_PosX, (int)f_PosY, FishImage[4], TRUE);
 			break;
-		case 0://‚P‚U`‚O
+		case 0:
 			DrawGraph((int)f_PosX, (int)f_PosY, FishImage[5], TRUE);
 			break;
 		}
@@ -64,7 +64,7 @@ void Fish::Update() {
 	P_X = Player::PlayerX;
 	P_Y = Player::PlayerY;
 	//oŒ»ƒGƒŠƒA”»’è
-	if (P_Y >= 360 && P_X >= 156 && P_X <= 479/*|| enemyY > 600*/) {
+	if (P_Y >= 358 && P_X >= 135 && P_X <= 479/*|| enemyY > 600*/) {
 		Count++;
 		Second = Count / 60;
 		//O•bŒo‰ß•‹›‚ª‚¢‚È‚¢
@@ -83,26 +83,28 @@ void Fish::Update() {
 		else if (FishFlg == TRUE) {
 			MoveFish();
 		}
-		//‹›oŒ»•‚Q•bŒo‰ß‘O
-		//if (FishFlg == TRUE && f_Count<120) {
-		//	MoveFish();
-		//}
 	}
 	//ƒvƒŒƒCƒ„[‚ª”ÍˆÍŠO‚Éo‚½‚Æ‚«
-	if (P_Y < 360 && FishFlg == TRUE) {
-		FishAnim = 4;
-		f_PosY = f_PosY + 2;
-		if (f_PosY >= 410) {
-			InitFish();
+	if (P_Y < 358 && FishFlg == TRUE) {
+		if (FishAnim <= 3) {
+			MoveFish();
+		}
+		else if (FishAnim >= 5) {
+			FishAnim = 5;
+			f_PosY = f_PosY + 2;
+			if (f_PosY >= 440) {
+				InitFish();
+			}
 		}		
+	}
+	else if (P_Y < 358 && FishFlg == FALSE) {
+		Count = 0;
+		Second = 0;
 	}
 }
 
 //‹›ˆÚ“®
 void Fish::MoveFish() {
-	//ƒvƒŒƒCƒ„[À•Wæ“¾
-	P_X = Player::PlayerX;
-	P_Y = Player::PlayerY;
 	//UŒ‚‘ÎÛ‚ª“G
 	/*if (enemyY > 600) {
 		f_PosX = enemyX;
@@ -113,7 +115,7 @@ void Fish::MoveFish() {
 		}
 	}*/
 	//UŒ‚‘ÎÛ‚ªƒvƒŒƒCƒ„[
-	if (P_Y >= 360 && P_X >= 156 && P_X <= 479) {
+	if (P_Y >= 358 && P_X >= 135 && P_X <= 479 || FishAnim <= 3) {
 		TargetPlayer();
 	}
 }
@@ -122,9 +124,9 @@ void Fish::MoveFish() {
 void Fish::TargetPlayer() {
 	Target = 1;
 	f_PosX = P_X;
-	FishAnim = f_Count / 15;
+	FishAnim = f_Count / 17;
 	//ƒAƒjƒ[ƒVƒ‡ƒ“ŒvZ
-	f_Count = f_Count - 1;
+	f_Count = f_Count - 2;
 	//ƒvƒŒƒCƒ„[ÚGŒã
 	if (f_Count <= 0) {
 		WaitTime--;
@@ -135,10 +137,15 @@ void Fish::TargetPlayer() {
 	}
 }
 
+//“G‚ğP‚¤ˆ—
+void Fish::TargetEnemy() {
+
+}
+
 //‰Šú‰»
 void Fish::InitFish() {
-	f_PosY = 400;
 	FishFlg = FALSE;
+	f_PosY = 400;
 	Target = 0;
 	Second = 0;
 	f_Count = 120;
