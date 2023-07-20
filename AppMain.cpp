@@ -3,6 +3,7 @@
 #include "FPS.h"
 #include "GameMain.h"
 #include "Common.h"
+//#include "UI.h"
 
 #define _SCREEN_COLOR_BIT_16_ 16
 #define _SCREEN_COLOR_BIT_32_ 32

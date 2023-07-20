@@ -149,6 +149,7 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Thunderbolt.cpp" />
     <ClCompile Include="Stage.cpp" />
+    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractScene.h" />
@@ -165,9 +166,6 @@
     <ClInclude Include="Thunderbolt.h" />
     <ClInclude Include="StageImg.h" />
     <ClInclude Include="UI.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="UI.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
