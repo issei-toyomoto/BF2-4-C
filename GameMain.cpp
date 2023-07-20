@@ -6,7 +6,6 @@
 #include"bubble.h"
 #include"Thunderbolt.h"
 #include"Fish.h"
-#include"UI.h"
 #define DEBUG
 
 //GameMain::GameMain() 
@@ -51,7 +50,7 @@ AbstractScene* GameMain::Update()
 
 void GameMain::Draw()const
 {
-	stage.Draw();
+	/*stage.Draw();*/
 	thunder.Draw();
 	BUBBLE.GenerationBubble();
 	player.Draw();

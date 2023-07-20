@@ -6,6 +6,7 @@
 #include "Thunderbolt.h"
 #include "Fish.h"
 #include "Stage.h"
+#include "UI.h"
 
 class GameMain :public AbstractScene
 {
