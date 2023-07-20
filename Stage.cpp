@@ -58,7 +58,6 @@ void gStage::Update()
 
 }
 
-//*関数の定義がなくコンパイルエラーをはいていたので追加しました。（豊元一成）*//
 void gStage::DrawStage1() const
 {
 
