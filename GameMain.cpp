@@ -6,7 +6,7 @@
 #include"bubble.h"
 #include"Thunderbolt.h"
 #include"Fish.h"
-#include"Stage.h"
+#include "UI.h"
 #define DEBUG
 
 //GameMain::GameMain() 
@@ -26,7 +26,6 @@ AbstractScene* GameMain::Update()
 	enemy.Update();
 	fish.Update();
 	thunder.MoveThunder();
-	stage.Draw();
 
 	if (CheckHitKey(KEY_INPUT_1)) {
 		gStageState = 1;
@@ -57,6 +56,7 @@ void GameMain::Draw()const
 	player.Draw();
 	enemy.Draw();
 	fish.Draw();
+	ui.Draw();
 
 	/*ステージ遷移*/
 	switch (gStageState)
