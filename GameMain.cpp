@@ -6,6 +6,7 @@
 #include"bubble.h"
 #include"Thunderbolt.h"
 #include"Fish.h"
+#include"Stage.h"
 #define DEBUG
 
 //GameMain::GameMain() 
@@ -21,8 +22,8 @@
 AbstractScene* GameMain::Update()
 {
 	player.Update(gStageState);
-	BUBBLE.UpdateBubble();
-	enemy.Update();
+	BUBBLE.Update();
+	//enemy.Update();
 	fish.Update();
 	thunder.MoveThunder();
 
@@ -52,10 +53,9 @@ void GameMain::Draw()const
 {
 	stage.Draw();
 	thunder.Draw();
-	BUBBLE.GenerationBubble();
+	BUBBLE.Draw();
 	player.Draw();
-	ui.Draw();
-	enemy.Draw();
+	//enemy.Draw();
 	fish.Draw();
 
 	/*ステージ遷移*/
