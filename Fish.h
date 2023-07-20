@@ -12,7 +12,9 @@ private:
 	float f_PosX;		
 	float f_PosY;		
 
-	bool FishFlg;		//出現判定　TRUE：出現　FALSE：未出現
+	//出現判定　TRUE：出現　FALSE：未出現
+	bool SpawnFlg;
+
 	int FishImage[10];	//画像用変数
 
 	//魚のアニメーション用変数
@@ -28,6 +30,8 @@ private:
 	float P_Y;		
 
 public:
+	//魚に食べられたとき用
+	static bool FishFlg;
 	Fish();					//コンストラクタ
 	void Draw() const;		//魚生成
 	void Update();			//出現エリア判定
