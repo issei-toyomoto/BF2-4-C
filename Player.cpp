@@ -200,7 +200,7 @@ void Player::UpdatePlayerX() //*プレイヤーのX座標処理*//
 				if (VectorX >= 3.0f) {		//速度制限
 					VectorX = 3.0f;
 				}
-			}		
+			}
 		}
 	}
 	else if (XStick < 0) {//左
@@ -234,7 +234,6 @@ void Player::UpdatePlayerX() //*プレイヤーのX座標処理*//
 		else if (GroundFlg == Not_Ground) {
 			VectorX = VectorX;
 		}
-		
 		PlayerState = P_State_Wait;	//プレイヤーのステータスを待機に変更
 	}
 
@@ -310,49 +309,76 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 
 	if (NowStage == 1) {//ステージ１でのステージとの当たり判定(地面に埋まる＆地面に引っかかるバグあり)
 		if (GroundFlg == Not_Ground) {
-			if (PXU_Left <= S_Ground_Left_XL && PYL_Right >= S_Ground_Left_YU + FivePx) {//左下の台（側面）
-				TouchFlg = Touch;
-				VectorX *= -0.6f;//反発係数？
-			}
-			else if (PXL_Right >= S_Ground_Right_XU && PYL_Right >= S_Ground_Right_YU + FivePx) {//右下の台（側面）
+			if (PXU_Left <= S_Ground_Left_XL && PYL_Right >= S_Ground_Left_YU + PlusPx) {//左下の台（側面）
 				TouchFlg = Touch;
 				VectorX *= -0.6f;
-			}
-			else if (PXL_Right >= S_Sky_Ground_0_XU && PXL_Right <= S_Sky_Ground_0_XU + FivePx &&PYL_Right >= S_Sky_Ground_0_YU + FivePx && PYU_Left <= S_Sky_Ground_0_YL) {//上の台の左（側面）
-				TouchFlg = Touch;
-				VectorX *= -0.6f;
-			}
-			else if (PXU_Left >= S_Sky_Ground_0_XL && PXU_Left <= S_Sky_Ground_0_XL + FivePx && PYL_Right >= S_Sky_Ground_0_YU + FivePx && PYU_Left <= S_Sky_Ground_0_YL) {//上の台の右（側面）
-				TouchFlg = Touch;
-				VectorX *= -0.6f;
-			}
-			else if (PYU_Left <= S_Sky_Ground_0_YL - FivePx && PYL_Right >= S_Sky_Ground_0_YU + FivePx) {//上の台（下辺）
-				if (PXU_Left <= S_Sky_Ground_0_XL && PXL_Right >= S_Sky_Ground_0_XU) {
-					TouchFlg = Touch;
-					VectorY *= -0.6f;
-					if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に１足す
-						VectorY += 1.0f;
-					}
-				}
-			}
-			else if (PYU_Left <= 0) {//画面上の当たり判定
-				VectorY *= -0.6f;
-				if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に１足す
-					VectorY += 1.0f;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorX += 0.9;
 				}
 			}
 			else {
 				TouchFlg = Not_Touch;
 			}
+
+			if (PXL_Right >= S_Ground_Right_XU && PYL_Right >= S_Ground_Right_YU + PlusPx) {//右下の台（側面）
+				TouchFlg = Touch;
+				VectorX *= -0.6f;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					VectorX -= 0.9;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+
+			if (PYL_Right >= S_Sky_Ground_0_YU - PlusPx && PYU_Left <= S_Sky_Ground_0_YL) {//上の台（側面）
+				if (PXU_Left <= S_Sky_Ground_0_XL && PXL_Right >= S_Sky_Ground_0_XL) {//上の台の左（側面）
+					TouchFlg = Touch;
+					VectorX *= -0.6f;
+					if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+						VectorX += 0.9;
+					}
+				}
+				else if (PXL_Right >= S_Sky_Ground_0_XU - PlusPx && PXL_Right <= S_Sky_Ground_0_XU) {//上の台の右（側面）
+					TouchFlg = Touch;
+					VectorX *= -0.6f;
+					if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+						VectorX -= 0.9;
+					}
+				}
+				else {
+					TouchFlg = Not_Touch;
+				}
+			}
+
+			if (PYU_Left <= S_Sky_Ground_0_YL - PlusPx && PYL_Right >= S_Sky_Ground_0_YU + PlusPx) {//上の台（下辺）
+				if (PXU_Left <= S_Sky_Ground_0_XL && PXL_Right >= S_Sky_Ground_0_XU) {
+					TouchFlg = Touch;
+					VectorY *= -0.6f;
+					if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+						VectorY += 0.9f;
+					}
+				}
+				else {
+					TouchFlg = Not_Touch;
+				}
+			}
+			
+			if (PYU_Left <= 0) {//画面上の当たり判定
+				VectorY *= -0.6f;
+				if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorY += 0.9f;
+				}
+			}
 		}
 
-		if (PYL_Right >= S_Ground_Left_YU && PYL_Right <= S_Ground_Left_YU + FivePx && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
+		if (PYL_Right >= S_Ground_Left_YU && PYL_Right <= S_Ground_Left_YU + PlusPx && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
 			GroundFlg = Ground;
 		}
-		else if(PYL_Right >= S_Ground_Right_YU && PYL_Right <= S_Ground_Right_YU + FivePx && PXL_Right >= S_Ground_Right_XU){//右下の台（上辺）
+		else if(PYL_Right >= S_Ground_Right_YU && PYL_Right <= S_Ground_Right_YU + PlusPx && PXL_Right >= S_Ground_Right_XU){//右下の台（上辺）
 			GroundFlg = Ground;
 		}
-		else if (PYL_Right >= S_Sky_Ground_0_YU && PYL_Right <= S_Sky_Ground_0_YU + FivePx && PXU_Left <= S_Sky_Ground_0_XL && PXL_Right >= S_Sky_Ground_0_XU) {//浮いている中央の台（上辺）
+		else if (PYL_Right >= S_Sky_Ground_0_YU && PYL_Right <= S_Sky_Ground_0_YU + PlusPx && PXU_Left <= S_Sky_Ground_0_XL && PXL_Right >= S_Sky_Ground_0_XU) {//浮いている中央の台（上辺）
 			GroundFlg = Ground;
 		}
 		else {
@@ -361,11 +387,11 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 	}
 	else if (NowStage == 2) {//ステージ２でのステージとの当たり判定(未完成)
 		if (GroundFlg == Not_Ground) {
-			if (PXU_Left <= S_Ground_Left_XL && PYL_Right >= S_Ground_Left_YU + FivePx) {//左下の台（側面）
+			if (PXU_Left <= S_Ground_Left_XL && PYL_Right >= S_Ground_Left_YU + PlusPx) {//左下の台（側面）
 				TouchFlg = Touch;
 				VectorX *= -0.8f;//反発係数？
 			}
-			else if (PXL_Right >= S_Ground_Right_XU && PYL_Right >= S_Ground_Right_YU + FivePx) {//右下の台（側面）
+			else if (PXL_Right >= S_Ground_Right_XU && PYL_Right >= S_Ground_Right_YU + PlusPx) {//右下の台（側面）
 				TouchFlg = Touch;
 				VectorX *= -0.8f;
 			}
@@ -374,10 +400,10 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 			}
 		}
 
-		if (PYL_Right >= S_Ground_Left_YU && PYL_Right <= S_Ground_Left_YU + FivePx && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
+		if (PYL_Right >= S_Ground_Left_YU && PYL_Right <= S_Ground_Left_YU + PlusPx && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
 			GroundFlg = Ground;
 		}
-		else if (PYL_Right >= S_Ground_Right_YU && PYL_Right <= S_Ground_Right_YU + FivePx && PXL_Right >= S_Ground_Right_XU) {//右下の台（上辺）
+		else if (PYL_Right >= S_Ground_Right_YU && PYL_Right <= S_Ground_Right_YU + PlusPx && PXL_Right >= S_Ground_Right_XU) {//右下の台（上辺）
 			GroundFlg = Ground;
 		}
 		else {
@@ -386,11 +412,11 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 	}
 	else if (NowStage == 3) {//ステージ３でのステージとの当たり判定
 		if (GroundFlg == Not_Ground) {
-			if (PXU_Left <= S_Ground_Left_XL && PYL_Right >= S_Ground_Left_YU + FivePx) {//左下の台（側面）
+			if (PXU_Left <= S_Ground_Left_XL && PYL_Right >= S_Ground_Left_YU + PlusPx) {//左下の台（側面）
 				TouchFlg = Touch;
 				VectorX *= -0.8f;//反発係数？
 			}
-			else if (PXL_Right >= S_Ground_Right_XU && PYL_Right >= S_Ground_Right_YU + FivePx) {//右下の台（側面）
+			else if (PXL_Right >= S_Ground_Right_XU && PYL_Right >= S_Ground_Right_YU + PlusPx) {//右下の台（側面）
 				TouchFlg = Touch;
 				VectorX *= -0.8f;
 			}
@@ -399,10 +425,10 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 			}
 		}
 
-		if (PYL_Right >= S_Ground_Left_YU && PYL_Right <= S_Ground_Left_YU + FivePx && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
+		if (PYL_Right >= S_Ground_Left_YU && PYL_Right <= S_Ground_Left_YU + PlusPx && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
 			GroundFlg = Ground;
 		}
-		else if (PYL_Right >= S_Ground_Right_YU && PYL_Right <= S_Ground_Right_YU + FivePx && PXL_Right >= S_Ground_Right_XU) {//右下の台（上辺）
+		else if (PYL_Right >= S_Ground_Right_YU && PYL_Right <= S_Ground_Right_YU + PlusPx && PXL_Right >= S_Ground_Right_XU) {//右下の台（上辺）
 			GroundFlg = Ground;
 		}
 		else {
@@ -411,11 +437,11 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 	}
 	else if (NowStage == 4) {//ステージ４でのステージとの当たり判定
 		if (GroundFlg == Not_Ground) {
-			if (PXU_Left <= S_Ground_Left_XL && PYL_Right >= S_Ground_Left_YU + FivePx) {//左下の台（側面）
+			if (PXU_Left <= S_Ground_Left_XL && PYL_Right >= S_Ground_Left_YU + PlusPx) {//左下の台（側面）
 				TouchFlg = Touch;
 				VectorX *= -0.8f;//反発係数？
 			}
-			else if (PXL_Right >= S_Ground_Right_XU && PYL_Right >= S_Ground_Right_YU + FivePx) {//右下の台（側面）
+			else if (PXL_Right >= S_Ground_Right_XU && PYL_Right >= S_Ground_Right_YU + PlusPx) {//右下の台（側面）
 				TouchFlg = Touch;
 				VectorX *= -0.8f;
 			}
@@ -424,10 +450,10 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 			}
 		}
 
-		if (PYL_Right >= S_Ground_Left_YU && PYL_Right <= S_Ground_Left_YU + FivePx && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
+		if (PYL_Right >= S_Ground_Left_YU && PYL_Right <= S_Ground_Left_YU + PlusPx && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
 			GroundFlg = Ground;
 		}
-		else if (PYL_Right >= S_Ground_Right_YU && PYL_Right <= S_Ground_Right_YU + FivePx && PXL_Right >= S_Ground_Right_XU) {//右下の台（上辺）
+		else if (PYL_Right >= S_Ground_Right_YU && PYL_Right <= S_Ground_Right_YU + PlusPx && PXL_Right >= S_Ground_Right_XU) {//右下の台（上辺）
 			GroundFlg = Ground;
 		}
 		else {
@@ -436,11 +462,11 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 	}
 	else if (NowStage == 5) {//ステージ５でのステージとの当たり判定
 		if (GroundFlg == Not_Ground) {
-			if (PXU_Left <= S_Ground_Left_XL && PYL_Right >= S_Ground_Left_YU + FivePx) {//左下の台（側面）
+			if (PXU_Left <= S_Ground_Left_XL && PYL_Right >= S_Ground_Left_YU + PlusPx) {//左下の台（側面）
 				TouchFlg = Touch;
 				VectorX *= -0.8f;//反発係数？
 			}
-			else if (PXL_Right >= S_Ground_Right_XU && PYL_Right >= S_Ground_Right_YU + FivePx) {//右下の台（側面）
+			else if (PXL_Right >= S_Ground_Right_XU && PYL_Right >= S_Ground_Right_YU + PlusPx) {//右下の台（側面）
 				TouchFlg = Touch;
 				VectorX *= -0.8f;
 			}
@@ -449,10 +475,10 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 			}
 		}
 
-		if (PYL_Right >= S_Ground_Left_YU && PYL_Right <= S_Ground_Left_YU + FivePx && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
+		if (PYL_Right >= S_Ground_Left_YU && PYL_Right <= S_Ground_Left_YU + PlusPx && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
 			GroundFlg = Ground;
 		}
-		else if (PYL_Right >= S_Ground_Right_YU && PYL_Right <= S_Ground_Right_YU + FivePx && PXL_Right >= S_Ground_Right_XU) {//右下の台（上辺）
+		else if (PYL_Right >= S_Ground_Right_YU && PYL_Right <= S_Ground_Right_YU + PlusPx && PXL_Right >= S_Ground_Right_XU) {//右下の台（上辺）
 			GroundFlg = Ground;
 		}
 		else {

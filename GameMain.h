@@ -6,6 +6,7 @@
 #include "Thunderbolt.h"
 #include "Fish.h"
 #include "Stage.h"
+#include "UI.h"
 
 class GameMain :public AbstractScene
 {
@@ -15,7 +16,7 @@ private:
 	Enemy enemy;
 	Thunder thunder;
 	Fish fish;
-	gStage stage;
+	UI ui;
 
 	int gGameImg[14];
 	int gStageState;

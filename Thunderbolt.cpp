@@ -3,6 +3,7 @@
 #define _USE_MATH_DEFINES
 #include<math.h>
 #include"bubble.h"
+#include"Common.h"
 
 Thunder::Thunder(){
 	if (LoadDivGraph("images/Stage_ThunderEffectAnimation.png", 3, 3, 1, 32, 32, gThunderImg) == -1) {

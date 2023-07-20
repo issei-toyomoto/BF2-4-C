@@ -33,5 +33,6 @@ public:
 	void Update();			//出現エリア判定
 	void MoveFish();		//魚移動
 	void TargetPlayer();	//プレイヤーを襲う処理
+	void TargetEnemy();		//敵を襲う処理
 	void InitFish();		//初期化
 };

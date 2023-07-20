@@ -1,14 +1,10 @@
-#include "UI.h"
+#include"UI.h"
 
-UI::UI()
+void UI::Update()
 {
 }
 
-UI::~UI()
+void UI::Draw() const
 {
+	DrawGraph(100, 50, UINumber[0], TRUE);
 }
-
-void UI::Draw(void) const
-{
-}
-

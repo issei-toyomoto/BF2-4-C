@@ -8,11 +8,17 @@ private:
 	int FPSCount=0; // フレームカウント
 	int VectorBubbleX=-1; 
 	int BubbleImg[3];
+
+	float px, py;
+	//int HitBoxPlayer(Player* p, bubble* e);
 public:
 	int BubbleFlg;
 
 	bubble();
 	~bubble() {};
-	void GenerationBubble() const; 
-	void UpdateBubble();
+
+   
+    void Update();
+	void Draw() const;
+
 };
