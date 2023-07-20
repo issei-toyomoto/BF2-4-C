@@ -56,9 +56,9 @@
 #define S3_Sky_SGround_1_XL 390
 #define S3_Sky_SGround_1_YL 235
 #define S3_Sky_SStone_1_XU 350
-#define S3_Sky_SStone_1_YU 215
+#define S3_Sky_SStone_1_YU 235
 #define S3_Sky_SStone_1_XL 370
-#define S3_Sky_SStone_1_YL 265
+#define S3_Sky_SStone_1_YL 285
 
 #define S3_Sky_SGround_2_XU 500 // 右鍾乳石(ステージ3)
 #define S3_Sky_SGround_2_YU 95
