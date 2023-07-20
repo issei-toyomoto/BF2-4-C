@@ -66,17 +66,19 @@
 
 #define PlusPx 3 //px太くする（当たり判定）
 
+#define AbtnIntervalFream 8 //Aボタンのインターバルフレーム数
 class Player
 {
 private:
-	int FPSCnt;			//FPSカウント
+	int FPSCnt;			//FPSカウント（６０FPS）
+	int AbtnFPSCnt;		//Aボタン用のFPSカウント（１５FPS）
 
 	int PlayerImg[32];	//プレイヤー画像
 	int NowPlayerImg;	//現在のプレイヤー画像配列の要素
 
-	float VectorX;			//ベクトルX
-	float VectorY;			//ベクトルY
-	int Angle;				//向いてる方向
+	float VectorX;		//ベクトルX
+	float VectorY;		//ベクトルY
+	int Angle;			//向いてる方向
 	
 	int PlayerState;	//プレイヤーの状態
 	int BalloonNum;		//現在の風船の数
@@ -97,8 +99,8 @@ private:
 	bool TouchFlg;		//(treu:地面以外に触れている   false:地面以外に触れていない　)
 	bool Abtn;
 
-	int AbtnCnt = 0;
-	int Anti_AbtnCnt = 0;
+	int AbtnCnt = 0;		//Aボタンを押したらカウント(今のところ意味なし)
+	int Anti_AbtnCnt = 0;	//Aボタンを押していない時をカウント
 public:
 	static float PlayerX;	//プレイヤーX座標(画像の左上X座標)
 	static float PlayerY;	//プレイヤーY座標(画像の左上Y座標)
