@@ -34,7 +34,7 @@ void bubble::Update()
 
 }
 
-void bubble::Draw() 
+void bubble::Draw() const
 {
 	DrawGraph((int)bubbleX, (int)bubbleY, BubbleImg[0], TRUE);
 

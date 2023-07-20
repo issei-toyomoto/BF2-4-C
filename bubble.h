@@ -10,7 +10,7 @@ private:
 	int BubbleImg[3];
 
 	float px, py;
-	int HitBoxPlayer(Player* p, bubble* e);
+	//int HitBoxPlayer(Player* p, bubble* e);
 public:
 	int BubbleFlg;
 
@@ -19,6 +19,6 @@ public:
 
    
     void Update();
-	void Draw() ;
+	void Draw() const;
 
 };
