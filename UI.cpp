@@ -6,5 +6,12 @@ void UI::Update()
 
 void UI::Draw() const
 {
-	DrawGraph(100, 50, UINumber[0], TRUE);
+	for (int i = 0; i < 6; i++) {
+		DrawGraph(50 + i * 20, 0, UINumber[0], TRUE);     // プレイヤースコアに反映されるUI
+		DrawGraph(235 + i * 20, 0, UINumber[0], TRUE);     // ハイスコアに反映されるUI
+	}
+	DrawGraph(35, 7, UIScore, TRUE);
+	DrawGraph(200, 8, UITop, TRUE);
+	DrawGraph(135, 28, UIStock, TRUE);
+	DrawGraph(150, 28, UIStock, TRUE);
 }
