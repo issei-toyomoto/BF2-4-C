@@ -16,6 +16,7 @@ Player::Player()
 {
 	LoadDivGraph("image/Player/Player_Animation.png", 32, 8, 4, 64, 64, PlayerImg);//画像読み込み
 	FPSCnt = 0;
+	AbtnFPSCnt = 1;
 	NowPlayerImg = P_Img_Wait_Ballon_2_0;
 	BalloonNum = 2;
 	PlayerState = P_State_Wait;
@@ -28,13 +29,24 @@ Player::Player()
 	GroundFlg = Not_Ground;
 	TouchFlg = Not_Touch;
 	Abtn = false;
-	/*NowFraem = 0;*/
+	NowFraem = 0;
 	OldFraem = 0;
 }
 
 void Player::Update(int Stage) /***描画以外***/
 {
+	if (Abtn == false) {//Aボタンを押してから１ｓたったらAbtnをＦＡＬＳＥに戻す処理を書く（予定）
+		Anti_AbtnCnt++;
+	}
+	else if (Abtn == true) {
+		//AbtnCnt++;
+		if (Anti_AbtnCnt == AbtnFPSCnt) {
+			Abtn = false;
+		}
+	}
+
 	FPSCnt++;//フレームカウント
+	AbtnFPSCnt++;
 
 	NowStage = Stage;//現在のステージ
 
@@ -92,27 +104,29 @@ void Player::Update(int Stage) /***描画以外***/
 		UpdatePlayerImgDead();
 	}
 
-	if (InputKey::GetKeyDown(PAD_INPUT_A) == FALSE) {//Aボタンを押してから１ｓたったらAbtnをＦＡＬＳＥに戻す処理を書く（予定）
-		if (Abtn == true) {
-			Abtn = false;
-		}
-		else if (Abtn == false) {
-			Anti_AbtnCnt++;
-		}
-	}
-
 	//１秒たったらフレームカウントリセット
 	if (FPSCnt > 60) {
 		FPSCnt = 0;
+	}
+
+	if (Anti_AbtnCnt > AbtnIntervalFream) {
+		Anti_AbtnCnt = 0;
+	}
+
+	if (AbtnFPSCnt > AbtnIntervalFream) {
+		AbtnFPSCnt = 0;
 	}
 
 	if (AbtnCnt > 60) {
 		AbtnCnt = 0;
 	}
 
-	if (Anti_AbtnCnt > 60) {
-		Anti_AbtnCnt = 0;
+#ifdef DEBUG
+	if (InputKey::GetKeyDown(PAD_INPUT_10)) {//スペースキーを押したら風船の数を１つ減らす
+		BalloonNum--;
 	}
+#endif // DEBUG
+
 }
 
 void Player::Draw() const /***描画***/
@@ -156,6 +170,7 @@ void Player::Draw() const /***描画***/
 	DrawFormatString(400, 130, C_WHITE, "MX:%d MY:%d", MoX, MoY);				//マウスカーソルの座標
 	DrawFormatString(400, 150, C_WHITE, "Stage:%d", NowStage);					//現在のステージ
 	DrawFormatString(400, 250, C_WHITE, "AbtnCnt:%d Anti%d", AbtnCnt, Anti_AbtnCnt);//
+	DrawFormatString(400, 270, C_WHITE, "AbtnFPS:%d", AbtnFPSCnt);
 
 	//プレイヤー画像サイズ
 	DrawBox((int)PlayerX, (int)PlayerY, (int)PlayerX + 64, (int)PlayerY + 64, C_RED,FALSE);
@@ -249,48 +264,49 @@ void Player::UpdatePlayerX() //*プレイヤーのX座標処理*//
 void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 {
 	//落下処理
-	if (GroundFlg == Not_Ground) {
-		if (PlayerY < _SCREEN_WIDHT_) {
-			if (BalloonNum == 1) {//風船１個
-				VectorY = VectorY + 0.04f;
-				if (VectorY >= 6.0f) {//速度制限
-					VectorY = 6.0f;
-				}
+	if (GroundFlg == Not_Ground) {//地面の上に立っていない時
+		/*if (PlayerY < _SCREEN_WIDHT_) {
+					
+		}*/
+		if (BalloonNum == 1) {//風船１個
+			VectorY = VectorY + 0.04f;
+			if (VectorY >= 6.0f) {//速度制限
+				VectorY = 6.0f;
 			}
-			else if (BalloonNum == 2) {//風船２個
-				VectorY = VectorY + 0.04f;
-				if (VectorY >= 4.0f) {//速度制限
-					VectorY = 4.0f;
-				}
+		}
+		else if (BalloonNum == 2) {//風船２個
+			VectorY = VectorY + 0.04f;
+			if (VectorY >= 4.0f) {//速度制限
+				VectorY = 4.0f;
 			}
-			
 		}
 	}
-	else if (GroundFlg == Ground) {
+	else if (GroundFlg == Ground) {//地面の上なら落下しないようにする
 		VectorY = 0;
 	}
 
-	if (FlyBtnFlg == ON_FlyBtn || GroundFlg == Not_Ground) {
+	if (FlyBtnFlg == ON_FlyBtn || GroundFlg == Not_Ground) {//A、Bボタンか地面の上に立っていない時
 		PlayerState = P_State_Fly;//プレイヤーのステータスを飛ぶに変更
 	}
 
 	if (InputKey::GetKeyDown(PAD_INPUT_A)) {//Aボタンを押したら１回だけ羽ばたく
-		FlyBtnFlg = ON_FlyBtn;
-		AbtnCnt++;
-		VectorY = VectorY + -0.8f;
-		if (VectorY <= -3.0f) {
-			VectorY = -3.0f;
+		if (Abtn == false) {
+			FlyBtnFlg = ON_FlyBtn;
+			VectorY = VectorY + -0.8f;//初速度＋加速度（上昇）
+			if (VectorY <= -3.0f) {//速度制限
+				VectorY = -3.0f;
+			}
+			Abtn = true;
 		}
-		Abtn = true;
 	}
 	else if (InputKey::GetKey(PAD_INPUT_B)) {//Bボタンを押したら押している間羽ばたく
 		FlyBtnFlg = ON_FlyBtn;
-		VectorY = VectorY + -0.1f;
-		if (VectorY <= -3.0f) {
+		VectorY = VectorY + -0.1f;//初速度＋加速度（上昇）
+		if (VectorY <= -3.0f) {//速度制限
 			VectorY = -3.0f;
 		}
 	}
-	else {
+	else {//A、Bボタンを押していない時
 		FlyBtnFlg = OFF_FlyBtn;
 	}
 
@@ -313,7 +329,7 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 				TouchFlg = Touch;
 				VectorX *= -0.6f;
 				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
-					VectorX += 0.9;
+					VectorX += 0.9f;
 				}
 			}
 			else {
@@ -324,7 +340,7 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 				TouchFlg = Touch;
 				VectorX *= -0.6f;
 				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
-					VectorX -= 0.9;
+					VectorX -= 0.9f;
 				}
 			}
 			else {
@@ -332,18 +348,18 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 			}
 
 			if (PYL_Right >= S_Sky_Ground_0_YU - PlusPx && PYU_Left <= S_Sky_Ground_0_YL) {//上の台（側面）
-				if (PXU_Left <= S_Sky_Ground_0_XL && PXL_Right >= S_Sky_Ground_0_XL) {//上の台の左（側面）
+				if (PXU_Left <= S_Sky_Ground_0_XL && PXL_Right >= S_Sky_Ground_0_XL) {//上の台の左
 					TouchFlg = Touch;
-					VectorX *= -0.6f;
+					VectorX *= -0.8f;
 					if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
-						VectorX += 0.9;
+						VectorX += 0.9f;
 					}
 				}
-				else if (PXL_Right >= S_Sky_Ground_0_XU - PlusPx && PXL_Right <= S_Sky_Ground_0_XU) {//上の台の右（側面）
+				else if (PXL_Right >= S_Sky_Ground_0_XU - PlusPx && PXL_Right <= S_Sky_Ground_0_XU) {//上の台の右
 					TouchFlg = Touch;
-					VectorX *= -0.6f;
+					VectorX *= -0.8f;
 					if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
-						VectorX -= 0.9;
+						VectorX -= 0.9f;
 					}
 				}
 				else {
@@ -354,7 +370,7 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 			if (PYU_Left <= S_Sky_Ground_0_YL - PlusPx && PYL_Right >= S_Sky_Ground_0_YU + PlusPx) {//上の台（下辺）
 				if (PXU_Left <= S_Sky_Ground_0_XL && PXL_Right >= S_Sky_Ground_0_XU) {
 					TouchFlg = Touch;
-					VectorY *= -0.6f;
+					VectorY *= -0.8f;
 					if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
 						VectorY += 0.9f;
 					}
@@ -365,7 +381,7 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 			}
 			
 			if (PYU_Left <= 0) {//画面上の当たり判定
-				VectorY *= -0.6f;
+				VectorY *= -0.8f;
 				if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
 					VectorY += 0.9f;
 				}
