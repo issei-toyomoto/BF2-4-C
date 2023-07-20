@@ -4,10 +4,12 @@
 #define P_Img_Wait_Ballon_2_0 0
 #define P_Img_Wait_Ballon_2_1 1
 #define P_Img_Wait_Ballon_2_2 2
+#define P_Img_Wait_Red_Ballon_2 3
 //待機状態（風船１個）
-#define P_Img_Wait_Ballon_1_0 3
-#define P_Img_Wait_Ballon_1_1 4
-#define P_Img_Wait_Ballon_1_2 5
+#define P_Img_Wait_Ballon_1_0 4
+#define P_Img_Wait_Ballon_1_1 5
+#define P_Img_Wait_Ballon_1_2 6
+#define P_Img_Wait_Red_Ballon_1 7
 //走る（風船２個）
 #define P_Img_Run_Ballon_2_0     8
 #define P_Img_Run_Ballon_2_1     9
@@ -24,19 +26,19 @@
 #define P_Img_Fly_Ballon_2_2 18
 #define P_Img_Fly_Ballon_2_3 19
 #define P_Img_FlyStop_Ballon_2_4 20
+//死亡
+#define P_Img_Dead_0 21
+#define P_Img_Dead_1 22
+#define P_Img_Dead_2 23
 //浮く（風船１個）
 #define P_Img_Fly_Ballon_1_0 24
 #define P_Img_Fly_Ballon_1_1 25
 #define P_Img_Fly_Ballon_1_2 26
 #define P_Img_Fly_Ballon_1_3 27
 #define P_Img_FlyStop_Ballon_1_4 28
-//死亡
-#define P_Img_Dead_0 21
-#define P_Img_Dead_1 22
-#define P_Img_Dead_2 23
+
 //雷に当たる
 #define P_Img_Thunder_0 29
-#define P_Img_Thunder_1 30
 //*******************************************//
 // 画像サイズ（６４×６４）
 #define P_Img_Size 64
@@ -62,7 +64,6 @@
 #define Touch      true	//地面以外に触れている
 #define Not_Touch  false//地面以外に触れてない
 
-#define WaitFraem 5//Aボタンのインターバル
 #define FivePx 5 //5px太くする（当たり判定）
 
 class Player
@@ -94,7 +95,10 @@ private:
 	bool FlyBtnFlg;		//(true;飛ぶボタンを押している false:飛ぶボタンを押していない)
 	bool GroundFlg;		//(true:地面に接触している     false:地面に接触していない    )
 	bool TouchFlg;		//(treu:地面以外に触れている   false:地面以外に触れていない　)
+	bool Abtn;
 
+	int AbtnCnt = 0;
+	int Anti_AbtnCnt = 0;
 public:
 	static float PlayerX;	//プレイヤーX座標(画像の左上X座標)
 	static float PlayerY;	//プレイヤーY座標(画像の左上Y座標)
@@ -134,4 +138,5 @@ public:
 	//プレイヤーの座標取得
 	float GetPlayerX();
 	float GetPlayerY();
+
 };

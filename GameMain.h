@@ -5,7 +5,7 @@
 #include "Enemy.h"
 #include "Thunderbolt.h"
 #include "Fish.h"
-#include "UI.h"
+#include "Stage.h"
 
 class GameMain :public AbstractScene
 {
