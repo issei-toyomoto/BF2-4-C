@@ -393,27 +393,27 @@ void Enemy::HitStage()
 
 	for (int i = 0; i < ENEMY_MAX; i++)
 	{
-		if (EnXL[i] <= S_Ground_Left_XL && EnYR[i] >= S_Ground_Left_YU + FivePx)
+		if (EnXL[i] <= S_Ground_Left_XL && EnYR[i] >= S_Ground_Left_YU)
 		{//左下の台（側面）
 			enemy[i].ground = 1;
 			enemy[i].y -= 0.8f;//反発係数？
 		}
-		else if (EnXR[i] >= S_Ground_Right_XU && EnYR[i] >= S_Ground_Right_YU + FivePx) 
+		else if (EnXR[i] >= S_Ground_Right_XU && EnYR[i] >= S_Ground_Right_YU) 
 		{//右下の台（側面）
 			enemy[i].ground = 1;
 			enemy[i].y -= 0.8f;
 		}
-		else if (EnXR[i] >= S_Sky_Ground_0_XU && EnXR[i] <= S_Sky_Ground_0_XU + FivePx && EnYR[i] >= S_Sky_Ground_0_YU + FivePx && EnYL[i] <= S_Sky_Ground_0_YL) 
+		else if (EnXR[i] >= S_Sky_Ground_0_XU && EnXR[i] <= S_Sky_Ground_0_XU && EnYR[i] >= S_Sky_Ground_0_YU  && EnYL[i] <= S_Sky_Ground_0_YL) 
 		{//上の台の左（側面）
 			enemy[i].ground = 1;
 			enemy[i].y -= 0.8f;
 		}
-		else if (EnXL[i] >= S_Sky_Ground_0_XL && EnXL[i] <= S_Sky_Ground_0_XL + FivePx && EnYR[i] >= S_Sky_Ground_0_YU + FivePx && EnYL[i] <= S_Sky_Ground_0_YL) 
+		else if (EnXL[i] >= S_Sky_Ground_0_XL && EnXL[i] <= S_Sky_Ground_0_XL && EnYR[i] >= S_Sky_Ground_0_YU && EnYL[i] <= S_Sky_Ground_0_YL) 
 		{//上の台の右（側面）
 			enemy[i].ground = 1;
 			enemy[i].y -= 0.8f;
 		}
-		else if (EnYL[i] <= S_Sky_Ground_0_YL - FivePx && EnYR[i] >= S_Sky_Ground_0_YU + FivePx)
+		else if (EnYL[i] <= S_Sky_Ground_0_YL && EnYR[i] >= S_Sky_Ground_0_YU)
 		{//上の台（下辺）
 			if (EnXL[i] <= S_Sky_Ground_0_XL && EnXR[i] >= S_Sky_Ground_0_XU)
 			{
