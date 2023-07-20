@@ -21,9 +21,11 @@ private:
 		float x = 0;     // 敵のX座標
 		float y = 0;     // 敵のY座標
 		int state = 0;   // 敵の状態(0:ピンク 1:緑 2:黄色)
-		int life = 2;    // 敵のHP
+		int life = 2;    // 敵のHP(0:死亡 1:パラシュート状態 2:風船1個状態)
 		int flg = 0;     // 敵の画像番号用
-		float speed = 0.4f; // 敵の移動速度
+		float speed = 0.6f; // 敵の移動速度
+		int direction = 0;  // 敵の向いてる向き(0:左 1:右)
+		int ground = 0;     // 地面に触れているか(0:触れてない 1:触れている)
 	};
 
 	struct ENEMY enemy[ENEMY_MAX];   // 敵のデータ(変数宣言)
@@ -37,8 +39,8 @@ public:
 	void StartMove();       // 敵のスタート処理
 	void EnemyUp();         // 敵の浮上モーション処理
 	void EnemyDown();       // 敵の降下モーション処理
-	void EnemyCollision();  // 敵同士の当たり判定
-	void StageCollision();  // 敵とステージの当たり判定
+	void HitEnemy();  // 敵同士の当たり判定
+	void HitStage();  // 敵とステージの当たり判定
 
 	
 	//描画以外の更新を実装する

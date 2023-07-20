@@ -1,5 +1,6 @@
 #include "Enemy.h"
 #include "Player.h"
+#include "Common.h"
 #include "DxLib.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -40,8 +41,9 @@ void Enemy::Update()
 	}
 	else if(StartFlg != 0)
 	{
+		HitStage();
+		/*HitEnemy();*/
 		EnemyMove();
-		//EnemyCollision();
 	}
 	else
 	{
@@ -62,12 +64,14 @@ void Enemy::Draw() const
 {
 #ifdef _DEBUG
 	DrawFormatString(50, 50, 0xffffff, "EnX:%f EnY:%f", enemy[2].x, enemy[2].y);
+	DrawFormatString(50, 150, 0xffffff, "EnGro:%d", enemy[0].ground);
 	DrawFormatString(50, 70, 0xffffff, "Enflg:%d", enemy[0].flg);
 	DrawFormatString(50, 100, 0xffffff, "Px:%f", Px);
 	DrawFormatString(50, 130, 0xffffff, "Py:%f", Py);
 
 	for (int i = 0; i < ENEMY_MAX; i++)
 	{
+
 		// 敵の当たり判定表示
 		if (enemy[i].state == 0)
 		{
@@ -80,7 +84,6 @@ void Enemy::Draw() const
 			{
 				// スタート以外
 				DrawBox((int)enemy[i].x + 10, (int)enemy[i].y + 12, (int)enemy[i].x + 55, (int)enemy[i].y + 65, 0xffffff, FALSE);
-				
 			}
 		}
 	}
@@ -101,7 +104,7 @@ void Enemy::Draw() const
 			{
 				// スタート以外
 				// 画面内
-				if (Px >= enemy[i].x + 10)
+				if (enemy[i].direction == 1)
 				{
 					DrawTurnGraph((int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].flg], TRUE);
 				}
@@ -162,11 +165,13 @@ void Enemy::EnemyMove()
 		}
 
 
-		// プレイヤーが敵より右にいるときは右に移動
-		if (Px >= enemy[i].x)
+		
+		if (Px >= enemy[i].x + 50)
 		{
+			// プレイヤーが敵より右にいるときは右に移動
 			// X座標加算
 			enemy[i].x += enemy[i].speed;
+			enemy[i].direction = 1;
 
 		}
 		else
@@ -174,13 +179,16 @@ void Enemy::EnemyMove()
 			// プレイヤーが敵より左にいるときは左に移動
 			// X座標減算
 			enemy[i].x -= enemy[i].speed;
+			enemy[i].direction = 0;
 
 		}
 
 
 		// プレイヤーが敵より上にいるときは浮上する
-		if (Py < enemy[i].y)
+		if (Py < enemy[i].y || enemy[i].ground == 1)
 		{
+			enemy[i].speed = 0.6f;
+		
 			EnemyUp();
 
 			// Y座標減算
@@ -194,6 +202,8 @@ void Enemy::EnemyMove()
 			enemy[i].y += enemy[i].speed;
 
 		}
+		
+		enemy[i].ground = 0;
 	}
 	
 }
@@ -281,11 +291,11 @@ void Enemy::EnemyDown()
 		// 降下モーション
 		if (FPScnt > 0 && FPScnt < 20)
 		{
-			enemy[i].flg = 12;
+			enemy[i].flg = 11;
 		}
 		else if (FPScnt > 41  && FPScnt < 60 )
 		{
-			enemy[i].flg = 11;
+			enemy[i].flg = 12;
 		}
 		else
 		{
@@ -297,47 +307,151 @@ void Enemy::EnemyDown()
 }
 
 // 敵同士の当たり判定
-void Enemy::EnemyCollision()
+void Enemy::HitEnemy()
 {
 	int EnXL[ENEMY_MAX] = { 0 }, EnYL[ENEMY_MAX] = { 0 };//左上
 	int EnXR[ENEMY_MAX] = { 0 }, EnYR[ENEMY_MAX] = { 0 };//右下
 
 	for (int i = 0; i < ENEMY_MAX; i++)
 	{
-		EnXL[i] = (int)(enemy[i].x + 10) - (ENEMY_W / 2);
-		EnYL[i] = (int)(enemy[i].y + 12) - (ENEMY_H / 2);
-		EnXR[i] = EnXL[i] + ENEMY_W;
-		EnYR[i] = EnYL[i] + ENEMY_H;
+		EnXL[i] = (int)enemy[i].x + 10;
+		EnYL[i] = (int)enemy[i].y + 12;
+		EnXR[i] = EnXL[i] + 45;
+		EnYR[i] = EnYL[i] + 53;
 	}
 
-	for (int i = 0; i < ENEMY_MAX; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		if (i == 0)
 		{
-			if (EnXL[i] < EnXR[i + 1] && EnXL[i + 1] < EnXR[i] && EnYL[i] < EnYR[i + 1] && EnYL[i + 1] < EnYR[i])
+			if (EnXR[i] <= EnXL[i + 1] && EnXR[i + 1] >= EnXL[i] && EnYL[i + 1] <= EnYR[i] && EnYR[i + 1] >= EnYL[i])
 			{
 				
 			}
-
-			if (EnXL[i] < EnXR[i + 2] && EnXL[i + 2] < EnXR[i] && EnYL[i] < EnYR[i + 2] && EnYL[i + 2] < EnYR[i])
+			else if (EnXL[i + 2] <= EnXR[i] && EnXR[i + 2] >= EnXL[i] && EnYL[i + 1] <= EnYR[i] && EnYR[i + 2] >= EnYL[i])
+			{
+				
+			}
+			else
+			{
+				
+			}
+		}
+		else if (i == 1)
+		{
+			if (EnXL[i - 1] <= EnXR[i] && EnXR[i - 1] >= EnXL[i] && EnYL[i - 1] <= EnYR[i] && EnYR[i - 1] >= EnYL[i])
+			{
+				
+			}
+			else if (EnXL[i + 1] <= EnXR[i] && EnXR[i + 1] >= EnXL[i] && EnYL[i + 1] <= EnYR[i] && EnYR[i + 1] >= EnYL[i])
+			{
+				
+			}
+			else
 			{
 				
 			}
 		}
 		else if (i == 2)
 		{
-			if (EnXL[i] < EnXR[i - 1] && EnXL[i - 1] < EnXR[i] && EnYL[i] < EnYR[i - 1] && EnYL[i - 1] < EnYR[i])
+			if (EnXL[i - 2] <= EnXR[i] && EnXR[i - 2] >= EnXL[i] && EnYL[i - 2] <= EnYR[i] && EnYR[i - 2] >= EnYL[i])
+			{
+				
+			}
+			else if (EnXL[i - 1] <= EnXR[i] && EnXR[i - 1] >= EnXL[i] && EnYL[i - 1] <= EnYR[i] && EnYR[i - 1] >= EnYL[i])
+			{
+				
+			}
+			else
 			{
 				
 			}
 		}
+		else
+		{
+			
+		}
 		
 	}
+	
 	
 }
 
 // 敵とステージの当たり判定処理
-void Enemy::StageCollision()
+void Enemy::HitStage()
 {
+	int EnXL[ENEMY_MAX] = { 0 }, EnYL[ENEMY_MAX] = { 0 };//左上
+	int EnXR[ENEMY_MAX] = { 0 }, EnYR[ENEMY_MAX] = { 0 };//右下
+
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		EnXL[i] = (int)enemy[i].x + 10;
+		EnYL[i] = (int)enemy[i].y + 12;
+		EnXR[i] = EnXL[i] + 50;
+		EnYR[i] = EnYL[i] + 60;
+	}
+
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		if (EnXL[i] <= S_Ground_Left_XL && EnYR[i] >= S_Ground_Left_YU + FivePx)
+		{//左下の台（側面）
+			enemy[i].ground = 1;
+			enemy[i].y -= 0.8f;//反発係数？
+		}
+		else if (EnXR[i] >= S_Ground_Right_XU && EnYR[i] >= S_Ground_Right_YU + FivePx) 
+		{//右下の台（側面）
+			enemy[i].ground = 1;
+			enemy[i].y -= 0.8f;
+		}
+		else if (EnXR[i] >= S_Sky_Ground_0_XU && EnXR[i] <= S_Sky_Ground_0_XU + FivePx && EnYR[i] >= S_Sky_Ground_0_YU + FivePx && EnYL[i] <= S_Sky_Ground_0_YL) 
+		{//上の台の左（側面）
+			enemy[i].ground = 1;
+			enemy[i].y -= 0.8f;
+		}
+		else if (EnXL[i] >= S_Sky_Ground_0_XL && EnXL[i] <= S_Sky_Ground_0_XL + FivePx && EnYR[i] >= S_Sky_Ground_0_YU + FivePx && EnYL[i] <= S_Sky_Ground_0_YL) 
+		{//上の台の右（側面）
+			enemy[i].ground = 1;
+			enemy[i].y -= 0.8f;
+		}
+		else if (EnYL[i] <= S_Sky_Ground_0_YL - FivePx && EnYR[i] >= S_Sky_Ground_0_YU + FivePx)
+		{//上の台（下辺）
+			if (EnXL[i] <= S_Sky_Ground_0_XL && EnXR[i] >= S_Sky_Ground_0_XU)
+			{
+				enemy[i].y -= 0.8f;
+				//if (VectorY >= 0)
+				//{//めり込まないようにするために加速度が０以上になると加速度に１足す
+				//	VectorY += 1.0f;
+				//}
+			}
+		}
+		else if (EnYL[i] <= 0)
+		{//画面上の当たり判定
+			enemy[i].ground = 1;
+			enemy[i].y -= 0.8f;
+			//if (VectorY >= 0) 
+			//{//めり込まないようにするために加速度が０以上になると加速度に１足す
+			//	VectorY += 1.0f;
+			//}
+		}
+		/*else {
+			TouchFlg = Not_Touch;
+		}*/
+
+		//if (EnYR[i] >= S_Ground_Left_YU && EnYR[i] <= S_Ground_Left_YU + FivePx && PXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
+		//	GroundFlg = Ground;
+		//}
+		//else if (PYL_Right >= S_Ground_Right_YU && PYL_Right <= S_Ground_Right_YU + FivePx && PXL_Right >= S_Ground_Right_XU) {//右下の台（上辺）
+		//	GroundFlg = Ground;
+		//}
+		//else if (PYL_Right >= S_Sky_Ground_0_YU && PYL_Right <= S_Sky_Ground_0_YU + FivePx && PXU_Left <= S_Sky_Ground_0_XL && PXL_Right >= S_Sky_Ground_0_XU) {//浮いている中央の台（上辺）
+		//	GroundFlg = Ground;
+		//}
+		//else {
+		//	GroundFlg = Not_Ground;
+		//}
+	}
+
+	
+
 }
 
