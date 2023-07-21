@@ -64,14 +64,17 @@
 #define Touch      true	//地面以外に触れている
 #define Not_Touch  false//地面以外に触れてない
 
-#define PlusPx 3 //px太くする（当たり判定）
+#define PlusPx 3			//px太くする（当たり判定）
 
 #define AbtnIntervalFream 8 //Aボタンのインターバルフレーム数
+
+#define COR -0.8f			//反発係数(coefficient of repulsion)
+
 class Player
 {
 private:
 	int FPSCnt;			//FPSカウント（６０FPS）
-	int AbtnFPSCnt;		//Aボタン用のFPSカウント（１５FPS）
+	int AbtnFPSCnt;		//Aボタン用のFPSカウント
 
 	int PlayerImg[32];	//プレイヤー画像
 	int NowPlayerImg;	//現在のプレイヤー画像配列の要素
@@ -99,7 +102,6 @@ private:
 	bool TouchFlg;		//(treu:地面以外に触れている   false:地面以外に触れていない　)
 	bool Abtn;
 
-	int AbtnCnt = 0;		//Aボタンを押したらカウント(今のところ意味なし)
 	int Anti_AbtnCnt = 0;	//Aボタンを押していない時をカウント
 public:
 	static float PlayerX;	//プレイヤーX座標(画像の左上X座標)
