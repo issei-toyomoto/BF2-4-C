@@ -89,6 +89,7 @@ void Fish::Update() {
 	if (P_Y < 358 && SpawnFlg == TRUE) {
 		//ÚGŒã
 		if (FishAnim <= 3) {
+			FishFlg = TRUE;
 			MoveFish();
 		}
 		//ÚG‘O
@@ -139,7 +140,6 @@ void Fish::TargetPlayer() {
 		WaitTime--;
 		if (WaitTime <= 0) {
 			InitFish();
-			//PlayerLife=PlayerLife-1;
 		}
 	}
 }
@@ -152,9 +152,15 @@ void Fish::TargetEnemy() {
 //‰Šú‰»
 void Fish::InitFish() {
 	SpawnFlg = FALSE;
+	FishFlg = FALSE;
 	f_PosY = 400;
 	Target = 0;
 	Second = 0;
 	f_Count = 120;
 	WaitTime = 51;
+}
+
+bool Fish::GetFishFlg() {
+	static bool f = FishFlg;
+	return f;
 }
