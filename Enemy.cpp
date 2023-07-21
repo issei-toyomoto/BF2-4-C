@@ -90,7 +90,7 @@ void Enemy::Draw() const
 				//DrawBox((int)enemy[i].x + 10, (int)enemy[i].y + 12, (int)enemy[i].x + 55, (int)enemy[i].y + 65, 0xffffff, FALSE);
 				
 				// プレイヤーと当たってる場合赤枠、当たっていない場合白枠
-				if (HitPFlg == 1)
+				if (HitPFlg == i)
 				{
 					DrawBox((int)EnXL[i], (int)EnYL[i], (int)EnXR[i], (int)EnYR[i], 0xff0000, FALSE);
 				}
@@ -441,11 +441,11 @@ int Enemy::HitPlayer()
 		if (EnXL[i] <= PXR && EnYL[i] <= PYR && EnXR[i] >= PXL && EnYR[i] >= PYL)
 		{
 			enemy[i].flg = 17;
-			return 1;
+			return i;
 		}
 	}
 
-	return 0;
+	return 3;
 }
 
 
