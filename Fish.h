@@ -30,8 +30,10 @@ private:
 	float P_Y;		
 
 public:
-	//魚に食べられたとき用
-	static bool FishFlg;
+
+	//魚に食べられたときプレイヤー用
+	bool P_FishFlg;
+
 	Fish();					//コンストラクタ
 	void Draw() const;		//魚生成
 	void Update();			//出現エリア判定
@@ -39,4 +41,5 @@ public:
 	void TargetPlayer();	//プレイヤーを襲う処理
 	void TargetEnemy();		//敵を襲う処理
 	void InitFish();		//初期化
+	bool GetFishFlg();		//魚に食べられたとき用変数取得関数
 };
