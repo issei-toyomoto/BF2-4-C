@@ -4,7 +4,7 @@
 #include "Common.h"
 
 #define DEBUG
-#define DEBUG_bool
+#define DEBUG_Flg
 
 int Player::OldFraem;
 int Player::NowFraem;
@@ -35,11 +35,10 @@ Player::Player()
 
 void Player::Update(int Stage) /***描画以外***/
 {
-	if (Abtn == false) {//Aボタンを押してから１ｓたったらAbtnをＦＡＬＳＥに戻す処理を書く（予定）
+	if (Abtn == false) {//Aボタンを押してから[AbtnIntervalFream]分フレームがたったらAbtnをＦＡＬＳＥに戻す処理
 		Anti_AbtnCnt++;
 	}
 	else if (Abtn == true) {
-		//AbtnCnt++;
 		if (Anti_AbtnCnt == AbtnFPSCnt) {
 			Abtn = false;
 		}
@@ -104,8 +103,8 @@ void Player::Update(int Stage) /***描画以外***/
 		UpdatePlayerImgDead();
 	}
 
-	//１秒たったらフレームカウントリセット
-	if (FPSCnt > 60) {
+	//*フレームカウントリセット*//
+	if (FPSCnt > 60) {//１秒たったらフレームカウントリセット
 		FPSCnt = 0;
 	}
 
@@ -116,13 +115,9 @@ void Player::Update(int Stage) /***描画以外***/
 	if (AbtnFPSCnt > AbtnIntervalFream) {
 		AbtnFPSCnt = 0;
 	}
-
-	if (AbtnCnt > 60) {
-		AbtnCnt = 0;
-	}
-
+	//**************************//
 #ifdef DEBUG
-	if (InputKey::GetKeyDown(PAD_INPUT_10)) {//スペースキーを押したら風船の数を１つ減らす
+	if (InputKey::GetKeyDown(PAD_INPUT_10) == TRUE) {//スペースキーを押したら風船の数を１つ減らす
 		BalloonNum--;
 	}
 #endif // DEBUG
@@ -169,8 +164,8 @@ void Player::Draw() const /***描画***/
 	DrawFormatString(400, 110, C_WHITE, "Angle:%d(1;左 0:右)", Angle);			//向いている方向
 	DrawFormatString(400, 130, C_WHITE, "MX:%d MY:%d", MoX, MoY);				//マウスカーソルの座標
 	DrawFormatString(400, 150, C_WHITE, "Stage:%d", NowStage);					//現在のステージ
-	DrawFormatString(400, 250, C_WHITE, "AbtnCnt:%d Anti%d", AbtnCnt, Anti_AbtnCnt);//
-	DrawFormatString(400, 270, C_WHITE, "AbtnFPS:%d", AbtnFPSCnt);
+	DrawFormatString(400, 250, C_WHITE, "Anti_AbtnCnt:%d",Anti_AbtnCnt);		//
+	DrawFormatString(400, 270, C_WHITE, "AbtnFPS:%d", AbtnFPSCnt);				//
 
 	//プレイヤー画像サイズ
 	DrawBox((int)PlayerX, (int)PlayerY, (int)PlayerX + 64, (int)PlayerY + 64, C_RED,FALSE);
@@ -183,12 +178,12 @@ void Player::Draw() const /***描画***/
 	DrawBox((int)PlayerX + 12, (int)PlayerY + 14, (int)PlayerX + 52, (int)PlayerY + 38, C_GREEN,FALSE);
 #endif //DEBUG
 
-#ifdef DEBUG_bool
+#ifdef DEBUG_Flg
 	DrawFormatString(400, 170, C_WHITE, "FlyBtn:%d(0:off 1:on)", FlyBtnFlg);	//飛ぶボタンを押しているか
 	DrawFormatString(400, 190, C_WHITE, "GroundFlg:%d(0:not 1:on)", GroundFlg);	//地面に触れているか
 	DrawFormatString(400, 210, C_WHITE, "TouchFlg;%d(0:not 1:on)", TouchFlg);	//地面以外に触れている
 	DrawFormatString(400, 230, C_WHITE, "Abtn;%d(0:not 1:on)", Abtn);			//Aボタンを押しているか
-#endif // DEBUG_bool
+#endif // DEBUG_Flg
 
 }
 
@@ -289,20 +284,20 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 		PlayerState = P_State_Fly;//プレイヤーのステータスを飛ぶに変更
 	}
 
-	if (InputKey::GetKeyDown(PAD_INPUT_A)) {//Aボタンを押したら１回だけ羽ばたく
-		if (Abtn == false) {
+	if (InputKey::GetKeyDown(PAD_INPUT_A) == TRUE) {//Aボタンを押したら１回だけ羽ばたく
+		if (Abtn == false) {			//Aボタンのインターバル用の条件
 			FlyBtnFlg = ON_FlyBtn;
-			VectorY = VectorY + -0.8f;//初速度＋加速度（上昇）
-			if (VectorY <= -3.0f) {//速度制限
+			VectorY = VectorY + -0.8f;	//初速度＋加速度（上昇）
+			if (VectorY <= -3.0f) {		//速度制限
 				VectorY = -3.0f;
 			}
 			Abtn = true;
 		}
 	}
-	else if (InputKey::GetKey(PAD_INPUT_B)) {//Bボタンを押したら押している間羽ばたく
+	else if (InputKey::GetKey(PAD_INPUT_B) == TRUE) {//Bボタンを押したら押している間羽ばたく
 		FlyBtnFlg = ON_FlyBtn;
-		VectorY = VectorY + -0.1f;//初速度＋加速度（上昇）
-		if (VectorY <= -3.0f) {//速度制限
+		VectorY = VectorY + -0.1f;	//初速度＋加速度（上昇）
+		if (VectorY <= -3.0f) {		//速度制限
 			VectorY = -3.0f;
 		}
 	}
@@ -327,7 +322,7 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 		if (GroundFlg == Not_Ground) {
 			if (PXU_Left <= S_Ground_Left_XL && PYL_Right >= S_Ground_Left_YU + PlusPx) {//左下の台（側面）
 				TouchFlg = Touch;
-				VectorX *= -0.6f;
+				VectorX *= COR;
 				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
 					VectorX += 0.9f;
 				}
@@ -338,7 +333,7 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 
 			if (PXL_Right >= S_Ground_Right_XU && PYL_Right >= S_Ground_Right_YU + PlusPx) {//右下の台（側面）
 				TouchFlg = Touch;
-				VectorX *= -0.6f;
+				VectorX *= COR;
 				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
 					VectorX -= 0.9f;
 				}
@@ -350,14 +345,14 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 			if (PYL_Right >= S_Sky_Ground_0_YU - PlusPx && PYU_Left <= S_Sky_Ground_0_YL - PlusPx) {//上の台（側面）
 				if (PXU_Left <= S_Sky_Ground_0_XL && PXL_Right >= S_Sky_Ground_0_XL) {//上の台の左
 					TouchFlg = Touch;
-					VectorX *= -0.8f;
+					VectorX *= COR;
 					if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
 						VectorX += 0.9f;
 					}
 				}
 				else if (PXL_Right >= S_Sky_Ground_0_XU - PlusPx && PXL_Right <= S_Sky_Ground_0_XU) {//上の台の右
 					TouchFlg = Touch;
-					VectorX *= -0.8f;
+					VectorX *= COR;
 					if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
 						VectorX -= 0.9f;
 					}
@@ -370,7 +365,7 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 			if (PYU_Left <= S_Sky_Ground_0_YL - PlusPx && PYL_Right >= S_Sky_Ground_0_YU + PlusPx) {//上の台（下辺）
 				if (PXU_Left <= S_Sky_Ground_0_XL && PXL_Right >= S_Sky_Ground_0_XU) {
 					TouchFlg = Touch;
-					VectorY *= -0.8f;
+					VectorY *= COR;
 					if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
 						VectorY += 0.9f;
 					}
@@ -381,7 +376,7 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 			}
 			
 			if (PYU_Left <= 0) {//画面上の当たり判定
-				VectorY *= -0.8f;
+				VectorY *= COR;
 				if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
 					VectorY += 0.9f;
 				}
