@@ -31,8 +31,8 @@ private:
 
 public:
 
-	//魚に食べられたとき用
-	static bool FishFlg;
+	//魚に食べられたときプレイヤー用
+	bool P_FishFlg;
 
 	Fish();					//コンストラクタ
 	void Draw() const;		//魚生成

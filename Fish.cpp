@@ -3,7 +3,6 @@
 #include<math.h>
 #include"Player.h"
 
-bool Fish::FishFlg = FALSE;
 //コンストラクタ
 Fish::Fish() {
 	LoadDivGraph("image/Enemy/Enemy_FishAnimation.png",10,5,2,64,64,FishImage);
@@ -19,6 +18,7 @@ Fish::Fish() {
 	Target = 0;
 	FishAnim = 0;
 	WaitTime = 51;
+	P_FishFlg = FALSE;
 }
 
 //魚生成
@@ -89,7 +89,6 @@ void Fish::Update() {
 	if (P_Y < 358 && SpawnFlg == TRUE) {
 		//接触後
 		if (FishAnim <= 3) {
-			FishFlg = TRUE;
 			MoveFish();
 		}
 		//接触前
@@ -135,6 +134,9 @@ void Fish::TargetPlayer() {
 	FishAnim = f_Count / 17;
 	//アニメーション計算
 	f_Count = f_Count - 2;
+	if (FishAnim == 3) {
+		P_FishFlg = TRUE;
+	}
 	//プレイヤー接触後
 	if (f_Count <= 0) {
 		WaitTime--;
@@ -152,7 +154,7 @@ void Fish::TargetEnemy() {
 //初期化
 void Fish::InitFish() {
 	SpawnFlg = FALSE;
-	FishFlg = FALSE;
+	P_FishFlg = FALSE;
 	f_PosY = 400;
 	Target = 0;
 	Second = 0;
@@ -161,6 +163,6 @@ void Fish::InitFish() {
 }
 
 bool Fish::GetFishFlg() {
-	static bool f = FishFlg;
+	static bool f = P_FishFlg;
 	return f;
 }
