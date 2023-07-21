@@ -347,7 +347,7 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 				TouchFlg = Not_Touch;
 			}
 
-			if (PYL_Right >= S_Sky_Ground_0_YU - PlusPx && PYU_Left <= S_Sky_Ground_0_YL) {//上の台（側面）
+			if (PYL_Right >= S_Sky_Ground_0_YU - PlusPx && PYU_Left <= S_Sky_Ground_0_YL - PlusPx) {//上の台（側面）
 				if (PXU_Left <= S_Sky_Ground_0_XL && PXL_Right >= S_Sky_Ground_0_XL) {//上の台の左
 					TouchFlg = Touch;
 					VectorX *= -0.8f;
