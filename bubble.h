@@ -1,4 +1,6 @@
 #pragma once
+#define BUBBLE_X 320
+#define BUBBLE_Y 480
 class bubble  {
 private:
 	int i;
@@ -8,6 +10,7 @@ private:
 	int FPSCount=0; // フレームカウント
 	int VectorBubbleX=-1; 
 	int BubbleImg[3];
+	int BubleAnim;
 
 	float px, py;
 	//int HitBoxPlayer(Player* p, bubble* e);
@@ -20,5 +23,5 @@ public:
    
     void Update();
 	void Draw() const;
-
+	void BubleCollision();
 };
