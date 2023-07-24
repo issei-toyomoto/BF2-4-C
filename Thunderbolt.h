@@ -6,7 +6,7 @@ private:
 	int gCloudImg = LoadGraph("images/Stage_Cloud01.png");
 	int gThunderImg[2];
 
-	int ThunderX=125, ThunderY=125;// 雷の座標
+	int ThunderX=100, ThunderY=200;// 雷の座標
 
 	int Speed;// 雷の速度
 	int ThunderFlg; // 雷の状態（0...移動中 1...物に接触 2...スタート状態）
