@@ -25,7 +25,7 @@ AbstractScene* GameMain::Update()
 	BUBBLE.Update();
 	enemy.Update();
 	fish.Update();
-	thunder.MoveThunder();
+	thunder.Update();
 
 	if (CheckHitKey(KEY_INPUT_1)) {
 		gStageState = 1;

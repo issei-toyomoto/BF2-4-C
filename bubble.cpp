@@ -20,6 +20,7 @@ bubble::bubble() {
 void bubble::Update()
 {
 	FPSCount++;
+
 	// プレイヤーのX座標、Y座標
 	px = Player::PlayerX;
 	py = Player::PlayerY;
