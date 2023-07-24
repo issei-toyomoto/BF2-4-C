@@ -1,8 +1,9 @@
-#include"UI.h"
+#include "UI.h"
+#include "bubble.h"
 
 void UI::Update()
 {
-	// TotalScore =  bubleScore + EnemyScore
+	TotalScore = bubleScore; /*+ EnemyScore*/
 }
 
 void UI::Draw() const

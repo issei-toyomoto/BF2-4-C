@@ -1,21 +1,22 @@
 #pragma once
-#define BUBBLE_X 320
-#define BUBBLE_Y 480
+//#define BUBBLE_X 320
+//#define BUBBLE_Y 480
 class bubble  {
 private:
-	int i;
-	int y;
-	float bubbleX=320;// シャボン玉のX軸
-	float bubbleY=480;// シャボン玉のY軸
-	int FPSCount=0; // フレームカウント
+	/*int i;*/
+	/*int y;*/
+	float bubbleX;// シャボン玉のX軸
+	float bubbleY;// シャボン玉のY軸
+	int FPSCount; // フレームカウント
 	int VectorBubbleX=-1; 
-	int BubbleImg[3];
-	int BubleAnim;
+	int BubbleImg[4];
+	int BubleFlg;
+	int BubbleFlg;
+	int BubleScore;
 
 	float px, py;
 	//int HitBoxPlayer(Player* p, bubble* e);
 public:
-	int BubbleFlg;
 
 	bubble();
 	~bubble() {};
