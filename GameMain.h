@@ -15,6 +15,7 @@ private:
 	bubble BUBBLE;
 	//Enemy enemy;
 	Thunder thunder;
+	Thunder MoveThunder;
 	Fish fish;
 	UI ui;
 

@@ -10,6 +10,48 @@ Thunder::Thunder(){
 	}//画像読み込み
 }
 
+void Thunder::ChangeAngle()
+{
+	float rad = ThunderAngle * (float)M_PI * 2;
+	ThunderMoveX = (int)(Speed * cosf(rad));
+	ThunderMoveY = (int)(Speed * sinf(rad));
+}
+
+void Thunder::MoveThunder() {
+
+	ThunderX += 1;
+	ThunderY += 1;
+
+	//if (ThunderFlg != 2) {
+
+	//	ThunderX += ThunderMoveX;
+	//	ThunderY += ThunderMoveY;
+	//}
+	//else {
+	//	ThunderX += ThunderMoveX + 30;
+	//	ThunderY += ThunderMoveY - 6;
+
+	//}
+
+
+	//// 壁・天井での反射
+	//if (ThunderX < 4 || ThunderX>640 - 4) {  //横の壁
+	//	if (ThunderX < 4) {
+	//		ThunderX = 4;
+	//	}
+	//	else {
+	//		ThunderX = 640 - 4;
+	//	}
+	//	ThunderAngle = (1 - ThunderAngle) + 0.5f;
+	//	if (ThunderAngle > 1)ThunderAngle -= 1.0f;
+	//	ChangeAngle();
+	//}
+	//if (ThunderY < 8) { // 上の壁
+	//	ThunderAngle = (1 - ThunderAngle);
+	//	ChangeAngle();
+	//}
+}
+
 void Thunder::Update()
 {
 	ChangeAngle();
@@ -22,51 +64,12 @@ void Thunder::Update()
 void Thunder::Draw() const {
 	DrawGraph(100, 100, gCloudImg, TRUE);
 	
-	DrawGraph(100, 200, gThunderImg[0], TRUE);
+	DrawGraph(ThunderX, ThunderY, gThunderImg[0], TRUE);
 
 }
 
 
-void Thunder::ChangeAngle()
-{
-	float rad = ThunderAngle * (float)M_PI * 2;
-	ThunderMoveX = (int)(Speed * cosf(rad));
-	ThunderMoveY = (int)(Speed * sinf(rad));
-}
 
-void Thunder::MoveThunder() {
-	ThunderX += 1;
-	ThunderY += 1; 
-
-	if(ThunderFlg != 2) {
-
-		ThunderX += ThunderMoveX;
-		ThunderY += ThunderMoveY;
-	}
-	else {
-		ThunderX += ThunderMoveX + 30;
-		ThunderY += ThunderMoveY - 6;
-
-	}
-
-
-	// 壁・天井での反射
-	if (ThunderX < 4 || ThunderX>640 - 4) {  //横の壁
-		if (ThunderX < 4) {
-			ThunderX = 4;
-		}
-		else {
-			ThunderX = 640 - 4;
-		}
-		ThunderAngle = (1 - ThunderAngle) + 0.5f;
-		if (ThunderAngle > 1)ThunderAngle -= 1.0f;
-		ChangeAngle();
-	}
-	if (ThunderY < 8) { // 上の壁
-		ThunderAngle = (1 - ThunderAngle);
-		ChangeAngle();
-	}
-}
 
 
 	
