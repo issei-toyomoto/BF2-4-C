@@ -18,7 +18,6 @@ public:
 		UIScore = LoadGraph("images-20230711T024428Z-001/images/UI/UI_Score.png",TRUE);
 		UITop = LoadGraph("images-20230711T024428Z-001/images/UI/UI_HiScore.png", TRUE);
 		UIStock = LoadGraph("images-20230711T024428Z-001/images/UI/UI_Stock.png", TRUE);
-		bubleScore = bubble::
 	};
 
 	// デストラクタ
