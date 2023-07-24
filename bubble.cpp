@@ -53,7 +53,7 @@ void bubble::Draw() const
 		break;
 	case 1:
 		DrawGraph((int)bubbleX, (int)bubbleY, BubbleImg[3], TRUE);
-		DrawFormatString((int)bubbleX, (int)bubbleY -30, C_RED, "各ステージに対応した数字(1～5)キーを押すことで押したキーのステージへ");
+		DrawFormatString((int)bubbleX + 20, (int)bubbleY, C_RED, "500");
 		/*DrawGraph((int)bubbleX, (int)bubbleY, BubbleImg[0], TRUE);
 		DrawBox((int)bubbleX + 15, (int)bubbleY + 15, (int)bubbleX + 50, (int)bubbleY + 50, C_WHITE, FALSE);*/
 		break;
