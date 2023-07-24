@@ -68,7 +68,7 @@
 
 #define AbtnIntervalFream 8 //Aボタンのインターバルフレーム数
 
-#define COR -0.8f			//反発係数(coefficient of repulsion)
+#define COR 0.8f			//反発係数(coefficient of repulsion)
 
 class Player
 {

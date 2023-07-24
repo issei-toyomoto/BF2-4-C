@@ -19,43 +19,18 @@ Fish::Fish() {
 	FishAnim = 0;
 	WaitTime = 51;
 	P_FishFlg = FALSE;
+	TurnFlg = FALSE;
 }
 
 //魚生成
 void Fish::Draw() const {
 	if (SpawnFlg==TRUE) {
 		//魚画像(アニメーション)
-		switch (FishAnim) {
-		case 6:
-			DrawGraph((int)f_PosX, (int)f_PosY, FishImage[0], TRUE);
-			break;
-		case 5:
-			DrawGraph((int)f_PosX, (int)f_PosY, FishImage[1], TRUE);
-			break;
-		case 4:
-			DrawGraph((int)f_PosX, (int)f_PosY, FishImage[2], TRUE);
-			break;
-		case 3:
-			switch (Target) {
-			case 0:
-				break;
-			case 1:
-				DrawGraph((int)f_PosX, (int)f_PosY, FishImage[6], TRUE);
-				break;
-				//case Enemy:	//敵によって画像変更
-				//	DrawGraph(f_PosX,f_PosY,FishImage[EnemyFlg],TRUE);
-				//	break;
-			}
-			break;
-		case 2:
-			DrawGraph((int)f_PosX, (int)f_PosY, FishImage[3], TRUE);
-			break;
-		case 1:
-			DrawGraph((int)f_PosX, (int)f_PosY, FishImage[4], TRUE);
-			break;
-		case 0:
-			DrawGraph((int)f_PosX, (int)f_PosY, FishImage[5], TRUE);
-			break;
+		if (TurnFlg == FALSE) {
+			DrawLeft();
+		}
+		else if (TurnFlg == TRUE) {
+			DrawRight();
 		}
 	}
 }
@@ -76,6 +51,10 @@ void Fish::Update() {
 			Second = 2;
 			//魚出現
 			if (FishRand <= 99/*29*/) {
+				FishRand = GetRand(1);
+				if (FishRand == 1) {
+					
+				}
 				SpawnFlg = TRUE;
 				MoveFish();
 			}
@@ -155,6 +134,7 @@ void Fish::TargetEnemy() {
 void Fish::InitFish() {
 	SpawnFlg = FALSE;
 	P_FishFlg = FALSE;
+	TurnFlg = FALSE;
 	f_PosY = 400;
 	Target = 0;
 	Second = 0;
@@ -162,7 +142,82 @@ void Fish::InitFish() {
 	WaitTime = 51;
 }
 
+//魚に食べられたときプレイヤー用
 bool Fish::GetFishFlg() {
 	static bool f = P_FishFlg;
 	return f;
 }
+
+//左向き描画
+void Fish::DrawRight() const {
+	//魚画像(アニメーション)
+	switch (FishAnim) {
+	case 6:
+		DrawGraph((int)f_PosX, (int)f_PosY, FishImage[0], TRUE);
+		break;
+	case 5:
+		DrawGraph((int)f_PosX, (int)f_PosY, FishImage[1], TRUE);
+		break;
+	case 4:
+		DrawGraph((int)f_PosX, (int)f_PosY, FishImage[2], TRUE);
+		break;
+	case 3:
+		switch (Target) {
+		case 0:
+			break;
+		case 1:
+			DrawGraph((int)f_PosX, (int)f_PosY, FishImage[6], TRUE);
+			break;
+			//case Enemy:	//敵によって画像変更
+			//	DrawTurnGraph(f_PosX,f_PosY,FishImage[EnemyFlg],TRUE);
+			//	break;
+		}
+		break;
+	case 2:
+		DrawGraph((int)f_PosX, (int)f_PosY, FishImage[3], TRUE);
+		break;
+	case 1:
+		DrawGraph((int)f_PosX, (int)f_PosY, FishImage[4], TRUE);
+		break;
+	case 0:
+		DrawGraph((int)f_PosX, (int)f_PosY, FishImage[5], TRUE);
+		break;
+	}
+}
+
+//左向き描画
+void Fish::DrawLeft() const {
+	switch (FishAnim) {
+	case 6:
+		DrawTurnGraph((int)f_PosX, (int)f_PosY, FishImage[0], TRUE);
+		break;
+	case 5:
+		DrawTurnGraph((int)f_PosX, (int)f_PosY, FishImage[1], TRUE);
+		break;
+	case 4:
+		DrawTurnGraph((int)f_PosX, (int)f_PosY, FishImage[2], TRUE);
+		break;
+	case 3:
+		switch (Target) {
+		case 0:
+			break;
+		case 1:
+			DrawTurnGraph((int)f_PosX, (int)f_PosY, FishImage[6], TRUE);
+			break;
+			//case Enemy:	//敵によって画像変更
+			//	DrawGraph(f_PosX,f_PosY,FishImage[EnemyFlg],TRUE);
+			//	break;
+		}
+		break;
+	case 2:
+		DrawTurnGraph((int)f_PosX, (int)f_PosY, FishImage[3], TRUE);
+		break;
+	case 1:
+		DrawTurnGraph((int)f_PosX, (int)f_PosY, FishImage[4], TRUE);
+		break;
+	case 0:
+		DrawTurnGraph((int)f_PosX, (int)f_PosY, FishImage[5], TRUE);
+		break;
+	}
+}
+

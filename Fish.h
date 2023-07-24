@@ -15,7 +15,9 @@ private:
 	//出現判定　TRUE：出現　FALSE：未出現
 	bool SpawnFlg;
 
-	int FishImage[10];	//画像用変数
+	//画像用変数
+	int FishImage[10];	
+	bool TurnFlg;
 
 	//魚のアニメーション用変数
 	int f_Count;		//カウント	
@@ -34,8 +36,13 @@ public:
 	//魚に食べられたときプレイヤー用
 	bool P_FishFlg;
 
+	//魚に食べられたとき敵用
+	bool E_FishFlg;
+
 	Fish();					//コンストラクタ
 	void Draw() const;		//魚生成
+	void DrawRight() const;		//右向き描画
+	void DrawLeft() const;		//左向き描画
 	void Update();			//出現エリア判定
 	void MoveFish();		//魚移動
 	void TargetPlayer();	//プレイヤーを襲う処理
