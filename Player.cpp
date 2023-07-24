@@ -242,7 +242,7 @@ void Player::UpdatePlayerX() //*プレイヤーのX座標処理*//
 			VectorX *= 0.89f;			//慣性
 		}
 		else if (GroundFlg == Not_Ground) {
-			VectorX *= 0.96;
+			VectorX *= 0.96f;
 		}
 		PlayerState = P_State_Wait;	//プレイヤーのステータスを待機に変更
 	}
