@@ -10,23 +10,6 @@ Thunder::Thunder(){
 	}//âÊëúì«Ç›çûÇ›
 }
 
-void Thunder::Update()
-{
-	ChangeAngle();
-
-	MoveThunder();
-
-}
-
-
-void Thunder::Draw() const {
-	DrawGraph(100, 100, gCloudImg, TRUE);
-	
-	DrawGraph(100, 200, gThunderImg[0], TRUE);
-
-}
-
-
 void Thunder::ChangeAngle()
 {
 	float rad = ThunderAngle * (float)M_PI * 2;
@@ -35,10 +18,11 @@ void Thunder::ChangeAngle()
 }
 
 void Thunder::MoveThunder() {
-	ThunderX += 1;
-	ThunderY += 1; 
 
-	if(ThunderFlg != 2) {
+	ThunderX += 1;
+	ThunderY += 1;
+
+	if (ThunderFlg != 2) {
 
 		ThunderX += ThunderMoveX;
 		ThunderY += ThunderMoveY;
@@ -67,6 +51,25 @@ void Thunder::MoveThunder() {
 		ChangeAngle();
 	}
 }
+
+void Thunder::Update()
+{
+	ChangeAngle();
+
+	MoveThunder();
+
+}
+
+
+void Thunder::Draw() const {
+	DrawGraph(100, 100, gCloudImg, TRUE);
+	
+	DrawGraph(100, 200, gThunderImg[0], TRUE);
+
+}
+
+
+
 
 
 	
