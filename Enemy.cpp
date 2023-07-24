@@ -63,7 +63,7 @@ void Enemy::Update()
 }
 
 // •`‰æ‚ÌXV‚ğÀ‘•‚·‚é
-void Enemy::Draw() const
+void Enemy::Draw() const 
 {
 #ifdef _DEBUG
 	DrawFormatString(50, 50, 0xffffff, "EnX:%f EnY:%f", enemy[2].x, enemy[2].y);
