@@ -92,14 +92,10 @@ void Fish::MoveFish() {
 	P_X = Player::PlayerX;
 	P_Y = Player::PlayerY;
 	//UŒ‚‘ÎÛ‚ª“G
-	/*if (enemyY > 600) {
-		f_PosX = enemyX;
-		f_PosY = enemyY - f_Count;
-		f_Count = f_Count - 1;
-		if(f_Count == 0){
-			EnemyLife = 0;
-		}
-	}*/
+	/*if (E_Y >= 358 && E_X >= 135 && E_X <= 479 || FishAnim <= 3) {
+		TargetEnemy();
+	}
+	*/
 	//UŒ‚‘ÎÛ‚ªƒvƒŒƒCƒ„[
 	if (P_Y >= 358 && P_X >= 135 && P_X <= 479 || FishAnim <= 3) {
 		TargetPlayer();
