@@ -13,7 +13,7 @@ class GameMain :public AbstractScene
 private:
 	Player player;
 	bubble BUBBLE;
-	//Enemy enemy;
+	Enemy enemy;
 	Thunder thunder;
 	Thunder MoveThunderX;
 	Fish fish;

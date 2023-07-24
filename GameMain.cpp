@@ -23,7 +23,7 @@ AbstractScene* GameMain::Update()
 {
 	player.Update(gStageState);
 	BUBBLE.Update();
-	//enemy.Update();
+	enemy.Update();
 	fish.Update();
 	thunder.Update();
 
@@ -55,7 +55,7 @@ void GameMain::Draw()const
 	thunder.Draw();
 	BUBBLE.Draw();
 	player.Draw();
-	//enemy.Draw();
+	enemy.Draw();
 	fish.Draw();
 	ui.Draw();
 
