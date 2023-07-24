@@ -18,9 +18,9 @@ Enemy::Enemy()
 	HitFlg = 0;
 	HitPFlg = 0;
 
-	LoadDivGraph("image/Enemy/Enemy_P_Animation.png", 18, 6, 3, 64, 64, EnemyImg[0]);  //画像読み込み
-	LoadDivGraph("image/Enemy/Enemy_G_Animation.png", 18, 6, 3, 64, 64, EnemyImg[1]);  //画像読み込み
-	LoadDivGraph("image/Enemy/Enemy_R_Animation.png", 18, 6, 3, 64, 64, EnemyImg[2]);  //画像読み込み
+	LoadDivGraph("image/Enemy/Enemy_P_Animation.png", 18, 6, 3, 64, 64, EnemyImg[0]);  //画像読み込み(ピンク)
+	LoadDivGraph("image/Enemy/Enemy_G_Animation.png", 18, 6, 3, 64, 64, EnemyImg[1]);  //画像読み込み(みどり)
+	LoadDivGraph("image/Enemy/Enemy_R_Animation.png", 18, 6, 3, 64, 64, EnemyImg[2]);  //画像読み込み(きいろ)
 }
 
 // デストラクタ
@@ -67,34 +67,36 @@ void Enemy::Draw() const
 	DrawFormatString(130, 70, 0xffffff, "die:%f", enemy[0].die);
 	
 
-	//for (int i = 0; i < ENEMY_MAX; i++)
-	//{
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		if (enemy[i].life != 0)
+		{
+			// 敵の当たり判定表示
+			if (enemy[i].state != 3)
+			{
+				if (StartFlg == 0)
+				{
+					// スタートモーション時
+					DrawBox((int)enemy[i].x, (int)enemy[i].y + 25, (int)enemy[i].x + 50, (int)enemy[i].y + 64, 0xffffff, FALSE);
+				}
+				else
+				{
+					// スタート以外
+					//DrawBox((int)enemy[i].x + 10, (int)enemy[i].y + 12, (int)enemy[i].x + 55, (int)enemy[i].y + 65, 0xffffff, FALSE);
 
-	//	// 敵の当たり判定表示
-	//	if (enemy[i].state == 0)
-	//	{
-	//		if (StartFlg == 0)
-	//		{
-	//			// スタートモーション時
-	//			DrawBox((int)enemy[i].x, (int)enemy[i].y + 25, (int)enemy[i].x + 50, (int)enemy[i].y + 64, 0xffffff, FALSE);
-	//		}
-	//		else
-	//		{
-	//			// スタート以外
-	//			//DrawBox((int)enemy[i].x + 10, (int)enemy[i].y + 12, (int)enemy[i].x + 55, (int)enemy[i].y + 65, 0xffffff, FALSE);
-	//			
-	//			// プレイヤーと当たってる場合赤枠、当たっていない場合白枠
-	//			if (HitPFlg == i)
-	//			{
-	//				DrawBox((int)EnXL[i], (int)EnYL[i], (int)EnXR[i], (int)EnYR[i], 0xff0000, FALSE);
-	//			}
-	//			else
-	//			{
-	//				DrawBox((int)EnXL[i], (int)EnYL[i], (int)EnXR[i], (int)EnYR[i], 0xffffff, FALSE);
-	//			}
-	//		}
-	//	}
-	//}
+					// プレイヤーと当たってる場合赤枠、当たっていない場合白枠
+					if (HitPFlg == i)
+					{
+						DrawBox((int)EnXL[i], (int)EnYL[i], (int)EnXR[i], (int)EnYR[i], 0xff0000, FALSE);
+					}
+					else
+					{
+						DrawBox((int)EnXL[i], (int)EnYL[i], (int)EnXR[i], (int)EnYR[i], 0xffffff, FALSE);
+					}
+				}
+			}
+		}
+	}
 
 #endif // DEBUG
 
@@ -112,13 +114,13 @@ void Enemy::Draw() const
 			{
 				// スタート以外
 				// 画面内
-				if (enemy[i].direction == 1)
+				if (enemy[i].direction != 1)
 				{
-					DrawTurnGraph((int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
+					DrawGraph((int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
 				}
 				else
 				{
-					DrawGraph((int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
+					DrawTurnGraph((int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
 				}
 
 				// 画面外
@@ -140,7 +142,7 @@ void Enemy::EnemyInit()
 {
 	for (int i = 0; i < ENEMY_MAX; i++)
 	{
-		enemy[i].x = ENEMY_X + 85 * i;
+		enemy[i].x = ENEMY_X + 85.0f * i;
 		enemy[i].y = ENEMY_Y;
 		enemy[i].state = 0;
 	}
@@ -231,51 +233,62 @@ void Enemy::StartMove()
 {
 	for (int i = 0; i < ENEMY_MAX; i++)
 	{
-		if (StartMotion == 0)
+		if (enemy[i].life != 0)
 		{
-			if (FPScnt > 0 && FPScnt < 15 || FPScnt > 31 && FPScnt < 45)
+			HitStart(i);
+
+			if (StartMotion == 0)
 			{
-				enemy[i].flg = 0;
+				
+
+				if (FPScnt > 0 && FPScnt < 15 || FPScnt > 31 && FPScnt < 45)
+				{
+					enemy[i].flg = 0;
+				}
+				else
+				{
+					enemy[i].flg = 1;
+				}
 			}
-			else
+			else if (StartMotion == 1)
 			{
-				enemy[i].flg = 1;
+				if (FPScnt > 0 && FPScnt < 15 || FPScnt > 31 && FPScnt < 45)
+				{
+					enemy[i].flg = 2;
+				}
+				else
+				{
+					enemy[i].flg = 3;
+				}
+			}
+			else if (StartMotion == 2)
+			{
+				if (FPScnt > 0 && FPScnt < 15 || FPScnt > 31 && FPScnt < 45)
+				{
+					enemy[i].flg = 4;
+				}
+				else
+				{
+					enemy[i].flg = 5;
+				}
+			}
+			else if (StartMotion == 3)
+			{
+				if (FPScnt > 0 && FPScnt < 15 || FPScnt > 31 && FPScnt < 45)
+				{
+					enemy[i].flg = 6;
+				}
+				else
+				{
+					enemy[i].flg = 7;
+					StartFlg = 1;
+					StartMotion = 0;
+				}
 			}
 		}
-		else if (StartMotion == 1)
+		else
 		{
-			if (FPScnt > 0 && FPScnt < 15 || FPScnt > 31 && FPScnt < 45)
-			{
-				enemy[i].flg = 2;
-			}
-			else
-			{
-				enemy[i].flg = 3;
-			}
-		}
-		else if (StartMotion == 2)
-		{
-			if (FPScnt > 0 && FPScnt < 15 || FPScnt > 31 && FPScnt < 45)
-			{
-				enemy[i].flg = 4;
-			}
-			else
-			{
-				enemy[i].flg = 5;
-			}
-		}
-		else if (StartMotion == 3)
-		{
-			if (FPScnt > 0 && FPScnt < 15 || FPScnt > 31 && FPScnt < 45)
-			{
-				enemy[i].flg = 6;
-			}
-			else
-			{
-				enemy[i].flg = 7;
-				StartFlg = 1;
-				StartMotion = 0;
-			}
+			EnemyDie(i);
 		}
 	}
 }
@@ -320,6 +333,39 @@ void Enemy::EnemyDown(int e)
 		// 10 11 10 12 10 
 	}
 	
+}
+
+// 敵とプレイヤーの当たり判定(スタート時)
+int Enemy::HitStart(int e)
+{
+	// プレイヤーの矩形の座標
+	float PXL, PYL;//左上
+	float PXR, PYR;//右下
+
+	PXL = Px + 18;//左上X
+	PYL = Py + 14;//左上Y
+	PXR = Px + 40;//右下X
+	PYR = Py + 64;//右下Y
+
+
+	EnXL[e] = enemy[e].x;
+	EnYL[e] = enemy[e].y + 25.0f;
+	EnXR[e] = EnXL[e] + 50.0f;
+	EnYR[e] = EnYL[e] + 64.0f;
+
+
+	if (enemy[e].life != 0)
+	{
+		if (EnXL[e] <= PXR && EnYL[e] <= PYR && EnXR[e] >= PXL && EnYR[e] >= PYL)
+		{
+			enemy[e].flg = 17;
+			// 仮
+			enemy[e].life -= 1;
+			return e;
+		}
+	}
+
+	return 3;
 }
 
 // 敵同士の当たり判定
