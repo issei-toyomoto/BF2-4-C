@@ -53,7 +53,7 @@ void Fish::Update() {
 			if (FishRand <= 99/*29*/) {
 				FishRand = GetRand(1);
 				if (FishRand == 1) {
-					
+					TurnFlg = TRUE;
 				}
 				SpawnFlg = TRUE;
 				MoveFish();
@@ -146,6 +146,12 @@ void Fish::InitFish() {
 bool Fish::GetFishFlg() {
 	static bool f = P_FishFlg;
 	return f;
+}
+
+//‹›‚ÉH‚×‚ç‚ê‚½‚Æ‚«“G—p
+bool Fish::E_GetFishFlg() {
+	static bool e = E_FishFlg;
+	return e;
 }
 
 //¶Œü‚«•`‰æ
