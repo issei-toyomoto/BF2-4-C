@@ -8,19 +8,29 @@
 Thunder::Thunder(){
 	if (LoadDivGraph("images/Stage_ThunderEffectAnimation.png", 3, 3, 1, 32, 32, gThunderImg) == -1) {
 	}//âÊëúì«Ç›çûÇ›
+
+	ThunderX = 100;
+	ThunderY = 200;// óãÇÃç¿ïW
+
+	ThunderMoveX = 3;
+	ThunderMoveY = 3;
 }
 
-void Thunder::ChangeAngle()
+//void Thunder::ChangeAngle()
+//{
+//	float rad = ThunderAngle * (float)M_PI * 2;
+//	ThunderMoveX = (int)(Speed * cosf(rad));
+//	ThunderMoveY = (int)(Speed * sinf(rad));
+//}
+
+void Thunder::MoveThunderX() 
 {
-	float rad = ThunderAngle * (float)M_PI * 2;
-	ThunderMoveX = (int)(Speed * cosf(rad));
-	ThunderMoveY = (int)(Speed * sinf(rad));
-}
-
-void Thunder::MoveThunder() {
-
-	ThunderX += 1;
-	ThunderY += 1;
+	if (ThunderX <= 0) {
+		ThunderMoveX *= -1;
+	}
+	else if (ThunderX >= _SCREEN_WIDHT_) {
+		ThunderMoveX *= -1;
+	}
 
 	//if (ThunderFlg != 2) {
 
@@ -52,11 +62,24 @@ void Thunder::MoveThunder() {
 	//}
 }
 
+void Thunder::MoveThunderY() 
+{
+	if (ThunderY <= 0) {
+		ThunderMoveY *= -1;
+	}
+	else if (ThunderY >= _SCREEN_HEIGHT_) {
+		ThunderMoveY *= -1;
+	}
+}
+
 void Thunder::Update()
 {
-	ChangeAngle();
+	//ChangeAngle();
 
-	MoveThunder();
+	MoveThunderX();
+	ThunderX += ThunderMoveX;
+	MoveThunderY();
+	ThunderY += ThunderMoveY;
 
 }
 
@@ -65,7 +88,6 @@ void Thunder::Draw() const {
 	DrawGraph(100, 100, gCloudImg, TRUE);
 	
 	DrawGraph(ThunderX, ThunderY, gThunderImg[0], TRUE);
-
 }
 
 
