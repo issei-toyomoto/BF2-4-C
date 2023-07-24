@@ -10,7 +10,7 @@ class Enemy
 {
 private:
 	int StartFlg;      // スタート状態か判定する用
-	int EnemyImg[24];  // 敵の画像格納用
+	int EnemyImg[3][24];  // 敵の画像格納用
 	int FPScnt;        // FPSカウント
 	int StartMotion;   // スタート時、敵のモーション管理用
 	float Px, Py;      // プレイヤーのX座標、Y座標
@@ -30,6 +30,7 @@ private:
 		float speed = 0.3f; // 敵の移動速度
 		int direction = 0;  // 敵の向いてる向き(0:左 1:右)
 		int ground = 0;     // 地面に触れているか(0:触れてない 1:触れている)
+		float die = 0;
 	};
 
 	struct ENEMY enemy[ENEMY_MAX];   // 敵のデータ(変数宣言)

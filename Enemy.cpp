@@ -18,7 +18,9 @@ Enemy::Enemy()
 	HitFlg = 0;
 	HitPFlg = 0;
 
-	LoadDivGraph("image/Enemy/Enemy_P_Animation.png", 18, 6, 3, 64, 64, EnemyImg);  //画像読み込み
+	LoadDivGraph("image/Enemy/Enemy_P_Animation.png", 18, 6, 3, 64, 64, EnemyImg[0]);  //画像読み込み
+	LoadDivGraph("image/Enemy/Enemy_P_Animation.png", 18, 6, 3, 64, 64, EnemyImg[1]);  //画像読み込み
+	LoadDivGraph("image/Enemy/Enemy_P_Animation.png", 18, 6, 3, 64, 64, EnemyImg[2]);  //画像読み込み
 }
 
 // デストラクタ
@@ -62,37 +64,37 @@ void Enemy::Draw() const
 	DrawFormatString(50, 70, 0xffffff, "Enflg:%d", enemy[0].life);
 	DrawFormatString(50, 90, 0xffffff, "Enflg:%d", enemy[1].life);
 	DrawFormatString(50, 110, 0xffffff, "Enflg:%d", enemy[2].life);
-	DrawFormatString(130, 70, 0xffffff, "Hit:%d", HitPFlg);
+	DrawFormatString(130, 70, 0xffffff, "die:%f", enemy[0].die);
 	
 
-	for (int i = 0; i < ENEMY_MAX; i++)
-	{
+	//for (int i = 0; i < ENEMY_MAX; i++)
+	//{
 
-		// 敵の当たり判定表示
-		if (enemy[i].state == 0)
-		{
-			if (StartFlg == 0)
-			{
-				// スタートモーション時
-				DrawBox((int)enemy[i].x, (int)enemy[i].y + 25, (int)enemy[i].x + 50, (int)enemy[i].y + 64, 0xffffff, FALSE);
-			}
-			else
-			{
-				// スタート以外
-				//DrawBox((int)enemy[i].x + 10, (int)enemy[i].y + 12, (int)enemy[i].x + 55, (int)enemy[i].y + 65, 0xffffff, FALSE);
-				
-				// プレイヤーと当たってる場合赤枠、当たっていない場合白枠
-				if (HitPFlg == i)
-				{
-					DrawBox((int)EnXL[i], (int)EnYL[i], (int)EnXR[i], (int)EnYR[i], 0xff0000, FALSE);
-				}
-				else
-				{
-					DrawBox((int)EnXL[i], (int)EnYL[i], (int)EnXR[i], (int)EnYR[i], 0xffffff, FALSE);
-				}
-			}
-		}
-	}
+	//	// 敵の当たり判定表示
+	//	if (enemy[i].state == 0)
+	//	{
+	//		if (StartFlg == 0)
+	//		{
+	//			// スタートモーション時
+	//			DrawBox((int)enemy[i].x, (int)enemy[i].y + 25, (int)enemy[i].x + 50, (int)enemy[i].y + 64, 0xffffff, FALSE);
+	//		}
+	//		else
+	//		{
+	//			// スタート以外
+	//			//DrawBox((int)enemy[i].x + 10, (int)enemy[i].y + 12, (int)enemy[i].x + 55, (int)enemy[i].y + 65, 0xffffff, FALSE);
+	//			
+	//			// プレイヤーと当たってる場合赤枠、当たっていない場合白枠
+	//			if (HitPFlg == i)
+	//			{
+	//				DrawBox((int)EnXL[i], (int)EnYL[i], (int)EnXR[i], (int)EnYR[i], 0xff0000, FALSE);
+	//			}
+	//			else
+	//			{
+	//				DrawBox((int)EnXL[i], (int)EnYL[i], (int)EnXR[i], (int)EnYR[i], 0xffffff, FALSE);
+	//			}
+	//		}
+	//	}
+	//}
 
 #endif // DEBUG
 
@@ -104,7 +106,7 @@ void Enemy::Draw() const
 			if (StartFlg == 0)
 			{
 				// スタートモーション時
-				DrawGraph((int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].flg], TRUE);
+				DrawGraph((int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
 			}
 			else
 			{
@@ -112,21 +114,21 @@ void Enemy::Draw() const
 				// 画面内
 				if (enemy[i].direction == 1)
 				{
-					DrawTurnGraph((int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].flg], TRUE);
+					DrawTurnGraph((int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
 				}
 				else
 				{
-					DrawGraph((int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].flg], TRUE);
+					DrawGraph((int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
 				}
 
 				// 画面外
 				if (enemy[i].x < 0)
 				{
-					DrawGraph(640 + (int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].flg], TRUE);
+					DrawGraph(640 + (int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
 				}
 				else if (enemy[i].x > 640 - 64)
 				{
-					DrawGraph((int)enemy[i].x - 640, (int)enemy[i].y, EnemyImg[enemy[i].flg], TRUE);
+					DrawGraph((int)enemy[i].x - 640, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
 				}
 			}
 		}
@@ -430,13 +432,16 @@ int Enemy::HitPlayer(int e)
 	EnXR[e] = EnXL[e] + 45.0f;
 	EnYR[e] = EnYL[e] + 53.0f;
 
-		
-	if (EnXL[e] <= PXR && EnYL[e] <= PYR && EnXR[e] >= PXL && EnYR[e] >= PYL)
+	
+	if (enemy[e].life != 0)
 	{
-		enemy[e].flg = 17;
-		// 仮
-		enemy[e].life = 0;
-		return e;
+		if (EnXL[e] <= PXR && EnYL[e] <= PYR && EnXR[e] >= PXL && EnYR[e] >= PYL)
+		{
+			enemy[e].flg = 17;
+			// 仮
+			enemy[e].life -= 1;
+			return e;
+		}
 	}
 		
 	return 3;
@@ -445,8 +450,35 @@ int Enemy::HitPlayer(int e)
 // 敵の死亡モーション処理
 void Enemy::EnemyDie(int e)
 {
-	if(enemy[e].y <= 490.0f)
+	// パタパタ手を動かすモーション
+	if (FPScnt > 0 && FPScnt < 4 || FPScnt > 9 && FPScnt < 12 || FPScnt > 17 && FPScnt < 20)
 	{
-		enemy[e].y += 0.6f;
+		enemy[e].flg = 13;
+	}
+	else if (FPScnt > 25 && FPScnt < 28 || FPScnt > 33 && FPScnt < 36 || FPScnt > 41 && FPScnt < 44)
+	{
+		enemy[e].flg = 13;
+	}
+	else if (FPScnt > 49 && FPScnt < 52 || FPScnt > 57 && FPScnt < 60)
+	{
+		enemy[e].flg = 13;
+	}
+	else
+	{
+		enemy[e].flg = 14;
+	}
+
+	if (enemy[e].die <= 8)
+	{
+		enemy[e].die++;
+		enemy[e].y -= 2.8f;
+	}
+	else if(enemy[e].die <= 15)
+	{
+		enemy[e].die++;
+	}
+	else if(enemy[e].y <= 490.0f)
+	{
+		enemy[e].y += 3.0f;
 	}
 }
