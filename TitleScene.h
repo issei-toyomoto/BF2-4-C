@@ -12,6 +12,10 @@ private:
 	int gTitleFontImg;
 	int gTitleModeImg;
 	int gTitleCreditImg;
+	int gTitleCursorAnim[4];
+	int FPSCount;
+	int MenuNumber;
+	int gMenuY;
 public:
 	Title();
 	~Title();
