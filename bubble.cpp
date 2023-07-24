@@ -5,9 +5,14 @@
 
 bubble::bubble() {
 	LoadDivGraph("images/Stage_BubbleAnimation.png", 4, 4, 1, 64, 64, BubbleImg);//画像読み込み
+	bubbleX = 320;
+	bubbleY = 480;
+	FPSCount = 0;
 	px = 0;
 	py = 0;
-	BubleAnim = 0;
+	BubleFlg = 0;
+	BubbleFlg = 0;
+	BubleScore = 0;
 }
 
 
@@ -20,8 +25,9 @@ void bubble::Update()
 	px = Player::PlayerX;
 	py = Player::PlayerY;
 
-	bubbleY -= 0.25;
+	bubble::BubleCollision();
 
+	bubbleY -= 0.25;
 
 	if (FPSCount <= 29) {
 		bubbleX -= 1.5;
@@ -33,26 +39,23 @@ void bubble::Update()
 	if (FPSCount == 60) {
 		FPSCount = 0;
 	}
-	if (px == bubbleX && py == bubbleY) {
-		BubleAnim = 1;
-	}
-
 
 }
 
 void bubble::Draw() const
 {
 	
-	switch (BubleAnim)
+	switch (BubleFlg)
 	{
 	case 0:
 		DrawGraph((int)bubbleX, (int)bubbleY, BubbleImg[0], TRUE);
 		DrawBox((int)bubbleX + 15, (int)bubbleY + 15, (int)bubbleX + 50, (int)bubbleY + 50, C_RED, FALSE);
 		break;
 	case 1:
-		/*DrawGraph((int)bubbleX, (int)bubbleY, BubbleImg[3], TRUE);*/
-		/*DrawGraph((int)bubbleX, (int)bubbleY, BubbleImg[0], TRUE);*/
-		DrawBox((int)bubbleX + 15, (int)bubbleY + 15, (int)bubbleX + 50, (int)bubbleY + 50, C_WHITE, FALSE);
+		DrawGraph((int)bubbleX, (int)bubbleY, BubbleImg[3], TRUE);
+		DrawFormatString((int)bubbleX, (int)bubbleY -30, C_RED, "各ステージに対応した数字(1～5)キーを押すことで押したキーのステージへ");
+		/*DrawGraph((int)bubbleX, (int)bubbleY, BubbleImg[0], TRUE);
+		DrawBox((int)bubbleX + 15, (int)bubbleY + 15, (int)bubbleX + 50, (int)bubbleY + 50, C_WHITE, FALSE);*/
 		break;
 	default:
 		break;
@@ -73,8 +76,10 @@ void bubble::BubleCollision()
 	BubleX2 = (int)bubbleX + 50;
 	BubleY2 = (int)bubbleY + 50;
 
-	if (BubleX1 <= Player::PlayerX + 18 && BubleY1 <=  Player::PlayerY +14  && BubleX2 >= Player::PlayerX + 40 && BubleY2 >=  Player::PlayerY + 64 ) {
-		BubleAnim = 1;
+	// シャボン玉とプレイヤーの当たり判定
+	if (((BubleX1 > px + 18 && BubleX1 <  px + 40)||(BubleX1 < px + 18 && BubleX2 > px + 18))&&(( BubleY1 > py + 14 && BubleY1 < py + 64)||(py + 14 > BubleY1 && py + 14 < BubleY2))) {
+		BubleFlg = 1;
+		BubleScore += 500;
 	}
 }
 
