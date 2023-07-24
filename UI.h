@@ -8,6 +8,8 @@ private:
 	int UITop;
 	int UIStock;
 	int UINumber[9];
+	int bubleScore;
+	int TotalScore;
 
 public:
 	// コンストラクタ
