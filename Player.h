@@ -25,7 +25,7 @@
 #define P_Img_Fly_Ballon_2_1 17
 #define P_Img_Fly_Ballon_2_2 18
 #define P_Img_Fly_Ballon_2_3 19
-#define P_Img_FlyStop_Ballon_2_4 20
+#define P_Img_Fly_Ballon_2_4 20
 //死亡
 #define P_Img_Dead_0 21
 #define P_Img_Dead_1 22
@@ -35,7 +35,7 @@
 #define P_Img_Fly_Ballon_1_1 25
 #define P_Img_Fly_Ballon_1_2 26
 #define P_Img_Fly_Ballon_1_3 27
-#define P_Img_FlyStop_Ballon_1_4 28
+#define P_Img_Fly_Ballon_1_4 28
 
 //雷に当たる
 #define P_Img_Thunder_0 29
@@ -70,11 +70,15 @@
 
 #define COR 0.8f			//反発係数(coefficient of repulsion)
 
+#define Sea_Level 470		//海面の高さ
+
 class Player
 {
 private:
 	int FPSCnt;			//FPSカウント（６０FPS）
 	int AbtnFPSCnt;		//Aボタン用のFPSカウント
+	int WaitFPSCnt;		//ステックを倒していない時のFPSカウント
+	int DeathCnt;		//死んだ後の１０秒測る用
 
 	int PlayerImg[32];	//プレイヤー画像
 	int NowPlayerImg;	//現在のプレイヤー画像配列の要素
@@ -100,7 +104,8 @@ private:
 	bool FlyBtnFlg;		//(true;飛ぶボタンを押している false:飛ぶボタンを押していない)
 	bool GroundFlg;		//(true:地面に接触している     false:地面に接触していない    )
 	bool TouchFlg;		//(treu:地面以外に触れている   false:地面以外に触れていない　)
-	bool Abtn;
+	bool Abtn;			//(treu:Aボタン押している      false:Aボタン押していない　   )
+	bool Death;			//(treu:死んだ                 false:死んでいない　          )
 
 	int Anti_AbtnCnt = 0;	//Aボタンを押していない時をカウント
 public:
@@ -139,8 +144,10 @@ public:
 	//死亡時の画像処理
 	void UpdatePlayerImgDead();
 
+	//初期位置へ戻す処理（無敵時間の処理もここでやる予定）
+	void SetInitLocation();
+
 	//プレイヤーの座標取得
 	float GetPlayerX();
 	float GetPlayerY();
-
 };
