@@ -3,6 +3,8 @@
 
 void UI::Update()
 {
+	TotalScore = 0;
+	bubleScore = 0;
 	TotalScore = bubleScore; /*+ EnemyScore*/
 }
 

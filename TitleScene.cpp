@@ -4,6 +4,7 @@
 #include "GameMain.h"
 #include "AbstractScene.h"
 #include "Common.h"
+#define DEBUG
 
 Title::Title() {
 	gTitleFontImg = LoadGraph("images-20230711T024428Z-001/images/Title/Title_Logo.png");
@@ -11,7 +12,7 @@ Title::Title() {
 	gTitleCreditImg = LoadGraph("images-20230711T024428Z-001/images/Title/Title_Credit.png");
 	LoadDivGraph("images-20230711T024428Z-001/images/Title/Title_CursorAnimation.png", 4, 4, 1, 32, 64, gTitleCursorAnim);
 	FPSCount = 0;
-	MenuNumber = 0;
+	MenuNumber = 1;
 	gMenuY = 0;
 	/*Key_flg = InputKey::key_flg;
 	Now_key = InputKey::now_key;
@@ -26,14 +27,17 @@ AbstractScene* Title::Update()
 {
 	FPSCount++;
 	InputKey::Update();
-
+	gMenuY = MenuNumber * 25;
+	if (FPSCount == 60) {
+		FPSCount = 0;
+	}
 	if ((InputKey::GetJoyStickY || InputKey::GetJoyStickYOnes) && (InputKey::GetKey(PAD_INPUT_3))) {
 		if (++MenuNumber > 2)MenuNumber = 0;
 	}
 	if (CheckHitKey(KEY_INPUT_1)) {
 		return new GameMain();
 	}
-	else if (CheckHitKey(KEY_INPUT_6)){
+	else if (CheckHitKey(KEY_INPUT_6)) {
 		return nullptr;
 	}
 	return this;
@@ -43,11 +47,20 @@ void Title::Draw() const {
 	DrawGraph(50, 40, gTitleFontImg, TRUE);
 	DrawGraph(170, 290, gTitleModeImg, TRUE);
 	DrawGraph(190, 430, gTitleCreditImg, TRUE);
-	if (FPSCount <= 15) {
-		DrawGraph(160, 290 + gMenuY, gTitleCursorAnim[0],TRUE);
+	if (FPSCount >= 0 && FPSCount <= 14) {
+		DrawGraph(130, 275 + gMenuY, gTitleCursorAnim[0],TRUE);
+	}
+	if (FPSCount >= 15 && FPSCount <= 29) {
+		DrawGraph(130, 275 + gMenuY, gTitleCursorAnim[1], TRUE);
+	}
+	if (FPSCount >= 30 && FPSCount <= 44) {
+		DrawGraph(130, 275 + gMenuY, gTitleCursorAnim[2], TRUE);
+	}
+	if (FPSCount >= 45 && FPSCount <= 60) {
+		DrawGraph(130, 275 + gMenuY, gTitleCursorAnim[3], TRUE);
 	}
 #ifdef DEBUG
-	DrawString(0, 0, "1キー押したらGameMain", C_RED);
-	DrawString(100, 0, "6キー押したら終了", C_RED);
+	DrawString(50, 0, "1キー押したらGameMain", C_RED);
+	DrawString(250, 0, "6キー押したら終了", C_RED);
 #endif // DEBUG
 }
