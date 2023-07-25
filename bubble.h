@@ -25,4 +25,5 @@ public:
     void Update();
 	void Draw() const;
 	void BubleCollision();
+	void BubbleScore(int score);
 };
