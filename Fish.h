@@ -39,14 +39,15 @@ public:
 	//魚に食べられたとき敵用
 	bool E_FishFlg;
 
-	Fish();					//コンストラクタ
-	void Draw() const;		//魚生成
+	Fish();						//コンストラクタ
+	void Draw() const;			//魚生成
 	void DrawRight() const;		//右向き描画
 	void DrawLeft() const;		//左向き描画
-	void Update();			//出現エリア判定
-	void MoveFish();		//魚移動
-	void TargetPlayer();	//プレイヤーを襲う処理
-	void TargetEnemy();		//敵を襲う処理
-	void InitFish();		//初期化
-	bool GetFishFlg();		//魚に食べられたとき用変数取得関数
+	void Update();				//出現エリア判定
+	void MoveFish();			//魚移動
+	void TargetPlayer();		//プレイヤーを襲う処理
+	void TargetEnemy();			//敵を襲う処理
+	void InitFish();			//初期化
+	bool GetFishFlg();			//魚に食べられたとき用変数取得関数(プレイヤー)
+	bool E_GetFishFlg();		//魚に食べられたとき用変数取得関数(敵)
 };
