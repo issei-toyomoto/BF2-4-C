@@ -72,6 +72,8 @@
 
 #define Sea_Level 470		//海面の高さ
 
+#define RespawnTime 180		//リスポーンまでの時間
+
 class Player
 {
 private:
@@ -107,7 +109,8 @@ private:
 	bool TouchFlg;		//(treu:地面以外に触れている   false:地面以外に触れていない　)
 	bool Abtn;			//(treu:Aボタン押している      false:Aボタン押していない　   )
 	bool Respawn;		//(treu:リスポーンした         false:リスポーンしてない　  　)
-	bool Death;
+	static bool Death;			//(true:死亡した               false:死亡していない          )
+	bool Hide;			//(true:プレイヤーを表示しない false:プレイヤーを表示        )
 
 	bool FishFlg;
 

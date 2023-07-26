@@ -4,14 +4,16 @@
 #include "Common.h"
 #include "Fish.h"
 
-#define DEBUG
-#define DEBUG_Flg
+//#define DEBUG
+//#define DEBUG_Flg
 
 int Player::OldFraem;
 int Player::NowFraem;
 
 float Player::PlayerX;
 float Player::PlayerY;
+
+bool Player::Death;
 
 Player::Player() 
 {
@@ -36,6 +38,9 @@ Player::Player()
 	Respawn = true;
 	DeathCnt = 0;
 	XStick = 0;
+	Death = false;
+	RespawnCnt = 0;
+	Hide = false;
 
 	FishFlg = Fish::P_FishFlg;//Fish.cppから値を取得
 }
@@ -62,9 +67,18 @@ void Player::Update(int Stage) /***描画以外***/
 		}
 	}
 
+	if (Death == true) {
+		RespawnCnt++;
+		Hide = true;
+	}
+
 	FishFlg = Fish::P_FishFlg;//魚のフラグ更新
 
 	if (FishFlg == true) {
+		Death = true;
+	}
+
+	if (RespawnCnt == RespawnTime) {
 		SetInitLocation();
 	}
 
@@ -145,6 +159,12 @@ void Player::Update(int Stage) /***描画以外***/
 		DeathCnt = 0;
 		Respawn = false;
 	}
+
+	if (RespawnCnt > 180) {
+		RespawnCnt = 0;
+		Death = false;
+		Hide = false;
+	}
 	//**************************//
 #ifdef DEBUG
 	if (InputKey::GetKeyDown(PAD_INPUT_10) == TRUE) {//スペースキーを押したら風船の数を１つ減らす
@@ -156,34 +176,40 @@ void Player::Update(int Stage) /***描画以外***/
 
 void Player::Draw() const /***描画***/
 {
-	//*画面内*//
-	if (Angle == P_Left) {//左方向に向いている時
-		DrawGraph((int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
-	}
-	else if (Angle == P_Right) {//右方向に向いている時
-		DrawTurnGraph((int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
-	}
-	else {
-		DrawGraph((int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
-	}
+	if (Hide == false) {//プレイヤーを表示
+		//*画面内*//
+		if (Angle == P_Left) {//左方向に向いている時
+			DrawGraph((int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
+		}
+		else if (Angle == P_Right) {//右方向に向いている時
+			DrawTurnGraph((int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
+		}
+		else {
+			DrawGraph((int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
+		}
 
-	//*画面外*//
-	if (PlayerX < 0) {
-		if (Angle == P_Left) {
-			DrawGraph(640 + (int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
+		//*画面外*//
+		if (PlayerX < 0) {
+			if (Angle == P_Left) {
+				DrawGraph(640 + (int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
+			}
+			else if (Angle == P_Right) {
+				DrawTurnGraph(640 + (int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
+			}
 		}
-		else if (Angle == P_Right) {
-			DrawTurnGraph(640 + (int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
+		else if (PlayerX > 640 - P_Img_Size) {
+			if (Angle == P_Left) {
+				DrawGraph((int)PlayerX - 640, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
+			}
+			else if (Angle == P_Right) {
+				DrawTurnGraph((int)PlayerX - 640, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
+			}
 		}
 	}
-	else if (PlayerX > 640 - P_Img_Size) {
-		if (Angle == P_Left) {
-			DrawGraph((int)PlayerX - 640, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
-		}
-		else if (Angle == P_Right) {
-			DrawTurnGraph((int)PlayerX - 640, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
-		}
+	else if (Hide == true) {//プレイヤーを表示しない
+
 	}
+	
 
 #ifdef DEBUG
 	DrawFormatString(400, 10, C_WHITE, "FPS:%d", FPSCnt);						//フレームカウント
@@ -193,8 +219,10 @@ void Player::Draw() const /***描画***/
 	DrawFormatString(400, 90, C_WHITE, "Stage:%d", NowStage);					//現在のステージ
 	DrawFormatString(400, 120, C_WHITE, "Anti_AbtnCnt:%d",Anti_AbtnCnt);		//
 	DrawFormatString(400, 150, C_WHITE, "AbtnFPS:%d", AbtnFPSCnt);				//
-	DrawFormatString(400, 270, C_WHITE, "Death:%d DeathCnt:%d", Respawn, DeathCnt);
+	DrawFormatString(400, 270, C_WHITE, "Respawn:%d DeathCnt:%d", Respawn, DeathCnt);
 	DrawFormatString(400, 290, C_WHITE, "FishFlg:%d", FishFlg);
+	DrawFormatString(400, 310, C_WHITE, "Death:%d RespawnCnt:%d", Death, RespawnCnt);
+	DrawFormatString(400, 330, C_WHITE, "Hide:%d", Hide);
 
 	//プレイヤー画像サイズ
 	DrawBox((int)PlayerX, (int)PlayerY, (int)PlayerX + 64, (int)PlayerY + 64, C_RED,FALSE);
@@ -419,7 +447,7 @@ void Player::UpdateStageCollision()
 		}
 
 		if (PYU_Left > Sea_Level) {//海面したに行くと初期位置へ戻す処理
-			SetInitLocation();
+			Death = true;
 		}
 /*******************************************************************************************************************************/
 		//上辺の当たり判定//
@@ -1207,7 +1235,8 @@ void Player::UpdatePlayerImgWait()
 	}
 }
 
-void Player::UpdatePlayerImgThunder() //*雷に当たるアニメーション処理*//
+//*雷に当たるアニメーション処理*//
+void Player::UpdatePlayerImgThunder() 
 {
 	if (FPSCnt % 6 == 0 || FPSCnt % 6 == 1 || FPSCnt % 6 == 2) {//２フレームで画像変更
 		NowPlayerImg = P_Img_Thunder_0;
@@ -1217,7 +1246,8 @@ void Player::UpdatePlayerImgThunder() //*雷に当たるアニメーション処理*//
 	}
 }
 
-void Player::UpdatePlayerImgDead() //*死亡時アニメーション処理*//
+//*死亡時アニメーション処理*//
+void Player::UpdatePlayerImgDead() 
 {
 	if (FPSCnt % 9 == 0 || FPSCnt % 9 == 1 || FPSCnt % 9 == 2) {//２フレームで画像変更
 		NowPlayerImg = P_Img_Dead_0;
