@@ -31,6 +31,9 @@ Player::Player()
 	Abtn = false;
 	NowFraem = 0;
 	OldFraem = 0;
+	WaitFPSCnt = 0;
+	Death = true;
+	DeathCnt = 0;
 }
 
 void Player::Update(int Stage) /***描画以外***/
@@ -46,6 +49,14 @@ void Player::Update(int Stage) /***描画以外***/
 
 	FPSCnt++;//フレームカウント
 	AbtnFPSCnt++;
+	WaitFPSCnt++;
+
+	if (Death == true) {
+		DeathCnt++;
+		if (XStick != 0 || Abtn == true || InputKey::GetKeyDown(PAD_INPUT_B) == TRUE) {
+			Death = false;
+		}
+	}
 
 	NowStage = Stage;//現在のステージ
 
@@ -115,6 +126,15 @@ void Player::Update(int Stage) /***描画以外***/
 	if (AbtnFPSCnt > AbtnIntervalFream) {
 		AbtnFPSCnt = 0;
 	}
+
+	if (WaitFPSCnt > 120) {
+		WaitFPSCnt = 0;
+	}
+
+	if (DeathCnt > 600 || Death == false) {
+		DeathCnt = 0;
+		Death = false;
+	}
 	//**************************//
 #ifdef DEBUG
 	if (InputKey::GetKeyDown(PAD_INPUT_10) == TRUE) {//スペースキーを押したら風船の数を１つ減らす
@@ -157,15 +177,13 @@ void Player::Draw() const /***描画***/
 
 #ifdef DEBUG
 	DrawFormatString(400, 10, C_WHITE, "FPS:%d", FPSCnt);						//フレームカウント
-	DrawFormatString(400, 30, C_WHITE, "XStick:%d YStick:%d", XStick, YStick);  //ステックの値
-	DrawFormatString(400, 50, C_WHITE, "Balloon:%d", BalloonNum);				//風船の数
-	DrawFormatString(400, 70, C_WHITE, "XV:%.2f YV:%.2f", VectorX, VectorY);	//加速度
-	DrawFormatString(400, 90, C_WHITE, "X:%.2f Y:%.2f", PlayerX, PlayerY);		//プレイヤー座標
-	DrawFormatString(400, 110, C_WHITE, "Angle:%d(1;左 0:右)", Angle);			//向いている方向
-	DrawFormatString(400, 130, C_WHITE, "MX:%d MY:%d", MoX, MoY);				//マウスカーソルの座標
-	DrawFormatString(400, 150, C_WHITE, "Stage:%d", NowStage);					//現在のステージ
-	DrawFormatString(400, 250, C_WHITE, "Anti_AbtnCnt:%d",Anti_AbtnCnt);		//
-	DrawFormatString(400, 270, C_WHITE, "AbtnFPS:%d", AbtnFPSCnt);				//
+	DrawFormatString(400, 30, C_WHITE, "Balloon:%d", BalloonNum);				//風船の数
+	DrawFormatString(400, 50, C_WHITE, "X:%.2f Y:%.2f", PlayerX, PlayerY);		//プレイヤー座標
+	DrawFormatString(400, 70, C_WHITE, "MX:%d MY:%d", MoX, MoY);				//マウスカーソルの座標
+	DrawFormatString(400, 90, C_WHITE, "Stage:%d", NowStage);					//現在のステージ
+	DrawFormatString(400, 120, C_WHITE, "Anti_AbtnCnt:%d",Anti_AbtnCnt);		//
+	DrawFormatString(400, 150, C_WHITE, "AbtnFPS:%d", AbtnFPSCnt);				//
+	DrawFormatString(400, 270, C_WHITE, "Death:%d DeathCnt:%d", Death, DeathCnt);
 
 	//プレイヤー画像サイズ
 	DrawBox((int)PlayerX, (int)PlayerY, (int)PlayerX + 64, (int)PlayerY + 64, C_RED,FALSE);
@@ -242,7 +260,7 @@ void Player::UpdatePlayerX() //*プレイヤーのX座標処理*//
 			VectorX *= 0.89f;			//慣性
 		}
 		else if (GroundFlg == Not_Ground) {
-			VectorX *= 0.96;
+			VectorX *= 0.96f;
 		}
 		PlayerState = P_State_Wait;	//プレイヤーのステータスを待機に変更
 	}
@@ -308,7 +326,8 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 	
 }
 
-void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
+//*プレイヤーとステージの当たり判定処理*//
+void Player::UpdateStageCollision() 
 {
 	//プレイヤーの矩形の座標
 	int PXU_Left,  PYU_Left;//左上
@@ -386,6 +405,10 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 					VectorY += 0.9f;
 				}
 			}
+		}
+
+		if (PYU_Left > Sea_Level) {//海面したに行くと初期位置へ戻す処理
+			SetInitLocation();
 		}
 /*******************************************************************************************************************************/
 		//上辺の当たり判定//
@@ -536,6 +559,10 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 				if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
 					VectorY += 0.9f;
 				}
+			}
+
+			if (PYU_Left > Sea_Level) {//海面したに行くと初期位置へ戻す処理
+				SetInitLocation();
 			}
 		}
 /*******************************************************************************************************************************/
@@ -860,6 +887,10 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 				VectorY += 0.9f;
 			}
 		}
+
+		if (PYU_Left > Sea_Level) {//海面したに行くと初期位置へ戻す処理
+			SetInitLocation();
+		}
 /*******************************************************************************************************************************/
 		//上辺の当たり判定//
 /*******************************************************************************************************************************/
@@ -925,6 +956,10 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 				VectorY += 0.9f;
 			}
 		}
+
+		if (PYU_Left > Sea_Level) {//海面したに行くと初期位置へ戻す処理
+			SetInitLocation();
+		}
 /*******************************************************************************************************************************/
 		//上辺の当たり判定//
 /*******************************************************************************************************************************/
@@ -975,6 +1010,10 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 				VectorY += 0.9f;
 			}
 		}
+
+		if (PYU_Left > Sea_Level) {//海面したに行くと初期位置へ戻す処理
+			SetInitLocation();
+		}
 /*******************************************************************************************************************************/
 		//上辺の当たり判定//
 /*******************************************************************************************************************************/
@@ -991,7 +1030,8 @@ void Player::UpdateStageCollision() //*プレイヤーとステージの当たり判定処理*//
 	}
 }
 
-void Player::UpdatePlayerImgRun()//*走るアニメーション処理*//
+//*走るアニメーション処理*//
+void Player::UpdatePlayerImgRun()
 {
 	//走る（風船１個）
 	if (BalloonNum == 1) {
@@ -1028,44 +1068,54 @@ void Player::UpdatePlayerImgRun()//*走るアニメーション処理*//
 	}
 }
 
-void Player::UpdatePlayerImgFly() //*飛ぶアニメーション処理*//
+//*飛ぶアニメーション処理*//
+void Player::UpdatePlayerImgFly() 
 {
 	//風船１個
-	if (InputKey::GetKeyDown(PAD_INPUT_A) || InputKey::GetKey(PAD_INPUT_B)) {
-		if (BalloonNum == 1) {
-			if (FPSCnt % 8 == 0 || FPSCnt % 8 == 1) {//２フレームで次の画像
-				NowPlayerImg = P_Img_Fly_Ballon_1_0;
-			}
-			else if (FPSCnt % 8 == 2 || FPSCnt % 8 == 3) {
+	if (BalloonNum == 1) {
+		if (InputKey::GetKey(PAD_INPUT_B) == TRUE) {//Bボタン				
+			if (FPSCnt % 8 == 0 || FPSCnt % 8 == 1 || FPSCnt % 8 == 2 || FPSCnt % 8 == 3) {
 				NowPlayerImg = P_Img_Fly_Ballon_1_1;
 			}
-			else if (FPSCnt % 8 == 4 || FPSCnt % 8 == 5) {
-				NowPlayerImg = P_Img_Fly_Ballon_1_2;
-			}
-			else if (FPSCnt % 8 == 6 || FPSCnt % 8 == 7) {
-				NowPlayerImg = P_Img_Fly_Ballon_1_3;
+			else if (FPSCnt % 8 == 4 || FPSCnt % 8 == 5 || FPSCnt % 8 == 6 || FPSCnt % 8 == 7) {
+				NowPlayerImg = P_Img_Fly_Ballon_1_0;
 			}
 		}
-	}
-	else {
-		NowPlayerImg = P_Img_FlyStop_Ballon_1_4;
+		else if (Abtn == true) {//Aボタン
+			if (FPSCnt % 8 == 0 || FPSCnt % 8 == 1 || FPSCnt % 8 == 2 || FPSCnt % 8 == 3) {
+				NowPlayerImg = P_Img_Fly_Ballon_1_1;
+			}
+			else if (FPSCnt % 8 == 4 || FPSCnt % 8 == 5 || FPSCnt % 8 == 6 || FPSCnt % 8 == 7) {
+				NowPlayerImg = P_Img_Fly_Ballon_1_0;
+			}
+		}
+		else {//ボタンを押していない時
+			if (WaitFPSCnt >= 0 && WaitFPSCnt <= 30) {
+				NowPlayerImg = P_Img_Fly_Ballon_1_2;
+			}
+			else if (WaitFPSCnt >= 31 && WaitFPSCnt <= 60) {
+				NowPlayerImg = P_Img_Fly_Ballon_1_3;
+			}
+			else if (WaitFPSCnt >= 61 && WaitFPSCnt <= 90) {
+				NowPlayerImg = P_Img_Fly_Ballon_1_2;
+			}
+			else if (WaitFPSCnt >= 91 && WaitFPSCnt <= 120) {
+				NowPlayerImg = P_Img_Fly_Ballon_1_4;
+			}
+		}
 	}
 	
 	//風船２個
-	if (InputKey::GetKey(PAD_INPUT_B) == TRUE) {//Bボタン
-		if (BalloonNum == 2) {
-			if(BalloonNum == 2) {
-				if (FPSCnt % 8 == 0 || FPSCnt % 8 == 1 || FPSCnt % 8 == 2 || FPSCnt % 8 == 3) {
-					NowPlayerImg = P_Img_Fly_Ballon_2_1;
-				}
-				else if (FPSCnt % 8 == 4 || FPSCnt % 8 == 5 || FPSCnt % 8 == 6 || FPSCnt % 8 == 7) {
-					NowPlayerImg = P_Img_Fly_Ballon_2_0;
-				}
+	if (BalloonNum == 2) {
+		if (InputKey::GetKey(PAD_INPUT_B) == TRUE) {//Bボタン				
+			if (FPSCnt % 8 == 0 || FPSCnt % 8 == 1 || FPSCnt % 8 == 2 || FPSCnt % 8 == 3) {
+				NowPlayerImg = P_Img_Fly_Ballon_2_1;
 			}
+			else if (FPSCnt % 8 == 4 || FPSCnt % 8 == 5 || FPSCnt % 8 == 6 || FPSCnt % 8 == 7) {
+				NowPlayerImg = P_Img_Fly_Ballon_2_0;
+			}			
 		}
-	}
-	else if (Abtn == true) {//Aボタン
-		if (BalloonNum == 2) {
+		else if (Abtn == true) {//Aボタン
 			if (FPSCnt % 8 == 0 || FPSCnt % 8 == 1 || FPSCnt % 8 == 2 || FPSCnt % 8 == 3) {
 				NowPlayerImg = P_Img_Fly_Ballon_2_1;
 			}
@@ -1073,45 +1123,75 @@ void Player::UpdatePlayerImgFly() //*飛ぶアニメーション処理*//
 				NowPlayerImg = P_Img_Fly_Ballon_2_0;
 			}
 		}
-	}
-	else {//ボタンを押していない時
-		if (FPSCnt >= 0 && FPSCnt <= 20) {
-			NowPlayerImg = P_Img_Fly_Ballon_2_3;
-		}
-		else if (FPSCnt >= 21 && FPSCnt <= 40) {
-			NowPlayerImg = P_Img_Fly_Ballon_2_2;
-		}
-		else if (FPSCnt >= 41 && FPSCnt <= 60) {
-			NowPlayerImg = P_Img_FlyStop_Ballon_2_4;
+		else if(Abtn == false || InputKey::GetKey(PAD_INPUT_B) == FALSE){//ボタンを押していない時
+			if (WaitFPSCnt >= 0 && WaitFPSCnt <= 30) {
+				NowPlayerImg = P_Img_Fly_Ballon_2_2;
+			}
+			else if (WaitFPSCnt >= 31 && WaitFPSCnt <= 60) {
+				NowPlayerImg = P_Img_Fly_Ballon_2_3;
+			}
+			else if (WaitFPSCnt >= 61 && WaitFPSCnt <= 90) {
+				NowPlayerImg = P_Img_Fly_Ballon_2_2;
+			}
+			else if (WaitFPSCnt >= 91 && WaitFPSCnt <= 120) {
+				NowPlayerImg = P_Img_Fly_Ballon_2_4;
+			}
 		}
 	}
 }
 
-void Player::UpdatePlayerImgWait() //*待機アニメーション処理*//
+//*待機アニメーション処理*//
+void Player::UpdatePlayerImgWait() 
 {
 	//待機状態（風船１個）
 	if (BalloonNum == 1) {
-		if (FPSCnt >= 0 && FPSCnt <= 20) {
-			NowPlayerImg = P_Img_Wait_Ballon_1_0;
+		if (Death == true) {
+			if (DeathCnt % 15 == 0 || DeathCnt % 15 == 1 || DeathCnt % 15 == 2 || DeathCnt % 15 == 3 || DeathCnt % 15 == 4) {
+				NowPlayerImg = P_Img_Wait_Red_Ballon_1;
+			}
+			else {
+				NowPlayerImg = P_Img_Wait_Ballon_1_1;
+			}
 		}
-		else if (FPSCnt >= 21 && FPSCnt <= 40) {
-			NowPlayerImg = P_Img_Wait_Ballon_1_1;
-		}
-		else if (FPSCnt >= 41 && FPSCnt <= 60) {
-			NowPlayerImg = P_Img_Wait_Ballon_1_2;
+		else if (Death == false) {
+			if (WaitFPSCnt >= 0 && WaitFPSCnt <= 30) {
+				NowPlayerImg = P_Img_Wait_Ballon_1_1;
+			}
+			else if (WaitFPSCnt >= 31 && WaitFPSCnt <= 60) {
+				NowPlayerImg = P_Img_Wait_Ballon_1_0;
+			}
+			else if (WaitFPSCnt >= 61 && WaitFPSCnt <= 90) {
+				NowPlayerImg = P_Img_Wait_Ballon_1_1;
+			}
+			else if (WaitFPSCnt >= 91 && WaitFPSCnt <= 120) {
+				NowPlayerImg = P_Img_Wait_Ballon_1_2;
+			}
 		}
 	}
 
 	//待機状態（風船２個）
 	if (BalloonNum == 2) {
-		if (FPSCnt > 0 && FPSCnt < 20) {
-			NowPlayerImg = P_Img_Wait_Ballon_2_0;
+		if (Death == true) {
+			if (DeathCnt % 15 == 0 || DeathCnt % 15 == 1 || DeathCnt % 15 == 2 || DeathCnt % 15 == 3 || DeathCnt % 15 == 4) {
+				NowPlayerImg = P_Img_Wait_Red_Ballon_2;
+			}
+			else {
+				NowPlayerImg = P_Img_Wait_Ballon_2_1;
+			}
 		}
-		else if (FPSCnt > 21 && FPSCnt < 40) {
-			NowPlayerImg = P_Img_Wait_Ballon_2_1;
-		}
-		else if (FPSCnt > 41 && FPSCnt < 60) {
-			NowPlayerImg = P_Img_Wait_Ballon_2_2;
+		else if (Death == false) {
+			if (WaitFPSCnt >= 0 && WaitFPSCnt <= 30) {
+				NowPlayerImg = P_Img_Wait_Ballon_2_1;
+			}
+			else if (WaitFPSCnt >= 31 && WaitFPSCnt <= 60) {
+				NowPlayerImg = P_Img_Wait_Ballon_2_0;
+			}
+			else if (WaitFPSCnt >= 61 && WaitFPSCnt <= 90) {
+				NowPlayerImg = P_Img_Wait_Ballon_2_1;
+			}
+			else if (WaitFPSCnt >= 91 && WaitFPSCnt <= 120) {
+				NowPlayerImg = P_Img_Wait_Ballon_2_2;
+			}
 		}
 	}
 }
@@ -1137,6 +1217,16 @@ void Player::UpdatePlayerImgDead() //*死亡時アニメーション処理*//
 	else if (FPSCnt % 9 == 6 || FPSCnt % 9 == 7 || FPSCnt % 9 == 8) {
 		NowPlayerImg = P_Img_Dead_2;
 	}
+}
+
+void Player::SetInitLocation() 
+{
+	PlayerX = 0;
+	PlayerY = 420 - P_Img_Size;
+	VectorX = 0;
+	VectorY = 0;
+
+	Death = true;
 }
 
 float Player::GetPlayerX (){

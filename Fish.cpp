@@ -53,7 +53,7 @@ void Fish::Update() {
 			if (FishRand <= 99/*29*/) {
 				FishRand = GetRand(1);
 				if (FishRand == 1) {
-					
+					TurnFlg = TRUE;
 				}
 				SpawnFlg = TRUE;
 				MoveFish();
@@ -92,14 +92,10 @@ void Fish::MoveFish() {
 	P_X = Player::PlayerX;
 	P_Y = Player::PlayerY;
 	//UŒ‚‘ÎÛ‚ª“G
-	/*if (enemyY > 600) {
-		f_PosX = enemyX;
-		f_PosY = enemyY - f_Count;
-		f_Count = f_Count - 1;
-		if(f_Count == 0){
-			EnemyLife = 0;
-		}
-	}*/
+	/*if (E_Y >= 358 && E_X >= 135 && E_X <= 479 || FishAnim <= 3) {
+		TargetEnemy();
+	}
+	*/
 	//UŒ‚‘ÎÛ‚ªƒvƒŒƒCƒ„[
 	if (P_Y >= 358 && P_X >= 135 && P_X <= 479 || FishAnim <= 3) {
 		TargetPlayer();
@@ -146,6 +142,12 @@ void Fish::InitFish() {
 bool Fish::GetFishFlg() {
 	static bool f = P_FishFlg;
 	return f;
+}
+
+//‹›‚ÉH‚×‚ç‚ê‚½‚Æ‚«“G—p
+bool Fish::E_GetFishFlg() {
+	static bool e = E_FishFlg;
+	return e;
 }
 
 //¶Œü‚«•`‰æ

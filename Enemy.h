@@ -47,6 +47,7 @@ public:
 	int HitEnemy(int e);    // 敵同士の当たり判定
 	int HitPlayer(int e);   // 敵とプレイヤーの当たり判定
 	void HitStage(int e);   // 敵とステージの当たり判定
+	int HitStart(int e);    // 敵とプレイヤーの当たり判定(スタート時)
 	void EnemyDie(int e);   // 敵の死亡モーション処理
 
 	
