@@ -78,7 +78,8 @@ private:
 	int FPSCnt;			//FPSカウント（６０FPS）
 	int AbtnFPSCnt;		//Aボタン用のFPSカウント
 	int WaitFPSCnt;		//ステックを倒していない時のFPSカウント
-	int DeathCnt;		//死んだ後の１０秒測る用
+	int DeathCnt;		//死んだ後の点滅処理の間隔
+	int RespawnCnt;     //リスポーンするまでの間隔
 
 	int PlayerImg[32];	//プレイヤー画像
 	int NowPlayerImg;	//現在のプレイヤー画像配列の要素
@@ -105,7 +106,10 @@ private:
 	bool GroundFlg;		//(true:地面に接触している     false:地面に接触していない    )
 	bool TouchFlg;		//(treu:地面以外に触れている   false:地面以外に触れていない　)
 	bool Abtn;			//(treu:Aボタン押している      false:Aボタン押していない　   )
-	bool Death;			//(treu:死んだ                 false:死んでいない　          )
+	bool Respawn;		//(treu:リスポーンした         false:リスポーンしてない　  　)
+	bool Death;
+
+	bool FishFlg;
 
 	int Anti_AbtnCnt = 0;	//Aボタンを押していない時をカウント
 public:

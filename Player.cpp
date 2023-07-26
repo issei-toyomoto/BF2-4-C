@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "InputKey.h"
 #include "Common.h"
+#include "Fish.h"
 
 #define DEBUG
 #define DEBUG_Flg
@@ -32,8 +33,11 @@ Player::Player()
 	NowFraem = 0;
 	OldFraem = 0;
 	WaitFPSCnt = 0;
-	Death = true;
+	Respawn = true;
 	DeathCnt = 0;
+	XStick = 0;
+
+	FishFlg = Fish::P_FishFlg;//Fish.cppから値を取得
 }
 
 void Player::Update(int Stage) /***描画以外***/
@@ -51,11 +55,17 @@ void Player::Update(int Stage) /***描画以外***/
 	AbtnFPSCnt++;
 	WaitFPSCnt++;
 
-	if (Death == true) {
+	if (Respawn == true) {
 		DeathCnt++;
 		if (XStick != 0 || Abtn == true || InputKey::GetKeyDown(PAD_INPUT_B) == TRUE) {
-			Death = false;
+			Respawn = false;
 		}
+	}
+
+	FishFlg = Fish::P_FishFlg;//魚のフラグ更新
+
+	if (FishFlg == true) {
+		SetInitLocation();
 	}
 
 	NowStage = Stage;//現在のステージ
@@ -131,9 +141,9 @@ void Player::Update(int Stage) /***描画以外***/
 		WaitFPSCnt = 0;
 	}
 
-	if (DeathCnt > 600 || Death == false) {
+	if (DeathCnt > 600 || Respawn == false) {
 		DeathCnt = 0;
-		Death = false;
+		Respawn = false;
 	}
 	//**************************//
 #ifdef DEBUG
@@ -183,7 +193,8 @@ void Player::Draw() const /***描画***/
 	DrawFormatString(400, 90, C_WHITE, "Stage:%d", NowStage);					//現在のステージ
 	DrawFormatString(400, 120, C_WHITE, "Anti_AbtnCnt:%d",Anti_AbtnCnt);		//
 	DrawFormatString(400, 150, C_WHITE, "AbtnFPS:%d", AbtnFPSCnt);				//
-	DrawFormatString(400, 270, C_WHITE, "Death:%d DeathCnt:%d", Death, DeathCnt);
+	DrawFormatString(400, 270, C_WHITE, "Death:%d DeathCnt:%d", Respawn, DeathCnt);
+	DrawFormatString(400, 290, C_WHITE, "FishFlg:%d", FishFlg);
 
 	//プレイヤー画像サイズ
 	DrawBox((int)PlayerX, (int)PlayerY, (int)PlayerX + 64, (int)PlayerY + 64, C_RED,FALSE);
@@ -1145,7 +1156,7 @@ void Player::UpdatePlayerImgWait()
 {
 	//待機状態（風船１個）
 	if (BalloonNum == 1) {
-		if (Death == true) {
+		if (Respawn == true) {
 			if (DeathCnt % 15 == 0 || DeathCnt % 15 == 1 || DeathCnt % 15 == 2 || DeathCnt % 15 == 3 || DeathCnt % 15 == 4) {
 				NowPlayerImg = P_Img_Wait_Red_Ballon_1;
 			}
@@ -1153,7 +1164,7 @@ void Player::UpdatePlayerImgWait()
 				NowPlayerImg = P_Img_Wait_Ballon_1_1;
 			}
 		}
-		else if (Death == false) {
+		else if (Respawn == false) {
 			if (WaitFPSCnt >= 0 && WaitFPSCnt <= 30) {
 				NowPlayerImg = P_Img_Wait_Ballon_1_1;
 			}
@@ -1171,7 +1182,7 @@ void Player::UpdatePlayerImgWait()
 
 	//待機状態（風船２個）
 	if (BalloonNum == 2) {
-		if (Death == true) {
+		if (Respawn == true) {
 			if (DeathCnt % 15 == 0 || DeathCnt % 15 == 1 || DeathCnt % 15 == 2 || DeathCnt % 15 == 3 || DeathCnt % 15 == 4) {
 				NowPlayerImg = P_Img_Wait_Red_Ballon_2;
 			}
@@ -1179,7 +1190,7 @@ void Player::UpdatePlayerImgWait()
 				NowPlayerImg = P_Img_Wait_Ballon_2_1;
 			}
 		}
-		else if (Death == false) {
+		else if (Respawn == false) {
 			if (WaitFPSCnt >= 0 && WaitFPSCnt <= 30) {
 				NowPlayerImg = P_Img_Wait_Ballon_2_1;
 			}
@@ -1226,7 +1237,7 @@ void Player::SetInitLocation()
 	VectorX = 0;
 	VectorY = 0;
 
-	Death = true;
+	Respawn = true;
 }
 
 float Player::GetPlayerX (){

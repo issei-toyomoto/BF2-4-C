@@ -34,7 +34,7 @@ private:
 public:
 
 	//魚に食べられたときプレイヤー用
-	bool P_FishFlg;
+	static bool P_FishFlg;
 
 	//魚に食べられたとき敵用
 	bool E_FishFlg;

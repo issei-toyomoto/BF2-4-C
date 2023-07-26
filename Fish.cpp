@@ -3,6 +3,8 @@
 #include<math.h>
 #include"Player.h"
 
+bool Fish::P_FishFlg;
+
 //コンストラクタ
 Fish::Fish() {
 	LoadDivGraph("image/Enemy/Enemy_FishAnimation.png",10,5,2,64,64,FishImage);
