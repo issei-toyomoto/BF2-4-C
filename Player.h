@@ -109,7 +109,6 @@ private:
 	bool TouchFlg;		//(treu:地面以外に触れている   false:地面以外に触れていない　)
 	bool Abtn;			//(treu:Aボタン押している      false:Aボタン押していない　   )
 	bool Respawn;		//(treu:リスポーンした         false:リスポーンしてない　  　)
-	static bool Death;			//(true:死亡した               false:死亡していない          )
 	bool Hide;			//(true:プレイヤーを表示しない false:プレイヤーを表示        )
 
 	bool FishFlg;
@@ -118,6 +117,8 @@ private:
 public:
 	static float PlayerX;	//プレイヤーX座標(画像の左上X座標)
 	static float PlayerY;	//プレイヤーY座標(画像の左上Y座標)
+
+	static bool Death;			//(true:死亡した               false:死亡していない          )
 
 	//コンストラクタ
 	Player();

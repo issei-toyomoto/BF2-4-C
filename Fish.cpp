@@ -43,7 +43,7 @@ void Fish::Update() {
 	P_X = Player::PlayerX;
 	P_Y = Player::PlayerY;
 	//出現エリア判定
-	if (P_Y >= 358 && P_X >= 135 && P_X <= 479/*|| enemyY > 600*/) {
+	if (P_Y >= 358 && P_Y <= 460 && P_X >= 135 && P_X <= 479) {
 		Count++;
 		Second = Count / 60;
 		//三秒経過＆魚がいない
@@ -100,7 +100,7 @@ void Fish::MoveFish() {
 	}
 	*/
 	//攻撃対象がプレイヤー
-	if (P_Y >= 358 && P_X >= 135 && P_X <= 479 || FishAnim <= 3) {
+	if (P_Y >= 358 && P_Y <= 460 && P_X >= 135 && P_X <= 479 || FishAnim <= 3) {
 		TargetPlayer();
 	}
 }
