@@ -6,6 +6,8 @@
 #include <math.h>
 #include "stdlib.h"
 #include<time.h>
+#include "InputKey.h"
+
 
 // コンストラクタ
 Enemy::Enemy()
@@ -22,11 +24,6 @@ Enemy::Enemy()
 
 	VectorX = 0;
 	VectorY = -1;
-
-	amplitude = 3.0f;
-	speed = 2.0f;
-	time = 0.0f;
-	ChaseSpeed = 1.0f;
 
 	UpCnt = 0;
 	DownCnt = 0;
@@ -51,6 +48,7 @@ void Enemy::Update()
 	Px = Player::PlayerX;
 	Py = Player::PlayerY;
 
+	srand(time(NULL));
 
 	if (StartFlg == 0 && StartMotion < 4)
 	{
@@ -66,6 +64,11 @@ void Enemy::Update()
 	{
 		FPScnt = 0;
 		StartMotion++;
+	}
+
+	if (InputKey::GetKeyDown(PAD_INPUT_1) == TRUE) 
+	{//Zキーを押したら敵リセット
+		EnemyInit();
 	}
 }
 
@@ -161,6 +164,7 @@ void Enemy::EnemyInit()
 		enemy[i].x = ENEMY_X + 85.0f * i;
 		enemy[i].y = ENEMY_Y;
 		enemy[i].state = 0;
+		enemy[i].life = 2;
 	}
 }
 
@@ -172,6 +176,8 @@ void Enemy::EnemyMove()
 	{
 		if (enemy[i].life != 0)
 		{
+			enemy[i].ran = rand() % 2 + 1;
+
 			HitStage(i);
 			HitFlg = HitEnemy(i);
 			HitPFlg = HitPlayer(i);
@@ -187,16 +193,15 @@ void Enemy::EnemyMove()
 			}
 
 			// 敵のY座標範囲
-			if (enemy[i].y < -19.0f)
+			if (enemy[i].y < -19.6f && enemy[i].y > -21.0f)
 			{
-				enemy[i].y = -19.0f;
+				enemy[i].y = MinY;
 			}
 			else if (enemy[i].y > 356.0f)
 			{
 				enemy[i].y = 356.0f;
 			}
 
-			/*Enemyhuwahuwa(i);*/
 
 			// プレイヤーが敵より右にいるときは右に移動する
 			if (Px >= enemy[i].x + 50.0f)
@@ -214,15 +219,12 @@ void Enemy::EnemyMove()
 			if (Py < enemy[i].y || enemy[i].ground == 1)
 			{
 				EnemyUp(i);
-				
 			}
 			else
 			{
 				// プレイヤーが敵より下にいるときは降下する
 				EnemyDown(i);
 			}
-
-			
 			enemy[i].ground = 0;
 		}
 		else
@@ -315,65 +317,77 @@ void Enemy::EnemyUp(int e)
 	{
 		enemy[e].flg = 9;
 	}
-
+	
 	enemy[e].y += -0.6f;
-
-
-	/*UpCnt++;
-
-	if (UpCnt > 20)
-	{
-		Enemyhuwahuwa(e);
-		UpCnt = 0;
-	}*/
 	
 }
 
 // 敵の降下モーション処理
 void Enemy::EnemyDown(int e)
 {
+	VectorY = 0;
 	// 降下モーション
-	if (FPScnt > 0 && FPScnt < 20)
+	if (enemy[e].ran == 2)
 	{
-		enemy[e].flg = 11;
-	}
-	else if (FPScnt > 41  && FPScnt < 60 )
-	{
-		enemy[e].flg = 12;
-	}
-	else
-	{
-		enemy[e].flg = 10;
+		if (FPScnt > 0 && FPScnt < 20)
+		{
+			enemy[e].flg = 11;
+		}
+		else if (FPScnt > 41 && FPScnt < 60)
+		{
+			enemy[e].flg = 12;
+		}
+		else
+		{
+			enemy[e].flg = 10;
 
-		// 10 11 10 12 10 
+			// 10 11 10 12 10 
+		}
 	}
 
 	enemy[e].y += 0.6f;
 
-	/*DownCnt++;
 
-	if (DownCnt > 20)
+	if (enemy[e].ran == 1)
 	{
-		Enemyhuwahuwa(e);
-		DownCnt = 0;
-	}*/
+		// パタパタ手を動かすモーション
+		if (FPScnt > 0 && FPScnt < 5 || FPScnt > 11 && FPScnt < 15 || FPScnt > 21 && FPScnt < 25)
+		{
+			enemy[e].flg = 8;
+		}
+		else if (FPScnt > 31 && FPScnt < 35 || FPScnt > 41 && FPScnt < 45 || FPScnt > 51 && FPScnt < 55)
+		{
+			enemy[e].flg = 8;
+		}
+		else
+		{
+			enemy[e].flg = 9;
+		}
+
+		enemy[e].y += -1.0f;
+	}
+	
 }
 
 // 敵の左移動処理
 void Enemy::EnemyLeft(int e)
 {
+	VectorX = 0;
 	// プレイヤーが敵より左にいるときは左に移動
     // X座標減算
 	enemy[e].direction = 0;
+
 	enemy[e].x += -0.6f;
 }
 
 // 敵の右移動処理
 void Enemy::EnemyRight(int e)
 {
+	VectorX = 0;
 	// プレイヤーが敵より右にいるときは右に移動
 	// X座標減算
 	enemy[e].direction = 1;
+
 	enemy[e].x += 0.6f;
 
 }
@@ -579,42 +593,4 @@ void Enemy::EnemyDie(int e)
 	{
 		enemy[e].y += 3.0f;
 	}
-}
-
-void Enemy::Enemyhuwahuwa(int e)
-{
-	//
-	enemy[e].y = enemy[e].y + amplitude * sin(speed * GetNowCount() * 0.001f);
-
-	float dx = Px - enemy[e].x;
-	float dy = Py - enemy[e].y;
-
-	float distance = sqrt(dx * dx + dy * dy);
-
-	float moveX = dx / distance;
-	float moveY = dy / distance;
-
-	enemy[e].x += moveX * ChaseSpeed * (GetNowCount() * 0.001f);
-	enemy[e].y += moveY * ChaseSpeed * (GetNowCount() * 0.001f);
-
-	// 敵のX座標範囲
-	if (enemy[e].x <= 0.0f)
-	{
-		enemy[e].x = 640.0f;
-	}
-	else if (enemy[e].x > 640.0f)
-	{
-		enemy[e].x = 0.0f;
-	}
-
-	// 敵のY座標範囲
-	if (enemy[e].y < -19.0f)
-	{
-		enemy[e].y = -19.0f;
-	}
-	else if (enemy[e].y > 356.0f)
-	{
-		enemy[e].y = 356.0f;
-	}
-
 }

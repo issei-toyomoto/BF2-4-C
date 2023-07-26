@@ -19,16 +19,12 @@ private:
 	float EnXL[ENEMY_MAX], EnYL[ENEMY_MAX]; //敵の左上座標
 	float EnXR[ENEMY_MAX], EnYR[ENEMY_MAX]; //敵の右下座標
 
-	float amplitude; // ふわふわの振幅
-	float speed;     // ふわふわの速度
-	float time;      // 時間
-	float ChaseSpeed;
-
-	int UpCnt = 0;
-	int DownCnt = 0;
-
 	float VectorX,VectorY;
 
+	int UpCnt, DownCnt;
+
+	const float MinY = -19.0f;
+	
 	// 敵のデータ(構造体)
 	struct ENEMY
 	{
@@ -40,6 +36,7 @@ private:
 		int direction = 0;  // 敵の向いてる向き(0:左 1:右)
 		int ground = 0;     // 地面に触れているか(0:触れてない 1:触れている)
 		int die = 0;        // 敵死亡時用
+		int ran = 0;
 	};
 
 	struct ENEMY enemy[ENEMY_MAX];   // 敵のデータ(変数宣言)
@@ -60,7 +57,6 @@ public:
 	void HitStage(int e);   // 敵とステージの当たり判定
 	int HitStart(int e);    // 敵とプレイヤーの当たり判定(スタート時)
 	void EnemyDie(int e);   // 敵の死亡モーション処理
-	void Enemyhuwahuwa(int e);
 	
 	//描画以外の更新を実装する
 	void Update();
