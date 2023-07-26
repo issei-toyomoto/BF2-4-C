@@ -23,6 +23,14 @@ Enemy::Enemy()
 	VectorX = 0;
 	VectorY = -1;
 
+	amplitude = 3.0f;
+	speed = 2.0f;
+	time = 0.0f;
+	ChaseSpeed = 1.0f;
+
+	UpCnt = 0;
+	DownCnt = 0;
+
 	LoadDivGraph("image/Enemy/Enemy_P_Animation.png", 18, 6, 3, 64, 64, EnemyImg[0]);  //画像読み込み(ピンク)
 	LoadDivGraph("image/Enemy/Enemy_G_Animation.png", 18, 6, 3, 64, 64, EnemyImg[1]);  //画像読み込み(みどり)
 	LoadDivGraph("image/Enemy/Enemy_R_Animation.png", 18, 6, 3, 64, 64, EnemyImg[2]);  //画像読み込み(きいろ)
@@ -43,7 +51,6 @@ void Enemy::Update()
 	Px = Player::PlayerX;
 	Py = Player::PlayerY;
 
-	srand(time(NULL));
 
 	if (StartFlg == 0 && StartMotion < 4)
 	{
@@ -160,6 +167,7 @@ void Enemy::EnemyInit()
 // 敵の移動処理
 void Enemy::EnemyMove()
 {
+
 	for (int i = 0; i < ENEMY_MAX; i++)
 	{
 		if (enemy[i].life != 0)
@@ -188,6 +196,7 @@ void Enemy::EnemyMove()
 				enemy[i].y = 356.0f;
 			}
 
+			/*Enemyhuwahuwa(i);*/
 
 			// プレイヤーが敵より右にいるときは右に移動する
 			if (Px >= enemy[i].x + 50.0f)
@@ -205,6 +214,7 @@ void Enemy::EnemyMove()
 			if (Py < enemy[i].y || enemy[i].ground == 1)
 			{
 				EnemyUp(i);
+				
 			}
 			else
 			{
@@ -307,6 +317,15 @@ void Enemy::EnemyUp(int e)
 	}
 
 	enemy[e].y += -0.6f;
+
+
+	/*UpCnt++;
+
+	if (UpCnt > 20)
+	{
+		Enemyhuwahuwa(e);
+		UpCnt = 0;
+	}*/
 	
 }
 
@@ -330,6 +349,14 @@ void Enemy::EnemyDown(int e)
 	}
 
 	enemy[e].y += 0.6f;
+
+	/*DownCnt++;
+
+	if (DownCnt > 20)
+	{
+		Enemyhuwahuwa(e);
+		DownCnt = 0;
+	}*/
 }
 
 // 敵の左移動処理
@@ -552,4 +579,42 @@ void Enemy::EnemyDie(int e)
 	{
 		enemy[e].y += 3.0f;
 	}
+}
+
+void Enemy::Enemyhuwahuwa(int e)
+{
+	//
+	enemy[e].y = enemy[e].y + amplitude * sin(speed * GetNowCount() * 0.001f);
+
+	float dx = Px - enemy[e].x;
+	float dy = Py - enemy[e].y;
+
+	float distance = sqrt(dx * dx + dy * dy);
+
+	float moveX = dx / distance;
+	float moveY = dy / distance;
+
+	enemy[e].x += moveX * ChaseSpeed * (GetNowCount() * 0.001f);
+	enemy[e].y += moveY * ChaseSpeed * (GetNowCount() * 0.001f);
+
+	// 敵のX座標範囲
+	if (enemy[e].x <= 0.0f)
+	{
+		enemy[e].x = 640.0f;
+	}
+	else if (enemy[e].x > 640.0f)
+	{
+		enemy[e].x = 0.0f;
+	}
+
+	// 敵のY座標範囲
+	if (enemy[e].y < -19.0f)
+	{
+		enemy[e].y = -19.0f;
+	}
+	else if (enemy[e].y > 356.0f)
+	{
+		enemy[e].y = 356.0f;
+	}
+
 }

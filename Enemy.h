@@ -19,6 +19,14 @@ private:
 	float EnXL[ENEMY_MAX], EnYL[ENEMY_MAX]; //敵の左上座標
 	float EnXR[ENEMY_MAX], EnYR[ENEMY_MAX]; //敵の右下座標
 
+	float amplitude; // ふわふわの振幅
+	float speed;     // ふわふわの速度
+	float time;      // 時間
+	float ChaseSpeed;
+
+	int UpCnt = 0;
+	int DownCnt = 0;
+
 	float VectorX,VectorY;
 
 	// 敵のデータ(構造体)
@@ -52,7 +60,7 @@ public:
 	void HitStage(int e);   // 敵とステージの当たり判定
 	int HitStart(int e);    // 敵とプレイヤーの当たり判定(スタート時)
 	void EnemyDie(int e);   // 敵の死亡モーション処理
-
+	void Enemyhuwahuwa(int e);
 	
 	//描画以外の更新を実装する
 	void Update();
