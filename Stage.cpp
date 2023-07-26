@@ -2,6 +2,7 @@
 #include"Common.h"
 #include "InputKey.h"
 #include "StageImg.h"
+#include "Player.h"
 
 gStage::gStage()
 {
@@ -20,9 +21,17 @@ gStage::gStage()
 	gGameImg[12] = LoadGraph("images/Stage_Sea01.png");          // äCÇÃâÊëú
 	gGameImg[13] = LoadGraph("images/ningen.png");               // ÉvÉåÉCÉÑÅ[âÊëú
 	gSeaImg = LoadGraph("images/Stage_Sea01.png");           // äCÇÃâÊëú
+	LoadDivGraph("images-20230711T024428Z-001/images/Stage/Stage_SplashAnimation.png", 3, 3, 1, 64, 32, SeaAnim);
 	MousePointx = 0;
 	MousePointy = 0;
 	gGameState = 0;
+	px = 0;
+	py = 0;
+	SeaPos = 400;
+	SeaAnimCount = 0;
+	DeathFlg = 0;
+	Seax = 0;
+	Seay = 0;
 }
 
 void gStage::StageState()
@@ -47,15 +56,56 @@ void gStage::StageState()
 
 void gStage::Draw() const
 {
-
+	DrawFormatString(20, 300, C_RED, "%d", DeathFlg);
+	DrawFormatString(40, 300, C_RED, "%d", SeaAnimCount);
+	DrawFormatString(60, 300, C_RED, "%d", Seay);
+	DrawFormatString(80, 300, C_RED, "%d", Seax);
+	DrawFormatString(0, 200, C_RED, "%d", px);
+	DrawFormatString(20, 200, C_RED, "%d", py);
+	if (SeaAnimCount < 5 && SeaAnimCount > 1 && DeathFlg == 1)
+	{
+		DrawGraph(Seax, Seay, SeaAnim[0], TRUE);
+	}
+	else if (SeaAnimCount < 10 && SeaAnimCount > 5 &&  DeathFlg == 1)
+	{
+		DrawGraph(Seax, Seay, SeaAnim[1], TRUE);
+	}
+	else if (SeaAnimCount < 15 && SeaAnimCount > 10 &&  DeathFlg == 1)
+	{
+		DrawGraph(Seax, Seay, SeaAnim[2], TRUE);
+	}
 }
 
 void gStage::Update()
 {
-	//InputKey::Update();
+	px = Player::PlayerX;
+	py = Player::PlayerY;
+	DeathFlg = Player::Death;
 
-	//GetMousePoint(&MousePointx, &MousePointy);
+	gStage::SeaBottom();
 
+	if (DeathFlg == 1)
+	{
+		SeaAnimCount++;
+	}
+	if (SeaAnimCount < 60)
+	{
+		SeaAnimCount = 0;
+		DeathFlg = 0;
+	}
+
+}
+void gStage::SeaBottom()
+{
+	int pxL, pyL;
+	pxL = (int)px + 18;
+	pyL = (int)py + 14;
+	if (pyL > SeaPos)
+	{
+		DeathFlg = 1;
+		Seax = pxL;
+		Seay = pyL;
+	}
 }
 
 void gStage::DrawStage1() const

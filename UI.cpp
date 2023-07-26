@@ -24,7 +24,7 @@ void UI::Update()
 {
 	bubleScore = Bubble.BubleScore;
 	TotalScore = bubleScore; 
-	Score10 = TotalScore / 100;
+	Score100 = TotalScore / 100;
 }
 
 void UI::Draw() const
@@ -37,16 +37,14 @@ void UI::Draw() const
 	DrawGraph(130, 0, UINumber[0], TRUE);
 	DrawGraph(150, 0, UINumber[0], TRUE);
 	// ハイスコアに反映されるUI
-	DrawGraph(235, 0, UINumber[Score10], TRUE);    
-	DrawGraph(255, 0, UINumber[Score10], TRUE);
-	DrawGraph(275, 0, UINumber[Score10], TRUE);
-	DrawGraph(295, 0, UINumber[Score10], TRUE);
-	DrawGraph(315, 0, UINumber[Score10], TRUE);
-	DrawGraph(335, 0, UINumber[Score10], TRUE);
+	DrawGraph(235, 0, UINumber[0], TRUE);    
+	DrawGraph(255, 0, UINumber[0], TRUE);
+	DrawGraph(275, 0, UINumber[0], TRUE);
+	DrawGraph(295, 0, UINumber[Score100], TRUE);
+	DrawGraph(315, 0, UINumber[0], TRUE);
+	DrawGraph(335, 0, UINumber[0], TRUE);
 	DrawGraph(35, 7, UIScore, TRUE);
 	DrawGraph(200, 8, UITop, TRUE);
 	DrawGraph(135, 28, UIStock, TRUE);
 	DrawGraph(150, 28, UIStock, TRUE);
-	DrawFormatString(40, 300, C_RED, "%d", bubleScore);
-	DrawFormatString(20,300, C_RED, "%d",TotalScore);
 }

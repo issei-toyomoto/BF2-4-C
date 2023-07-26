@@ -1,30 +1,22 @@
 #pragma once
 #include "AbstractScene.h"
 #include "DxLib.h"
-#include "InputKey.h"
+#include "Player.h"
 class gStage
 {
 private:
 
     int gGameImg[14];
-    /*int gPlayerImg;
-    int gFootImg1;
-    int gFootImg2;
-    int gFootImg3;
-    int gFootImg4;
-    int gFootImg5;
-    int gFootImg6;
-    int gFootImg7;
-    int gFootImg8;
-    int gLlandImg1;
-    int gLlandImg2;
-    int gRlandImg1;
-    int gRlandImg2;*/
     int gSeaImg;
     int MousePointx;
     int MousePointy;
-
     int gGameState;
+    int SeaPos;
+    int SeaAnim[3];
+    int SeaAnimCount;
+    float px, py;
+    int Seax, Seay;
+    bool DeathFlg;
     
 public:
     void Draw() const;
@@ -32,6 +24,7 @@ public:
     void Update();
 
     void StageState();
+    void SeaBottom();
 
     gStage();
 

@@ -18,6 +18,7 @@ private:
 	Thunder MoveThunderX;
 	Fish fish;
 	UI ui;
+	gStage stage;
 
 	int gGameImg[14];
 	int gStageState;
