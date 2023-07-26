@@ -1,5 +1,7 @@
 #include "UI.h"
 #include "bubble.h"
+#include "Common.h"
+
 UI::UI()
 {
 	LoadDivGraph("images-20230711T024428Z-001/images/UI/UI_NumAnimation.png", 10, 10, 1, 32, 32, UINumber);
@@ -20,9 +22,9 @@ UI::~UI()
 }
 void UI::Update()
 {
-	Bubble.BubbleScore(bubleScore);
+	bubleScore = Bubble.BubleScore;
 	TotalScore = bubleScore; 
-	Score10 = TotalScore / 100 % 1000;
+	Score10 = TotalScore / 100;
 }
 
 void UI::Draw() const
@@ -45,4 +47,6 @@ void UI::Draw() const
 	DrawGraph(200, 8, UITop, TRUE);
 	DrawGraph(135, 28, UIStock, TRUE);
 	DrawGraph(150, 28, UIStock, TRUE);
+	DrawFormatString(40, 300, C_RED, "%d", bubleScore);
+	DrawFormatString(20,300, C_RED, "%d",TotalScore);
 }
