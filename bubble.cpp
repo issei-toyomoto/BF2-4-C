@@ -78,7 +78,14 @@ void bubble::BubleCollision()
 	// シャボン玉とプレイヤーの当たり判定
 	if (((BubleX1 > px + 18 && BubleX1 <  px + 40)||(BubleX1 < px + 18 && BubleX2 > px + 18))&&(( BubleY1 > py + 14 && BubleY1 < py + 64)||(py + 14 > BubleY1 && py + 14 < BubleY2))) {
 		BubleFlg = 1;
+	}
+}
+
+void bubble::BubbleScore(int Score)
+{
+	if (BubbleFlg > 0) {
 		BubleScore += 500;
+		Score = BubleScore;
 	}
 }
 

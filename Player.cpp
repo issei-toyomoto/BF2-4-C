@@ -13,6 +13,8 @@ int Player::NowFraem;
 float Player::PlayerX;
 float Player::PlayerY;
 
+bool Player::Death;
+
 Player::Player() 
 {
 	LoadDivGraph("image/Player/Player_Animation.png", 32, 8, 4, 64, 64, PlayerImg);//画像読み込み
@@ -36,6 +38,9 @@ Player::Player()
 	Respawn = true;
 	DeathCnt = 0;
 	XStick = 0;
+	Death = false;
+	RespawnCnt = 0;
+	Hide = false;
 
 	FishFlg = Fish::P_FishFlg;//Fish.cppから値を取得
 }
@@ -62,10 +67,25 @@ void Player::Update(int Stage) /***描画以外***/
 		}
 	}
 
+	if (Death == true) {
+		RespawnCnt++;
+		Hide = true;
+	}
+
 	FishFlg = Fish::P_FishFlg;//魚のフラグ更新
 
 	if (FishFlg == true) {
-		SetInitLocation();
+		Death = true;
+	}
+
+	if (Death == true) {
+		if (FishFlg == true) {
+			Hide = true;
+		}
+		else {
+			SetInitLocation();
+		}
+		
 	}
 
 	NowStage = Stage;//現在のステージ
@@ -80,33 +100,35 @@ void Player::Update(int Stage) /***描画以外***/
 
 	UpdateStageCollision();//プレイヤーとステージの当たり判定
 
-	//X方向
-	if (FlyBtnFlg == ON_FlyBtn || GroundFlg == Ground) {
-		UpdatePlayerX();
+	if (Death == false) {
+		//X方向
+		if (FlyBtnFlg == ON_FlyBtn || GroundFlg == Ground) {
+			UpdatePlayerX();
+		}
+		else {
+			//画面端のX座標処理
+			if (PlayerX < -(P_Img_Size)) {//右端
+				PlayerX = 640 - P_Img_Size;
+			}
+			else if (PlayerX > 640) {//左端
+				PlayerX = 0;
+			}
+
+			//ステックが傾けている方向にキャラクターのアングルを変える処理
+			if (XStick > 0) {
+				Angle = P_Right;
+			}
+			else if (XStick < 0) {
+				Angle = P_Left;
+			}
+		}
+		PlayerX += VectorX;//X座標更新
+
+		//Y方向
+		UpdatePlayerY();
+		PlayerY += VectorY;//Y座標更新
 	}
-	else {
-		//画面端のX座標処理
-		if (PlayerX < -(P_Img_Size)) {//右端
-			PlayerX = 640 - P_Img_Size;
-		}
-		else if (PlayerX > 640) {//左端
-			PlayerX = 0;
-		}
-
-		//ステックが傾けている方向にキャラクターのアングルを変える処理
-		if (XStick > 0) {
-			Angle = P_Right;
-		}
-		else if (XStick < 0) {
-			Angle = P_Left;
-		}
-	}
-	PlayerX += VectorX;//X座標更新
-
-	//Y方向
-	UpdatePlayerY();
-	PlayerY += VectorY;//Y座標更新
-
+	
 	//画像処理
 	if (PlayerState == P_State_Wait) {//待機状態
 		UpdatePlayerImgWait();
@@ -145,6 +167,18 @@ void Player::Update(int Stage) /***描画以外***/
 		DeathCnt = 0;
 		Respawn = false;
 	}
+
+	if (RespawnCnt > RespawnTime) {
+		RespawnCnt = 0;
+		Death = false;
+		if (FishFlg == true) {
+			Hide = true;
+		}
+		else if (FishFlg == false) {
+			Hide = false;
+		}
+	}
+
 	//**************************//
 #ifdef DEBUG
 	if (InputKey::GetKeyDown(PAD_INPUT_10) == TRUE) {//スペースキーを押したら風船の数を１つ減らす
@@ -156,34 +190,40 @@ void Player::Update(int Stage) /***描画以外***/
 
 void Player::Draw() const /***描画***/
 {
-	//*画面内*//
-	if (Angle == P_Left) {//左方向に向いている時
-		DrawGraph((int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
-	}
-	else if (Angle == P_Right) {//右方向に向いている時
-		DrawTurnGraph((int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
-	}
-	else {
-		DrawGraph((int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
-	}
+	if (Hide == false) {//プレイヤーを表示
+		//*画面内*//
+		if (Angle == P_Left) {//左方向に向いている時
+			DrawGraph((int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
+		}
+		else if (Angle == P_Right) {//右方向に向いている時
+			DrawTurnGraph((int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
+		}
+		else {
+			DrawGraph((int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
+		}
 
-	//*画面外*//
-	if (PlayerX < 0) {
-		if (Angle == P_Left) {
-			DrawGraph(640 + (int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
+		//*画面外*//
+		if (PlayerX < 0) {
+			if (Angle == P_Left) {
+				DrawGraph(640 + (int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
+			}
+			else if (Angle == P_Right) {
+				DrawTurnGraph(640 + (int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
+			}
 		}
-		else if (Angle == P_Right) {
-			DrawTurnGraph(640 + (int)PlayerX, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
+		else if (PlayerX > 640 - P_Img_Size) {
+			if (Angle == P_Left) {
+				DrawGraph((int)PlayerX - 640, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
+			}
+			else if (Angle == P_Right) {
+				DrawTurnGraph((int)PlayerX - 640, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
+			}
 		}
 	}
-	else if (PlayerX > 640 - P_Img_Size) {
-		if (Angle == P_Left) {
-			DrawGraph((int)PlayerX - 640, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
-		}
-		else if (Angle == P_Right) {
-			DrawTurnGraph((int)PlayerX - 640, (int)PlayerY, PlayerImg[NowPlayerImg], TRUE);
-		}
+	else if (Hide == true) {//プレイヤーを表示しない
+
 	}
+	
 
 #ifdef DEBUG
 	DrawFormatString(400, 10, C_WHITE, "FPS:%d", FPSCnt);						//フレームカウント
@@ -193,8 +233,10 @@ void Player::Draw() const /***描画***/
 	DrawFormatString(400, 90, C_WHITE, "Stage:%d", NowStage);					//現在のステージ
 	DrawFormatString(400, 120, C_WHITE, "Anti_AbtnCnt:%d",Anti_AbtnCnt);		//
 	DrawFormatString(400, 150, C_WHITE, "AbtnFPS:%d", AbtnFPSCnt);				//
-	DrawFormatString(400, 270, C_WHITE, "Death:%d DeathCnt:%d", Respawn, DeathCnt);
+	DrawFormatString(400, 270, C_WHITE, "Respawn:%d DeathCnt:%d", Respawn, DeathCnt);
 	DrawFormatString(400, 290, C_WHITE, "FishFlg:%d", FishFlg);
+	DrawFormatString(400, 310, C_WHITE, "Death:%d RespawnCnt:%d", Death, RespawnCnt);
+	DrawFormatString(400, 330, C_WHITE, "Hide:%d", Hide);
 
 	//プレイヤー画像サイズ
 	DrawBox((int)PlayerX, (int)PlayerY, (int)PlayerX + 64, (int)PlayerY + 64, C_RED,FALSE);
@@ -419,7 +461,7 @@ void Player::UpdateStageCollision()
 		}
 
 		if (PYU_Left > Sea_Level) {//海面したに行くと初期位置へ戻す処理
-			SetInitLocation();
+			Death = true;
 		}
 /*******************************************************************************************************************************/
 		//上辺の当たり判定//
@@ -573,7 +615,7 @@ void Player::UpdateStageCollision()
 			}
 
 			if (PYU_Left > Sea_Level) {//海面したに行くと初期位置へ戻す処理
-				SetInitLocation();
+				Death = true;
 			}
 		}
 /*******************************************************************************************************************************/
@@ -900,7 +942,7 @@ void Player::UpdateStageCollision()
 		}
 
 		if (PYU_Left > Sea_Level) {//海面したに行くと初期位置へ戻す処理
-			SetInitLocation();
+			Death = true;
 		}
 /*******************************************************************************************************************************/
 		//上辺の当たり判定//
@@ -958,9 +1000,174 @@ void Player::UpdateStageCollision()
 				TouchFlg = Not_Touch;
 			}
 		}
+
+		if (PYL_Right >= S4_Sky_Ground_0_YU + PlusPx && PYU_Left <= S4_Sky_Ground_0_YL - PlusPx) {//１番左
+			if (PXU_Left <= S4_Sky_Ground_0_XL + PlusPx && PXL_Right >= S4_Sky_Ground_0_XL) {//１番左の右
+				TouchFlg = Touch;
+				VectorX *= -COR;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorX += 0.9f;
+				}
+			}
+			else if (PXL_Right >= S4_Sky_Ground_0_XU - PlusPx && PXL_Right <= S4_Sky_Ground_0_XU) {//１番左の左
+				TouchFlg = Touch;
+				VectorX *= -COR;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					VectorX -= 0.9f;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+		}
+
+		if (PYL_Right >= S4_Sky_Ground_1_YU + PlusPx && PYU_Left <= S4_Sky_Ground_1_YL - PlusPx) {//左から２番目
+			if (PXU_Left <= S4_Sky_Ground_1_XL + PlusPx && PXL_Right >= S4_Sky_Ground_1_XL) {//左から２番目の右
+				TouchFlg = Touch;
+				VectorX *= -COR;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorX += 0.9f;
+				}
+			}
+			else if (PXL_Right >= S4_Sky_Ground_1_XU - PlusPx && PXL_Right <= S4_Sky_Ground_1_XU) {//左から２番目の左
+				TouchFlg = Touch;
+				VectorX *= -COR;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					VectorX -= 0.9f;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+		}
+
+		if (PYL_Right >= S4_Sky_Ground_2_YU + PlusPx && PYU_Left <= S4_Sky_Ground_2_YL - PlusPx) {//１番上
+			if (PXU_Left <= S4_Sky_Ground_2_XL + PlusPx && PXL_Right >= S4_Sky_Ground_2_XL) {//１番上の右
+				TouchFlg = Touch;
+				VectorX *= -COR;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorX += 0.9f;
+				}
+			}
+			else if (PXL_Right >= S4_Sky_Ground_2_XU - PlusPx && PXL_Right <= S4_Sky_Ground_2_XU) {//１番上の左
+				TouchFlg = Touch;
+				VectorX *= -COR;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					VectorX -= 0.9f;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+		}
+
+		if (PYL_Right >= S4_Sky_Ground_3_YU + PlusPx && PYU_Left <= S4_Sky_Ground_3_YL - PlusPx) {//１番下
+			if (PXU_Left <= S4_Sky_Ground_3_XL + PlusPx && PXL_Right >= S4_Sky_Ground_3_XL) {//１番下の右
+				TouchFlg = Touch;
+				VectorX *= -COR;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorX += 0.9f;
+				}
+			}
+			else if (PXL_Right >= S4_Sky_Ground_3_XU - PlusPx && PXL_Right <= S4_Sky_Ground_3_XU) {//１番下の左
+				TouchFlg = Touch;
+				VectorX *= -COR;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					VectorX -= 0.9f;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+		}
+
+		if (PYL_Right >= S4_Sky_Ground_4_YU + PlusPx && PYU_Left <= S4_Sky_Ground_4_YL - PlusPx) {//１番右
+			if (PXU_Left <= S4_Sky_Ground_4_XL + PlusPx && PXL_Right >= S4_Sky_Ground_4_XL) {//１番右の右
+				TouchFlg = Touch;
+				VectorX *= -COR;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorX += 0.9f;
+				}
+			}
+			else if (PXL_Right >= S4_Sky_Ground_4_XU - PlusPx && PXL_Right <= S4_Sky_Ground_4_XU) {//１番右の左
+				TouchFlg = Touch;
+				VectorX *= -COR;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					VectorX -= 0.9f;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+		}
 /*******************************************************************************************************************************/
 		//下辺の当たり判定//
 /*******************************************************************************************************************************/
+		if (PYU_Left <= S4_Sky_Ground_0_YL - PlusPx && PYL_Right >= S4_Sky_Ground_0_YL) {//１番左
+			if (PXU_Left <= S4_Sky_Ground_0_XL && PXL_Right >= S4_Sky_Ground_0_XU) {
+				TouchFlg = Touch;
+				VectorY *= -COR;
+				if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorY += 0.9f;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+		}
+
+		if (PYU_Left <= S4_Sky_Ground_1_YL - PlusPx && PYL_Right >= S4_Sky_Ground_1_YL) {//左から２番目
+			if (PXU_Left <= S4_Sky_Ground_1_XL && PXL_Right >= S4_Sky_Ground_1_XU) {
+				TouchFlg = Touch;
+				VectorY *= -COR;
+				if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorY += 0.9f;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+		}
+
+		if (PYU_Left <= S4_Sky_Ground_2_YL - PlusPx && PYL_Right >= S4_Sky_Ground_2_YL) {//１番上
+			if (PXU_Left <= S4_Sky_Ground_2_XL && PXL_Right >= S4_Sky_Ground_2_XU) {
+				TouchFlg = Touch;
+				VectorY *= -COR;
+				if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorY += 0.9f;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+		}
+
+		if (PYU_Left <= S4_Sky_Ground_3_YL - PlusPx && PYL_Right >= S4_Sky_Ground_3_YL) {//１番下
+			if (PXU_Left <= S4_Sky_Ground_3_XL && PXL_Right >= S4_Sky_Ground_3_XU) {
+				TouchFlg = Touch;
+				VectorY *= -COR;
+				if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorY += 0.9f;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+		}
+
+		if (PYU_Left <= S4_Sky_Ground_4_YL - PlusPx && PYL_Right >= S4_Sky_Ground_4_YL) {//１番右
+			if (PXU_Left <= S4_Sky_Ground_4_XL && PXL_Right >= S4_Sky_Ground_4_XU) {
+				TouchFlg = Touch;
+				VectorY *= -COR;
+				if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorY += 0.9f;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+		}
+
 		if (PYU_Left <= 0) {//画面上の当たり判定
 			VectorY *= -COR;
 			if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
@@ -979,6 +1186,21 @@ void Player::UpdateStageCollision()
 			GroundFlg = Ground;
 		}
 		else if (PYL_Right >= S_Ground_Right_YU && PYL_Right <= S_Ground_Right_YU + PlusPx && PXL_Right >= S_Ground_Right_XU) {//右下の台（上辺）
+			GroundFlg = Ground;
+		}
+		else if (PYL_Right >= S4_Sky_Ground_0_YU && PYL_Right <= S4_Sky_Ground_0_YU + PlusPx && PXU_Left <= S4_Sky_Ground_0_XL && PXL_Right >= S4_Sky_Ground_0_XU) {//１番左の台
+			GroundFlg = Ground;
+		}
+		else if (PYL_Right >= S4_Sky_Ground_1_YU && PYL_Right <= S4_Sky_Ground_1_YU + PlusPx && PXU_Left <= S4_Sky_Ground_1_XL && PXL_Right >= S4_Sky_Ground_1_XU) {//左から２番目の台
+			GroundFlg = Ground;
+		}
+		else if (PYL_Right >= S4_Sky_Ground_2_YU && PYL_Right <= S4_Sky_Ground_2_YU + PlusPx && PXU_Left <= S4_Sky_Ground_2_XL && PXL_Right >= S4_Sky_Ground_2_XU) {//１番上の台
+			GroundFlg = Ground;
+		}
+		else if (PYL_Right >= S4_Sky_Ground_3_YU && PYL_Right <= S4_Sky_Ground_3_YU + PlusPx && PXU_Left <= S4_Sky_Ground_3_XL && PXL_Right >= S4_Sky_Ground_3_XU) {//１番下の台
+			GroundFlg = Ground;
+		}
+		else if (PYL_Right >= S4_Sky_Ground_4_YU && PYL_Right <= S4_Sky_Ground_4_YU + PlusPx && PXU_Left <= S4_Sky_Ground_4_XL && PXL_Right >= S4_Sky_Ground_4_XU) {//１番右の台
 			GroundFlg = Ground;
 		}
 		else {
@@ -1012,9 +1234,207 @@ void Player::UpdateStageCollision()
 				TouchFlg = Not_Touch;
 			}
 		}
+
+		if (PYL_Right >= S5_Sky_SGround_0_YU + PlusPx && PYU_Left <= S5_Sky_SGround_0_YL - PlusPx) {//左鍾乳石
+			if (PXU_Left <= S5_Sky_SGround_0_XL + PlusPx && PXL_Right >= S5_Sky_SGround_0_XL) {//左鍾乳石の右
+				TouchFlg = Touch;
+				VectorX *= -COR;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorX += 0.9f;
+				}
+			}
+			else if (PXL_Right >= S5_Sky_SGround_0_XU - PlusPx && PXL_Right <= S5_Sky_SGround_0_XU) {//左鍾乳石の左
+				TouchFlg = Touch;
+				VectorX *= -COR;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					VectorX -= 0.9f;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+		}
+
+		if (PYL_Right >= S5_Sky_SGround_1_YU + PlusPx && PYU_Left <= S5_Sky_SGround_1_YL - PlusPx) {//中央鍾乳石
+			if (PXU_Left <= S5_Sky_SGround_1_XL + PlusPx && PXL_Right >= S5_Sky_SGround_1_XL) {//中央鍾乳石の右
+				TouchFlg = Touch;
+				VectorX *= -COR;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorX += 0.9f;
+				}
+			}
+			else if (PXL_Right >= S5_Sky_SGround_1_XU - PlusPx && PXL_Right <= S5_Sky_SGround_1_XU) {//中央鍾乳石の左
+				TouchFlg = Touch;
+				VectorX *= -COR;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					VectorX -= 0.9f;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+		}
+
+		if (PYL_Right >= S5_Sky_SGround_2_YU + PlusPx && PYU_Left <= S5_Sky_SGround_2_YL - PlusPx) {//右鍾乳石
+			if (PXU_Left <= S5_Sky_SGround_2_XL + PlusPx && PXL_Right >= S5_Sky_SGround_2_XL) {//右鍾乳石の右
+				TouchFlg = Touch;
+				VectorX *= -COR;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorX += 0.9f;
+				}
+			}
+			else if (PXL_Right >= S5_Sky_SGround_2_XU - PlusPx && PXL_Right <= S5_Sky_SGround_2_XU) {//右鍾乳石の左
+				TouchFlg = Touch;
+				VectorX *= -COR;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					VectorX -= 0.9f;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+		}
+
+		if (PYL_Right >= S5_Sky_Ground_0_YU + PlusPx && PYU_Left <= S5_Sky_Ground_0_YL - PlusPx) {//１番上
+			if (PXU_Left <= S5_Sky_Ground_0_XL + PlusPx && PXL_Right >= S5_Sky_Ground_0_XL) {//１番上の右
+				TouchFlg = Touch;
+				VectorX *= -COR;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorX += 0.9f;
+				}
+			}
+			else if (PXL_Right >= S5_Sky_Ground_0_XU - PlusPx && PXL_Right <= S5_Sky_Ground_0_XU) {//１番上の左
+				TouchFlg = Touch;
+				VectorX *= -COR;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					VectorX -= 0.9f;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+		}
+
+		if (PYL_Right >= S5_Sky_Ground_1_YU + PlusPx && PYU_Left <= S5_Sky_Ground_1_YL - PlusPx) {//下の右
+			if (PXU_Left <= S5_Sky_Ground_1_XL + PlusPx && PXL_Right >= S5_Sky_Ground_1_XL) {//下の右の右
+				TouchFlg = Touch;
+				VectorX *= -COR;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorX += 0.9f;
+				}
+			}
+			else if (PXL_Right >= S5_Sky_Ground_1_XU - PlusPx && PXL_Right <= S5_Sky_Ground_1_XU) {//下の右の左
+				TouchFlg = Touch;
+				VectorX *= -COR;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					VectorX -= 0.9f;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+		}
+
+		if (PYL_Right >= S5_Sky_Ground_2_YU + PlusPx && PYU_Left <= S5_Sky_Ground_2_YL - PlusPx) {//下の左
+			if (PXU_Left <= S5_Sky_Ground_2_XL + PlusPx && PXL_Right >= S5_Sky_Ground_2_XL) {//下の左の右
+				TouchFlg = Touch;
+				VectorX *= -COR;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorX += 0.9f;
+				}
+			}
+			else if (PXL_Right >= S5_Sky_Ground_2_XU - PlusPx && PXL_Right <= S5_Sky_Ground_2_XU) {//下の左の左
+				TouchFlg = Touch;
+				VectorX *= -COR;
+				if (VectorX >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					VectorX -= 0.9f;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+		}
 /*******************************************************************************************************************************/
 		//下辺の当たり判定//
 /*******************************************************************************************************************************/
+		if (PYU_Left <= S5_Sky_SGround_0_YL - PlusPx && PYL_Right >= S5_Sky_SGround_0_YL) {//右鍾乳石
+			if (PXU_Left <= S5_Sky_SGround_0_XL && PXL_Right >= S5_Sky_SGround_0_XU) {
+				TouchFlg = Touch;
+				VectorY *= -COR;
+				if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorY += 0.9f;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+		}
+
+		if (PYU_Left <= S5_Sky_SGround_1_YL - PlusPx && PYL_Right >= S5_Sky_SGround_1_YL) {//中央鍾乳石
+			if (PXU_Left <= S5_Sky_SGround_1_XL && PXL_Right >= S5_Sky_SGround_1_XU) {
+				TouchFlg = Touch;
+				VectorY *= -COR;
+				if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorY += 0.9f;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+		}
+
+		if (PYU_Left <= S5_Sky_SGround_2_YL - PlusPx && PYL_Right >= S5_Sky_SGround_2_YL) {//右鍾乳石
+			if (PXU_Left <= S5_Sky_SGround_2_XL && PXL_Right >= S5_Sky_SGround_2_XU) {
+				TouchFlg = Touch;
+				VectorY *= -COR;
+				if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorY += 0.9f;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+		}
+
+		if (PYU_Left <= S5_Sky_Ground_0_YL - PlusPx && PYL_Right >= S5_Sky_Ground_0_YL) {//１番上
+			if (PXU_Left <= S5_Sky_Ground_0_XL && PXL_Right >= S5_Sky_Ground_0_XU) {
+				TouchFlg = Touch;
+				VectorY *= -COR;
+				if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorY += 0.9f;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+		}
+
+		if (PYU_Left <= S5_Sky_Ground_1_YL - PlusPx && PYL_Right >= S5_Sky_Ground_1_YL) {//下の右
+			if (PXU_Left <= S5_Sky_Ground_1_XL && PXL_Right >= S5_Sky_Ground_1_XU) {
+				TouchFlg = Touch;
+				VectorY *= -COR;
+				if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorY += 0.9f;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+		}
+
+		if (PYU_Left <= S5_Sky_Ground_2_YL - PlusPx && PYL_Right >= S5_Sky_Ground_2_YL) {//下の左
+			if (PXU_Left <= S5_Sky_Ground_2_XL && PXL_Right >= S5_Sky_Ground_2_XU) {
+				TouchFlg = Touch;
+				VectorY *= -COR;
+				if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					VectorY += 0.9f;
+				}
+			}
+			else {
+				TouchFlg = Not_Touch;
+			}
+		}
+		
 		if (PYU_Left <= 0) {//画面上の当たり判定
 			VectorY *= -COR;
 			if (VectorY >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
@@ -1023,7 +1443,7 @@ void Player::UpdateStageCollision()
 		}
 
 		if (PYU_Left > Sea_Level) {//海面したに行くと初期位置へ戻す処理
-			SetInitLocation();
+			Death = true;
 		}
 /*******************************************************************************************************************************/
 		//上辺の当たり判定//
@@ -1033,6 +1453,24 @@ void Player::UpdateStageCollision()
 			GroundFlg = Ground;
 		}
 		else if (PYL_Right >= S_Ground_Right_YU && PYL_Right <= S_Ground_Right_YU + PlusPx && PXL_Right >= S_Ground_Right_XU) {//右下の台（上辺）
+			GroundFlg = Ground;
+		}
+		else if (PYL_Right >= S5_Sky_SGround_0_YU && PYL_Right <= S5_Sky_SGround_0_YU + PlusPx && PXU_Left <= S5_Sky_SGround_0_XL && PXL_Right >= S5_Sky_SGround_0_XU) {//左鍾乳石
+			GroundFlg = Ground;
+		}
+		else if (PYL_Right >= S5_Sky_SGround_1_YU && PYL_Right <= S5_Sky_SGround_1_YU + PlusPx && PXU_Left <= S5_Sky_SGround_1_XL && PXL_Right >= S5_Sky_SGround_1_XU) {//中央鍾乳石
+			GroundFlg = Ground;
+		}
+		else if (PYL_Right >= S5_Sky_SGround_2_YU && PYL_Right <= S5_Sky_SGround_2_YU + PlusPx && PXU_Left <= S5_Sky_SGround_2_XL && PXL_Right >= S5_Sky_SGround_2_XU) {//右鍾乳石
+			GroundFlg = Ground;
+		}
+		else if (PYL_Right >= S5_Sky_Ground_0_YU && PYL_Right <= S5_Sky_Ground_0_YU + PlusPx && PXU_Left <= S5_Sky_Ground_0_XL && PXL_Right >= S5_Sky_Ground_0_XU) {//一番上
+			GroundFlg = Ground;
+		}
+		else if (PYL_Right >= S5_Sky_Ground_1_YU && PYL_Right <= S5_Sky_Ground_1_YU + PlusPx && PXU_Left <= S5_Sky_Ground_1_XL && PXL_Right >= S5_Sky_Ground_1_XU) {//下の左
+			GroundFlg = Ground;
+		}
+		else if (PYL_Right >= S5_Sky_Ground_2_YU && PYL_Right <= S5_Sky_Ground_2_YU + PlusPx && PXU_Left <= S5_Sky_Ground_2_XL && PXL_Right >= S5_Sky_Ground_2_XU) {//下の右
 			GroundFlg = Ground;
 		}
 		else {
@@ -1207,7 +1645,8 @@ void Player::UpdatePlayerImgWait()
 	}
 }
 
-void Player::UpdatePlayerImgThunder() //*雷に当たるアニメーション処理*//
+//*雷に当たるアニメーション処理*//
+void Player::UpdatePlayerImgThunder() 
 {
 	if (FPSCnt % 6 == 0 || FPSCnt % 6 == 1 || FPSCnt % 6 == 2) {//２フレームで画像変更
 		NowPlayerImg = P_Img_Thunder_0;
@@ -1217,7 +1656,8 @@ void Player::UpdatePlayerImgThunder() //*雷に当たるアニメーション処理*//
 	}
 }
 
-void Player::UpdatePlayerImgDead() //*死亡時アニメーション処理*//
+//*死亡時アニメーション処理*//
+void Player::UpdatePlayerImgDead() 
 {
 	if (FPSCnt % 9 == 0 || FPSCnt % 9 == 1 || FPSCnt % 9 == 2) {//２フレームで画像変更
 		NowPlayerImg = P_Img_Dead_0;
