@@ -34,8 +34,8 @@ AbstractScene* Title::Update()
 	if (inputkey.GetJoyStickY(inputkey.Y_now) && inputkey.key_flg && inputkey.Y_now < 0)
 		if (--MenuNumber < 0)MenuNumber = 2;
 	if (inputkey.GetKey(PAD_INPUT_2) == TRUE && MenuNumber == 0 || inputkey.GetKey(PAD_INPUT_8)) {
-		inputkey.key_flg = FALSE;
 		return new GameMain();
+		inputkey.key_flg = FALSE;
 	}
 	else if (CheckHitKey(KEY_INPUT_6)) {
 		return nullptr;
@@ -60,7 +60,6 @@ void Title::Draw() const {
 		DrawGraph(130, 275 + gMenuY, gTitleCursorAnim[3], TRUE);
 	}
 #ifdef DEBUG
-	DrawString(50, 0, "1キー押したらGameMain", C_RED);
 	DrawString(250, 0, "6キー押したら終了", C_RED);
 #endif // DEBUG
 }
