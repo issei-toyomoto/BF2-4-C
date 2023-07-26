@@ -79,7 +79,13 @@ void Player::Update(int Stage) /***描画以外***/
 	}
 
 	if (Death == true) {
-		SetInitLocation();
+		if (FishFlg == true) {
+			Hide = true;
+		}
+		else {
+			SetInitLocation();
+		}
+		
 	}
 
 	NowStage = Stage;//現在のステージ
@@ -165,8 +171,14 @@ void Player::Update(int Stage) /***描画以外***/
 	if (RespawnCnt > RespawnTime) {
 		RespawnCnt = 0;
 		Death = false;
-		Hide = false;
+		if (FishFlg == true) {
+			Hide = true;
+		}
+		else if (FishFlg == false) {
+			Hide = false;
+		}
 	}
+
 	//**************************//
 #ifdef DEBUG
 	if (InputKey::GetKeyDown(PAD_INPUT_10) == TRUE) {//スペースキーを押したら風船の数を１つ減らす

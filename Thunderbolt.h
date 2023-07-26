@@ -1,5 +1,5 @@
 #pragma once
-
+#include"bubble.h"
 class Thunder
 {
 private:
@@ -7,13 +7,14 @@ private:
 	int gThunderImg[2];
 
 	int ThunderX = 100;
-	int ThunderY = 200;// 雷の座標
+	int ThunderY = 100;// 雷の座標
 
 	int Speed;// 雷の速度
 	int ThunderFlg; // 雷の状態（0...移動中 1...物に接触 2...スタート状態）
-	int WaitTime=5;// 待ち時間
-	
-	
+	int WaitTime = 5;// 待ち時間
+	int FPSCount;  // 点滅用
+	int FlashFlg;  // 点滅用フラグ
+		
 public:
 	int ThunderMoveX, ThunderMoveY;
 	float ThunderAngle = 0.575f;// 雷の角度
@@ -32,5 +33,5 @@ public:
 	//描画に関することを実装する
 	void Draw() const;
 
-	void ChangeAngle();
+	
 };

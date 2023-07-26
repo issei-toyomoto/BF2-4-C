@@ -72,7 +72,7 @@
 
 #define Sea_Level 470		//海面の高さ
 
-#define RespawnTime 180		//リスポーンまでの時間
+#define RespawnTime 30		//リスポーンまでの時間
 
 class Player
 {

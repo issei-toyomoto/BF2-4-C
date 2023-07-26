@@ -4,24 +4,22 @@
 #include<math.h>
 #include"bubble.h"
 #include"Common.h"
-
+#include<stdio.h>
+#include"Player.h"
 Thunder::Thunder(){
 	if (LoadDivGraph("images/Stage_ThunderEffectAnimation.png", 3, 3, 1, 32, 32, gThunderImg) == -1) {
 	}//画像読み込み
 
 	ThunderX = 100;
-	ThunderY = 200;// 雷の座標
+	ThunderY = 100;// 雷の座標
 
 	ThunderMoveX = 3;
 	ThunderMoveY = 3;
+	FPSCount = 0;
+	
 }
 
-//void Thunder::ChangeAngle()
-//{
-//	float rad = ThunderAngle * (float)M_PI * 2;
-//	ThunderMoveX = (int)(Speed * cosf(rad));
-//	ThunderMoveY = (int)(Speed * sinf(rad));
-//}
+
 
 void Thunder::MoveThunderX() 
 {
@@ -32,34 +30,7 @@ void Thunder::MoveThunderX()
 		ThunderMoveX *= -1;
 	}
 
-	//if (ThunderFlg != 2) {
-
-	//	ThunderX += ThunderMoveX;
-	//	ThunderY += ThunderMoveY;
-	//}
-	//else {
-	//	ThunderX += ThunderMoveX + 30;
-	//	ThunderY += ThunderMoveY - 6;
-
-	//}
-
-
-	//// 壁・天井での反射
-	//if (ThunderX < 4 || ThunderX>640 - 4) {  //横の壁
-	//	if (ThunderX < 4) {
-	//		ThunderX = 4;
-	//	}
-	//	else {
-	//		ThunderX = 640 - 4;
-	//	}
-	//	ThunderAngle = (1 - ThunderAngle) + 0.5f;
-	//	if (ThunderAngle > 1)ThunderAngle -= 1.0f;
-	//	ChangeAngle();
-	//}
-	//if (ThunderY < 8) { // 上の壁
-	//	ThunderAngle = (1 - ThunderAngle);
-	//	ChangeAngle();
-	//}
+	
 }
 
 void Thunder::MoveThunderY() 
@@ -74,7 +45,10 @@ void Thunder::MoveThunderY()
 
 void Thunder::Update()
 {
-	//ChangeAngle();
+	
+	FPSCount++;
+
+	
 
 	MoveThunderX();
 	ThunderX += ThunderMoveX;
@@ -85,10 +59,37 @@ void Thunder::Update()
 
 
 void Thunder::Draw() const {
-	DrawGraph(100, 100, gCloudImg, TRUE);
+	/*if (FlgY < 5) {
+		DrawGraph(100, 100, gCloudImg, TRUE);
+	}*/
 	
-	DrawGraph(ThunderX, ThunderY, gThunderImg[0], TRUE);
+	// ５回のうち２回表示する。
+	
+	/*count = (count + 1) % 5;
+	if (count < 2) {
+		DrawGraph(100, 100, gCloudImg, TRUE);
+	}*/
+	
+
+	switch (FPSCount%2)
+	{
+	default:
+		DrawGraph(ThunderX, ThunderY, gThunderImg[2], TRUE);
+		break;
+	case 0:
+		DrawGraph(ThunderX, ThunderY, gThunderImg[0], TRUE);
+		break;
+	case 1:
+		DrawGraph(ThunderX, ThunderY, gThunderImg[1], TRUE);
+		break;
+
+	}
+	
+
 }
+
+
+
 
 
 
