@@ -114,6 +114,8 @@ private:
 	bool FishFlg;
 
 	int Anti_AbtnCnt = 0;	//Aボタンを押していない時をカウント
+
+	int OldStage;
 public:
 	static float PlayerX;	//プレイヤーX座標(画像の左上X座標)
 	static float PlayerY;	//プレイヤーY座標(画像の左上Y座標)

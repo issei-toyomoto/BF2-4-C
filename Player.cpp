@@ -47,6 +47,8 @@ Player::Player()
 
 void Player::Update(int Stage) /***描画以外***/
 {
+	NowStage = Stage;//現在のステージ
+
 	if (Abtn == false) {//Aボタンを押してから[AbtnIntervalFream]分フレームがたったらAbtnをＦＡＬＳＥに戻す処理
 		Anti_AbtnCnt++;
 	}
@@ -76,9 +78,10 @@ void Player::Update(int Stage) /***描画以外***/
 
 	if (FishFlg == true) {
 		Death = true;
+		BalloonNum = 2;
 	}
 
-	if (Death == true) {
+	if (Death == true || OldStage != NowStage) {
 		if (FishFlg == true) {
 			Hide = true;
 		}
@@ -87,8 +90,6 @@ void Player::Update(int Stage) /***描画以外***/
 		}
 		
 	}
-
-	NowStage = Stage;//現在のステージ
 
 	//ジョイステック情報取得
 	InputKey::Update();
@@ -100,7 +101,8 @@ void Player::Update(int Stage) /***描画以外***/
 
 	UpdateStageCollision();//プレイヤーとステージの当たり判定
 
-	if (Death == false) {
+	//**移動処理と死亡処理**//
+	if (Death == false && BalloonNum != 0) {
 		//X方向
 		if (FlyBtnFlg == ON_FlyBtn || GroundFlg == Ground) {
 			UpdatePlayerX();
@@ -127,6 +129,15 @@ void Player::Update(int Stage) /***描画以外***/
 		//Y方向
 		UpdatePlayerY();
 		PlayerY += VectorY;//Y座標更新
+	}
+	else if (BalloonNum == 0) {//風船の数が０になった時の処理
+		PlayerState = P_State_Dead;
+		VectorY = 3;
+		PlayerY += VectorY;
+		if (Death == true) {
+			BalloonNum = 2;
+			Death = false;
+		}
 	}
 	
 	//画像処理
@@ -178,8 +189,9 @@ void Player::Update(int Stage) /***描画以外***/
 			Hide = false;
 		}
 	}
-
 	//**************************//
+
+	OldStage = NowStage;
 #ifdef DEBUG
 	if (InputKey::GetKeyDown(PAD_INPUT_10) == TRUE) {//スペースキーを押したら風船の数を１つ減らす
 		BalloonNum--;
@@ -462,6 +474,7 @@ void Player::UpdateStageCollision()
 
 		if (PYU_Left > Sea_Level) {//海面したに行くと初期位置へ戻す処理
 			Death = true;
+			BalloonNum = 2;
 		}
 /*******************************************************************************************************************************/
 		//上辺の当たり判定//
@@ -616,6 +629,7 @@ void Player::UpdateStageCollision()
 
 			if (PYU_Left > Sea_Level) {//海面したに行くと初期位置へ戻す処理
 				Death = true;
+				BalloonNum = 2;
 			}
 		}
 /*******************************************************************************************************************************/
@@ -943,6 +957,7 @@ void Player::UpdateStageCollision()
 
 		if (PYU_Left > Sea_Level) {//海面したに行くと初期位置へ戻す処理
 			Death = true;
+			BalloonNum = 2;
 		}
 /*******************************************************************************************************************************/
 		//上辺の当たり判定//
@@ -1176,7 +1191,8 @@ void Player::UpdateStageCollision()
 		}
 
 		if (PYU_Left > Sea_Level) {//海面したに行くと初期位置へ戻す処理
-			SetInitLocation();
+			Death = true;
+			BalloonNum = 2;
 		}
 /*******************************************************************************************************************************/
 		//上辺の当たり判定//
@@ -1444,6 +1460,7 @@ void Player::UpdateStageCollision()
 
 		if (PYU_Left > Sea_Level) {//海面したに行くと初期位置へ戻す処理
 			Death = true;
+			BalloonNum = 2;
 		}
 /*******************************************************************************************************************************/
 		//上辺の当たり判定//
@@ -1509,12 +1526,25 @@ void Player::UpdatePlayerImgRun()
 	}
 
 	//反対方向に向かうときの処理
-	if (Angle == P_Right && VectorX < 0) {//右方向
-		NowPlayerImg = P_Img_RunStop_Ballon_2_3;
+	if (BalloonNum == 2) {
+		if (Angle == P_Right && VectorX < 0) {//右方向
+			NowPlayerImg = P_Img_RunStop_Ballon_2_3;
+		}
+		else if (Angle == P_Left && VectorX > 0) {//左方向
+			NowPlayerImg = P_Img_RunStop_Ballon_2_3;
+		}
 	}
-	else if (Angle == P_Left && VectorX > 0) {//左方向
-		NowPlayerImg = P_Img_RunStop_Ballon_2_3;
+	else if (BalloonNum == 1) {
+		if (Angle == P_Right && VectorX < 0) {//右方向
+			NowPlayerImg = P_Img_RunStop_Ballon_1_3;
+		}
+		else if (Angle == P_Left && VectorX > 0) {//左方向
+			NowPlayerImg = P_Img_RunStop_Ballon_1_3;
+		}
 	}
+	
+
+	
 }
 
 //*飛ぶアニメーション処理*//
