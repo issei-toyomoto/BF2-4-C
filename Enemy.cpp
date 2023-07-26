@@ -4,6 +4,8 @@
 #include "DxLib.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include "stdlib.h"
+#include<time.h>
 
 // コンストラクタ
 Enemy::Enemy()
@@ -17,6 +19,9 @@ Enemy::Enemy()
 	Py = 0;         // プレイヤーのY座標
 	HitFlg = 0;
 	HitPFlg = 0;
+
+	VectorX = 0;
+	VectorY = -1;
 
 	LoadDivGraph("image/Enemy/Enemy_P_Animation.png", 18, 6, 3, 64, 64, EnemyImg[0]);  //画像読み込み(ピンク)
 	LoadDivGraph("image/Enemy/Enemy_G_Animation.png", 18, 6, 3, 64, 64, EnemyImg[1]);  //画像読み込み(みどり)
@@ -32,12 +37,13 @@ Enemy::~Enemy()
 // 描画以外の更新を実装する
 void Enemy::Update()
 {
-	
 	FPScnt++;
 
 	// プレイヤーの座標取得
 	Px = Player::PlayerX;
 	Py = Player::PlayerY;
+
+	srand(time(NULL));
 
 	if (StartFlg == 0 && StartMotion < 4)
 	{
@@ -45,7 +51,7 @@ void Enemy::Update()
 	}
 	else if(StartFlg != 0)
 	{
-		EnemyMove();		
+		EnemyMove();
 	}
 
 	//１秒たったらフレームカウント
@@ -65,6 +71,9 @@ void Enemy::Draw() const
 	DrawFormatString(50, 90, 0xffffff, "Enflg:%d", enemy[1].life);
 	DrawFormatString(50, 110, 0xffffff, "Enflg:%d", enemy[2].life);
 	DrawFormatString(130, 70, 0xffffff, "die:%f", enemy[0].die);
+	DrawFormatString(130, 90, 0xffffff, "Vx:%f", VectorX);
+	DrawFormatString(130, 110, 0xffffff, "Vy:%f", VectorY);
+
 	
 
 	for (int i = 0; i < ENEMY_MAX; i++)
@@ -172,58 +181,45 @@ void Enemy::EnemyMove()
 			// 敵のY座標範囲
 			if (enemy[i].y <= -20)
 			{
-				enemy[i].y = enemy[i].y * 0.8f;
+				enemy[i].y = -20;
 			}
 			else if (enemy[i].y > 356)
 			{
-				enemy[i].speed = enemy[i].speed;
 				enemy[i].y = 356;
 			}
 
 
+			// プレイヤーが敵より右にいるときは右に移動する
 			if (Px >= enemy[i].x + 50)
 			{
-				// プレイヤーが敵より右にいるときは右に移動
-				// X座標加算
-				enemy[i].x += enemy[i].speed;
-				enemy[i].direction = 1;
-
+				EnemyRight(i);
 			}
 			else
 			{
-				// プレイヤーが敵より左にいるときは左に移動
-				// X座標減算
-				enemy[i].x -= enemy[i].speed;
-				enemy[i].direction = 0;
-
+				// プレイヤーが敵より左にいるときは左に移動する
+				EnemyLeft(i);
 			}
 
 
 			// プレイヤーが敵より上にいるときは浮上する
 			if (Py < enemy[i].y || enemy[i].ground == 1)
 			{
-				enemy[i].speed = 0.6f;
-
 				EnemyUp(i);
-
-				// Y座標減算
-				enemy[i].y -= enemy[i].speed;
 			}
 			else
 			{
+				// プレイヤーが敵より下にいるときは降下する
 				EnemyDown(i);
-
-				// Y座標減算
-				enemy[i].y += enemy[i].speed;
-
 			}
 
+			
 			enemy[i].ground = 0;
 		}
 		else
 		{
 			EnemyDie(i);
 		}
+
 	}
 	
 }
@@ -296,7 +292,6 @@ void Enemy::StartMove()
 // 敵の浮上モーション処理
 void Enemy::EnemyUp(int e)
 {
-	
 	// パタパタ手を動かすモーション
 	if (FPScnt > 0 && FPScnt < 5 || FPScnt > 11 && FPScnt < 15 || FPScnt > 21 && FPScnt < 25)
 	{
@@ -310,13 +305,14 @@ void Enemy::EnemyUp(int e)
 	{
 		enemy[e].flg = 9;
 	}
+
+	enemy[e].y += -0.6f;
 	
 }
 
 // 敵の降下モーション処理
 void Enemy::EnemyDown(int e)
 {
-	
 	// 降下モーション
 	if (FPScnt > 0 && FPScnt < 20)
 	{
@@ -332,7 +328,27 @@ void Enemy::EnemyDown(int e)
 
 		// 10 11 10 12 10 
 	}
-	
+
+	enemy[e].y += 0.6f;
+}
+
+// 敵の左移動処理
+void Enemy::EnemyLeft(int e)
+{
+	// プレイヤーが敵より左にいるときは左に移動
+    // X座標減算
+	enemy[e].direction = 0;
+	enemy[e].x += -0.6f;
+}
+
+// 敵の右移動処理
+void Enemy::EnemyRight(int e)
+{
+	// プレイヤーが敵より右にいるときは右に移動
+	// X座標減算
+	enemy[e].direction = 1;
+	enemy[e].x += 0.6f;
+
 }
 
 // 敵とプレイヤーの当たり判定(スタート時)
@@ -378,26 +394,35 @@ int Enemy::HitEnemy(int e)
 
 	if (e == 0)
 	{
-		if (EnXL[e] <= EnXR[e + 1] && EnYL[e] <= EnYR[e + 1] && EnXR[e] >= EnXL[e + 1] && EnYR[e] >= EnYL[e])
+		if (enemy[e + 1].life != 0)
 		{
-			enemy[e].x -= 10.0f;
-			return 1;
+			if (EnXL[e] <= EnXR[e + 1] && EnYL[e] <= EnYR[e + 1] && EnXR[e] >= EnXL[e + 1] && EnYR[e] >= EnYL[e])
+			{
+				enemy[e].x -= 10.0f;
+				return 1;
+			}
 		}
 	}
 	else if (e == 1)
 	{
-		if (EnXL[e] <= EnXR[e + 1] && EnYL[e] <= EnYR[e + 1] && EnXR[e] >= EnXL[e + 1] && EnYR[e] >= EnYL[e])
+		if (enemy[e + 1].life != 0)
 		{
-			enemy[e].x -= 10.0f;
-			return 2;
+			if (EnXL[e] <= EnXR[e + 1] && EnYL[e] <= EnYR[e + 1] && EnXR[e] >= EnXL[e + 1] && EnYR[e] >= EnYL[e])
+			{
+				enemy[e].x -= 10.0f;
+				return 2;
+			}
 		}
 	}
 	else if (e == 2)
 	{
-		if (EnXL[e] <= EnXR[e - 2] && EnYL[e] <= EnYR[e - 2] && EnXR[e] >= EnXL[e - 2] && EnYR[e] >= EnYL[e])
+		if (enemy[e - 2].life != 0)
 		{
-			enemy[e].x -= 10.0f;
-			return 3;
+			if (EnXL[e] <= EnXR[e - 2] && EnYL[e] <= EnYR[e - 2] && EnXR[e] >= EnXL[e - 2] && EnYR[e] >= EnYL[e])
+			{
+				enemy[e].x -= 10.0f;
+				return 3;
+			}
 		}
 	}
 	
