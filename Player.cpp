@@ -78,7 +78,7 @@ void Player::Update(int Stage) /***•`‰æˆÈŠO***/
 		Death = true;
 	}
 
-	if (RespawnCnt == RespawnTime) {
+	if (Death == true) {
 		SetInitLocation();
 	}
 
@@ -162,7 +162,7 @@ void Player::Update(int Stage) /***•`‰æˆÈŠO***/
 		Respawn = false;
 	}
 
-	if (RespawnCnt > 180) {
+	if (RespawnCnt > RespawnTime) {
 		RespawnCnt = 0;
 		Death = false;
 		Hide = false;
