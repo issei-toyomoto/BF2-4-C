@@ -33,7 +33,7 @@ AbstractScene* Title::Update()
 	}
 	if (inputkey.GetJoyStickY(inputkey.Y_now) && inputkey.key_flg && inputkey.Y_now < 0)
 		if (--MenuNumber < 0)MenuNumber = 2;
-	if (inputkey.GetKey(PAD_INPUT_2) == TRUE && MenuNumber == 0) {
+	if (inputkey.GetKey(PAD_INPUT_2) == TRUE && MenuNumber == 0 || inputkey.GetKey(PAD_INPUT_8)) {
 		inputkey.key_flg = FALSE;
 		return new GameMain();
 	}
