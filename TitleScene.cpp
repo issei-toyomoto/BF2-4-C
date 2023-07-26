@@ -12,11 +12,8 @@ Title::Title() {
 	gTitleCreditImg = LoadGraph("images-20230711T024428Z-001/images/Title/Title_Credit.png");
 	LoadDivGraph("images-20230711T024428Z-001/images/Title/Title_CursorAnimation.png", 4, 4, 1, 32, 64, gTitleCursorAnim);
 	FPSCount = 0;
-	MenuNumber = 1;
+	MenuNumber = 0;
 	gMenuY = 0;
-	/*Key_flg = InputKey::key_flg;
-	Now_key = InputKey::now_key;
-	Old_key = InputKey::old_key;*/
 }
 
 Title::~Title() {
@@ -27,14 +24,17 @@ AbstractScene* Title::Update()
 {
 	FPSCount++;
 	InputKey::Update();
-	gMenuY = MenuNumber * 25;
+	gMenuY = MenuNumber * 30;
 	if (FPSCount == 60) {
 		FPSCount = 0;
 	}
-	if ((InputKey::GetJoyStickY || InputKey::GetJoyStickYOnes) && (InputKey::GetKey(PAD_INPUT_3))) {
+	if  (inputkey.GetJoyStickY(inputkey.Y_now) && inputkey.key_flg && inputkey.Y_now > 0) {
 		if (++MenuNumber > 2)MenuNumber = 0;
 	}
-	if (CheckHitKey(KEY_INPUT_1)) {
+	if (inputkey.GetJoyStickY(inputkey.Y_now) && inputkey.key_flg && inputkey.Y_now < 0)
+		if (--MenuNumber < 0)MenuNumber = 2;
+	if (inputkey.GetKey(PAD_INPUT_2) == TRUE && MenuNumber == 0 || inputkey.GetKey(PAD_INPUT_8)) {
+		inputkey.key_flg = FALSE;
 		return new GameMain();
 	}
 	else if (CheckHitKey(KEY_INPUT_6)) {
