@@ -4,6 +4,7 @@
 #include"Player.h"
 
 bool Fish::P_FishFlg;
+bool Fish::E_FishFlg;
 
 //コンストラクタ
 Fish::Fish() {

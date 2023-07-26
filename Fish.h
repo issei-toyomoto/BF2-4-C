@@ -37,7 +37,7 @@ public:
 	static bool P_FishFlg;
 
 	//魚に食べられたとき敵用
-	bool E_FishFlg;
+	static bool E_FishFlg;
 
 	Fish();						//コンストラクタ
 	void Draw() const;			//魚生成
