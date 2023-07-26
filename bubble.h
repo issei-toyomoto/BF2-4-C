@@ -10,9 +10,11 @@ private:
 	int FPSCount; // フレームカウント
 	int VectorBubbleX=-1; 
 	int BubbleImg[4];
-	int BubleFlg;
 	int BubbleFlg;
-	int BubleScore;
+	float Bubbledetection;
+	int BubbleAnimCount;
+	int BubbleAnimFase[4];
+
 
 	float px, py;
 	//int HitBoxPlayer(Player* p, bubble* e);
@@ -25,5 +27,7 @@ public:
     void Update();
 	void Draw() const;
 	void BubleCollision();
-	void BubbleScore(int score);
+	void BubbleScore();
+
+	static int BubleScore;
 };
