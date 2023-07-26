@@ -169,28 +169,28 @@ void Enemy::EnemyMove()
 			HitPFlg = HitPlayer(i);
 
 			// 敵のX座標範囲
-			if (enemy[i].x <= 0)
+			if (enemy[i].x <= 0.0f)
 			{
-				enemy[i].x = 640;
+				enemy[i].x = 640.0f;
 			}
-			else if (enemy[i].x > 640)
+			else if (enemy[i].x > 640.0f)
 			{
-				enemy[i].x = 0;
+				enemy[i].x = 0.0f;
 			}
 
 			// 敵のY座標範囲
-			if (enemy[i].y <= -20)
+			if (enemy[i].y < -19.0f)
 			{
-				enemy[i].y = -20;
+				enemy[i].y = -19.0f;
 			}
-			else if (enemy[i].y > 356)
+			else if (enemy[i].y > 356.0f)
 			{
-				enemy[i].y = 356;
+				enemy[i].y = 356.0f;
 			}
 
 
 			// プレイヤーが敵より右にいるときは右に移動する
-			if (Px >= enemy[i].x + 50)
+			if (Px >= enemy[i].x + 50.0f)
 			{
 				EnemyRight(i);
 			}
