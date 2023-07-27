@@ -65,6 +65,26 @@ void Enemy::Update()
 				HitFlg = HitEnemy(i);
 				HitPFlg = HitPlayer(i);
 				EnemyMove(i);
+
+				// 敵のX座標範囲
+				if (enemy[i].x <= 0.0f)
+				{
+					enemy[i].x = 640.0f;
+				}
+				else if (enemy[i].x > 640.0f)
+				{
+					enemy[i].x = 0.0f;
+				}
+
+				// 敵のY座標範囲
+				if (enemy[i].y < -19.0f)
+				{
+					enemy[i].y = -5.0f;
+				}
+				else if (enemy[i].y > 356.0f)
+				{
+					enemy[i].y = 356.0f;
+				}
 			}
 			else
 			{
@@ -191,25 +211,25 @@ void Enemy::EnemyInit()
 // 敵の移動処理
 void Enemy::EnemyMove(int i)
 {
-	// 敵のX座標範囲
-	if (enemy[i].x <= 0.0f)
-	{
-		enemy[i].x = 640.0f;
-	}
-	else if (enemy[i].x > 640.0f)
-	{
-		enemy[i].x = 0.0f;
-	}
+	//// 敵のX座標範囲
+	//if (enemy[i].x <= 0.0f)
+	//{
+	//	enemy[i].x = 640.0f;
+	//}
+	//else if (enemy[i].x > 640.0f)
+	//{
+	//	enemy[i].x = 0.0f;
+	//}
 
-	// 敵のY座標範囲
-	if (enemy[i].y < -20.0f)
-	{
-		enemy[i].y = MinY;
-	}
-	else if (enemy[i].y > 356.0f)
-	{
-		enemy[i].y = 356.0f;
-	}
+	//// 敵のY座標範囲
+	//if (enemy[i].y < -20.0f)
+	//{
+	//	enemy[i].y = MinY;
+	//}
+	//else if (enemy[i].y > 356.0f)
+	//{
+	//	enemy[i].y = 356.0f;
+	//}
 
 
 	// プレイヤーが敵より右にいるときは右に移動する
@@ -248,8 +268,6 @@ void Enemy::StartMove()
 
 			if (StartMotion == 0)
 			{
-				
-
 				if (FPScnt > 0 && FPScnt < 15 || FPScnt > 31 && FPScnt < 45)
 				{
 					enemy[i].flg = 0;
@@ -319,15 +337,19 @@ void Enemy::EnemyUp(int e)
 		enemy[e].flg = 9;
 	}
 
+	enemy[e].vecy += 0.05f;
 
-	enemy[e].y += -0.6f;
-	
+	if (enemy[e].vecy >= 1.0f)
+	{
+		enemy[e].vecy = 1.0f;
+	}
+
+	enemy[e].y -= enemy[e].vecy;
 }
 
 // 敵の降下モーション処理
 void Enemy::EnemyDown(int e)
 {
-	VectorY = 0;
 	// 降下モーション
 	if (enemy[e].ran == 2)
 	{
@@ -346,9 +368,15 @@ void Enemy::EnemyDown(int e)
 			// 10 11 10 12 10 
 		}
 	}
+	
+	enemy[e].vecy += 0.06f;
 
-	enemy[e].y += 0.6f;
+	if (enemy[e].vecy >= 1.5f)
+	{
+		enemy[e].vecy = 1.5f;
+	}
 
+	enemy[e].y += enemy[e].vecy;
 
 	if (enemy[e].ran == 1)
 	{
@@ -366,7 +394,14 @@ void Enemy::EnemyDown(int e)
 			enemy[e].flg = 9;
 		}
 
-		enemy[e].y += -1.0f;
+		enemy[e].vecy += 0.05f;
+
+		if (enemy[e].vecy >= 1.0f)
+		{
+			enemy[e].vecy = 1.0f;
+		}
+
+		enemy[e].y -= enemy[e].vecy;
 	}
 	
 }
@@ -374,23 +409,35 @@ void Enemy::EnemyDown(int e)
 // 敵の左移動処理
 void Enemy::EnemyLeft(int e)
 {
-	VectorX = 0;
 	// プレイヤーが敵より左にいるときは左に移動
     // X座標減算
 	enemy[e].direction = 0;
 
-	enemy[e].x += -0.6f;
+	enemy[e].vecx += 0.05f;
+
+	if (enemy[e].vecx >= 1.0f)
+	{
+		enemy[e].vecx = 1.0f;
+	}
+
+	enemy[e].x -= enemy[e].vecx;
 }
 
 // 敵の右移動処理
 void Enemy::EnemyRight(int e)
 {
-	VectorX = 0;
 	// プレイヤーが敵より右にいるときは右に移動
 	// X座標減算
 	enemy[e].direction = 1;
 
-	enemy[e].x += 0.6f;
+	enemy[e].vecx += 0.05f;
+
+	if (enemy[e].vecx >= 1.0f)
+	{
+		enemy[e].vecx = 1.0f;
+	}
+
+	enemy[e].x += enemy[e].vecx;
 
 }
 

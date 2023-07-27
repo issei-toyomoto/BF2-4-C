@@ -30,6 +30,8 @@ private:
 	{
 		float x = 0.0f;        // 敵のX座標
 		float y = 0.0f;        // 敵のY座標
+		float vecx = 0.0f;  // 敵の移動量X
+		float vecy = 0.0f;  // 敵の移動量Y
 		int state = 0;      // 敵の状態(0:ピンク 1:緑 2:黄色)
 		int life = 2;       // 敵のHP(0:死亡 1:パラシュート状態 2:風船1個状態)
 		int flg = 0;        // 敵の画像番号用
