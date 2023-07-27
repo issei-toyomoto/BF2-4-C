@@ -20,7 +20,7 @@ void Thunder::Update(int Stage)
 	NowStage = Stage;
 	ThunderAnimCnt++;
 
-	StageCollision();
+	//StageCollision();
 
 	MoveThunderX();
 	ThunderX += VectorX;
