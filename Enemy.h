@@ -57,6 +57,9 @@ public:
 	void HitStage(int e);   // 敵とステージの当たり判定
 	int HitStart(int e);    // 敵とプレイヤーの当たり判定(スタート時)
 	void EnemyDie(int e);   // 敵の死亡モーション処理
+
+	void EnemyMoveX(int e);  // 敵の移動処理
+	void EnemyMoveY(int e);  // 敵の移動処理
 	
 	//描画以外の更新を実装する
 	void Update();
