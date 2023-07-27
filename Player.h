@@ -74,6 +74,9 @@
 
 #define RespawnTime 30		//リスポーンまでの時間
 
+#define Balloon_Crack    1	//風船が割られた
+#define Balloon_NotCrack 0	//風船が割られてない
+
 class Player
 {
 private:
@@ -83,7 +86,7 @@ private:
 	int DeathCnt;		//死んだ後の点滅処理の間隔
 	int RespawnCnt;     //リスポーンするまでの間隔
 
-	int PlayerImg[32];	//プレイヤー画像
+	int PlayerImg[33];	//プレイヤー画像
 	int NowPlayerImg;	//現在のプレイヤー画像配列の要素
 
 	float VectorX;		//ベクトルX
@@ -98,9 +101,6 @@ private:
 
 	int NowStage;		//現在のステージ
 
-	static int NowFraem;//現在のフレーム
-	static int OldFraem;//計測開始時のフレーム
-
 	bool FlyBtnFlg;		//(true;飛ぶボタンを押している false:飛ぶボタンを押していない)
 	bool GroundFlg;		//(true:地面に接触している     false:地面に接触していない    )
 	bool TouchFlg;		//(treu:地面以外に触れている   false:地面以外に触れていない　)
@@ -108,16 +108,19 @@ private:
 	bool Respawn;		//(treu:リスポーンした         false:リスポーンしてない　  　)
 	bool Hide;			//(true:プレイヤーを表示しない false:プレイヤーを表示        )
 
-	bool FishFlg;
+	bool FishFlg;		//(true:魚に食べられた         false:魚に食べられていない    )*Fish.cppから値を取得している*
 
 	int Anti_AbtnCnt = 0;	//Aボタンを押していない時をカウント
 
 	int OldStage;
+	int BalloonCrack;	//風船の数を割られた時の変数（0:割られてない　１：割られた）*Enemy.cppから値を取得する*（未完成）
+
+	int LifeNom;		//残機数
 public:
 	static float PlayerX;	//プレイヤーX座標(画像の左上X座標)
 	static float PlayerY;	//プレイヤーY座標(画像の左上Y座標)
 
-	static bool Death;			//(true:死亡した               false:死亡していない          )
+	static bool Death;		//(true:死亡した               false:死亡していない          )
 
 	//コンストラクタ
 	Player();

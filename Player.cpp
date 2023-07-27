@@ -6,9 +6,6 @@
 
 #define DEBUG
 
-int Player::OldFraem;
-int Player::NowFraem;
-
 float Player::PlayerX;
 float Player::PlayerY;
 
@@ -31,8 +28,6 @@ Player::Player()
 	GroundFlg = Not_Ground;
 	TouchFlg = Not_Touch;
 	Abtn = false;
-	NowFraem = 0;
-	OldFraem = 0;
 	WaitFPSCnt = 0;
 	Respawn = true;
 	DeathCnt = 0;
@@ -42,6 +37,7 @@ Player::Player()
 	Hide = false;
 
 	FishFlg = Fish::P_FishFlg;//Fish.cppから値を取得
+	BalloonCrack = Balloon_NotCrack;
 }
 
 void Player::Update(int Stage) /***描画以外***/
@@ -55,6 +51,11 @@ void Player::Update(int Stage) /***描画以外***/
 		if (Anti_AbtnCnt == AbtnFPSCnt) {
 			Abtn = false;
 		}
+	}
+
+	if (BalloonCrack == Balloon_Crack) {//風船が敵に割られた時の処理
+		BalloonNum--;
+		BalloonCrack = Balloon_NotCrack;
 	}
 
 	FPSCnt++;//フレームカウント
@@ -189,7 +190,7 @@ void Player::Update(int Stage) /***描画以外***/
 	OldStage = NowStage;
 #ifdef DEBUG
 	if (InputKey::GetKeyDown(PAD_INPUT_10) == TRUE) {//スペースキーを押したら風船の数を１つ減らす
-		BalloonNum--;
+		BalloonCrack = Balloon_Crack;
 	}
 #endif // DEBUG
 
@@ -236,7 +237,7 @@ void Player::Draw() const /***描画***/
 	DrawFormatString(400, 10, C_WHITE, "FPS:%d", FPSCnt);						//フレームカウント
 	DrawFormatString(400, 30, C_WHITE, "Balloon:%d", BalloonNum);				//風船の数
 	DrawFormatString(400, 50, C_WHITE, "X:%.2f Y:%.2f", PlayerX, PlayerY);		//プレイヤー座標
-	DrawFormatString(400, 70, C_WHITE, "VX:%d VY:%d", VectorX, VectorY);		//加速度
+	DrawFormatString(400, 70, C_WHITE, "VX:%.2f VY:%.2f", VectorX, VectorY);	//加速度
 	DrawFormatString(400, 90, C_WHITE, "Stage:%d", NowStage);					//現在のステージ
 	DrawFormatString(400, 110, C_WHITE, "Respawn:%d DeathCnt:%d", Respawn, DeathCnt);
 	DrawFormatString(400, 130, C_WHITE, "FishFlg:%d", FishFlg);

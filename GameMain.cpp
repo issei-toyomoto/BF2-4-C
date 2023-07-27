@@ -8,7 +8,7 @@
 #include"Fish.h"
 #include"Stage.h"
 
-#define DEBUG
+//#define DEBUG
 
 AbstractScene* GameMain::Update()
 {
@@ -16,7 +16,7 @@ AbstractScene* GameMain::Update()
 	BUBBLE.Update();
 	enemy.Update();
 	fish.Update();
-	thunder.Update();
+	thunder.Update(gStageState);
 	ui.Update();
 	stage.Update();
 
@@ -50,7 +50,10 @@ void GameMain::Draw()const
 	enemy.Draw();
 	fish.Draw();
 	ui.Draw();
-	
+
+	DrawGraph(160, 455, gGameImg[12], TRUE);//海の表示
+	DrawGraph(0, 455, gGameImg[12], TRUE);
+	DrawGraph(480, 455, gGameImg[12], TRUE);
 
 #ifdef DEBUG
 	//ステージの当たり判定(ステージ１)
