@@ -5,7 +5,6 @@
 #include "Fish.h"
 
 #define DEBUG
-#define DEBUG_Flg
 
 int Player::OldFraem;
 int Player::NowFraem;
@@ -81,7 +80,7 @@ void Player::Update(int Stage) /***描画以外***/
 		BalloonNum = 2;
 	}
 
-	if (Death == true || OldStage != NowStage) {
+	if (Death == true || OldStage != NowStage) {//ステージが切り替わったらプレイヤーを初期位置へ戻す
 		if (FishFlg == true) {
 			Hide = true;
 		}
@@ -96,8 +95,6 @@ void Player::Update(int Stage) /***描画以外***/
 	GetJoypadAnalogInput(&XStick, &YStick, DX_INPUT_PAD1);
 	InputKey::GetJoyStickX(XStick);
 	InputKey::GetJoyStickY(YStick);
-	//マウスカーソル情報取得
-	GetMousePoint(&MoX, &MoY);
 
 	UpdateStageCollision();//プレイヤーとステージの当たり判定
 
@@ -131,9 +128,7 @@ void Player::Update(int Stage) /***描画以外***/
 		PlayerY += VectorY;//Y座標更新
 	}
 	else if (BalloonNum == 0) {//風船の数が０になった時の処理
-		PlayerState = P_State_Dead;
-		VectorY = 3;
-		PlayerY += VectorY;
+		PlayerDeathAnim();
 		if (Death == true) {
 			BalloonNum = 2;
 			Death = false;
@@ -233,7 +228,7 @@ void Player::Draw() const /***描画***/
 		}
 	}
 	else if (Hide == true) {//プレイヤーを表示しない
-
+		//プレイヤーを非表示
 	}
 	
 
@@ -241,14 +236,12 @@ void Player::Draw() const /***描画***/
 	DrawFormatString(400, 10, C_WHITE, "FPS:%d", FPSCnt);						//フレームカウント
 	DrawFormatString(400, 30, C_WHITE, "Balloon:%d", BalloonNum);				//風船の数
 	DrawFormatString(400, 50, C_WHITE, "X:%.2f Y:%.2f", PlayerX, PlayerY);		//プレイヤー座標
-	DrawFormatString(400, 70, C_WHITE, "MX:%d MY:%d", MoX, MoY);				//マウスカーソルの座標
+	DrawFormatString(400, 70, C_WHITE, "VX:%d VY:%d", VectorX, VectorY);		//加速度
 	DrawFormatString(400, 90, C_WHITE, "Stage:%d", NowStage);					//現在のステージ
-	DrawFormatString(400, 120, C_WHITE, "Anti_AbtnCnt:%d",Anti_AbtnCnt);		//
-	DrawFormatString(400, 150, C_WHITE, "AbtnFPS:%d", AbtnFPSCnt);				//
-	DrawFormatString(400, 270, C_WHITE, "Respawn:%d DeathCnt:%d", Respawn, DeathCnt);
-	DrawFormatString(400, 290, C_WHITE, "FishFlg:%d", FishFlg);
-	DrawFormatString(400, 310, C_WHITE, "Death:%d RespawnCnt:%d", Death, RespawnCnt);
-	DrawFormatString(400, 330, C_WHITE, "Hide:%d", Hide);
+	DrawFormatString(400, 110, C_WHITE, "Respawn:%d DeathCnt:%d", Respawn, DeathCnt);
+	DrawFormatString(400, 130, C_WHITE, "FishFlg:%d", FishFlg);
+	DrawFormatString(400, 150, C_WHITE, "Death:%d RespawnCnt:%d", Death, RespawnCnt);
+	DrawFormatString(400, 170, C_WHITE, "Hide:%d", Hide);
 
 	//プレイヤー画像サイズ
 	DrawBox((int)PlayerX, (int)PlayerY, (int)PlayerX + 64, (int)PlayerY + 64, C_RED,FALSE);
@@ -260,13 +253,6 @@ void Player::Draw() const /***描画***/
 	//風船
 	DrawBox((int)PlayerX + 12, (int)PlayerY + 14, (int)PlayerX + 52, (int)PlayerY + 38, C_GREEN,FALSE);
 #endif //DEBUG
-
-#ifdef DEBUG_Flg
-	DrawFormatString(400, 170, C_WHITE, "FlyBtn:%d(0:off 1:on)", FlyBtnFlg);	//飛ぶボタンを押しているか
-	DrawFormatString(400, 190, C_WHITE, "GroundFlg:%d(0:not 1:on)", GroundFlg);	//地面に触れているか
-	DrawFormatString(400, 210, C_WHITE, "TouchFlg;%d(0:not 1:on)", TouchFlg);	//地面以外に触れている
-	DrawFormatString(400, 230, C_WHITE, "Abtn;%d(0:not 1:on)", Abtn);			//Aボタンを押しているか
-#endif // DEBUG_Flg
 
 }
 
@@ -1710,12 +1696,19 @@ void Player::SetInitLocation()
 	Respawn = true;
 }
 
+//
 float Player::GetPlayerX (){
 	static float X = PlayerX;
 	return X;
 }
-
 float Player::GetPlayerY() {
 	static float Y = PlayerY;
 	return Y;
+}
+
+void Player::PlayerDeathAnim() 
+{
+	PlayerState = P_State_Dead;
+	VectorY = 3;
+	PlayerY += VectorY;
 }

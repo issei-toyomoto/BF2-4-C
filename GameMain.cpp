@@ -7,17 +7,8 @@
 #include"Thunderbolt.h"
 #include"Fish.h"
 #include"Stage.h"
-#define DEBUG
 
-//GameMain::GameMain() 
-//{
-//
-//}
-//
-//GameMain::~GameMain() 
-//{
-//
-//}
+#define DEBUG
 
 AbstractScene* GameMain::Update()
 {
@@ -52,78 +43,14 @@ AbstractScene* GameMain::Update()
 
 void GameMain::Draw()const
 {
-	/*stage.Draw();*/
+	stage.Draw(gStageState);
+	player.Draw();
 	thunder.Draw();
 	BUBBLE.Draw();
-	player.Draw();
 	enemy.Draw();
 	fish.Draw();
 	ui.Draw();
-	stage.Draw();
-
-	/*ステージ遷移*/
-	switch (gStageState)
-	{
-	case 1: // ステージ1
-		/*DrawFormatString(50, 0, C_RED, "各ステージに対応した数字(1～5)キーを押すことで押したキーのステージへ");*/
-		DrawFormatString(10, 30, C_RED, "6キーで強制終了");
-		DrawGraph(S_Ground_Left_XU, S_Ground_Left_YU, gGameImg[8], TRUE);
-		DrawGraph(S_Ground_Right_XU, S_Ground_Right_YU, gGameImg[10], TRUE);
-		DrawGraph(S_Sky_Ground_0_XU, S_Sky_Ground_0_YU, gGameImg[0], TRUE);
-		DrawGraph(160, 455, gGameImg[12], TRUE);
-		DrawFormatString(10, 30, C_RED, "6キーで強制終了");
-		break;
-	case 2: // ステージ2
-		/*DrawFormatString(50, 0, C_RED, "各ステージに対応した数字(1～5)キーを押すことで押したキーのステージへ");*/
-		DrawFormatString(10, 30, C_RED, "6キーで強制終了");
-		DrawGraph(S_Sky_Ground_0_XU, S_Sky_Ground_0_YU, gGameImg[0], TRUE);
-		DrawGraph(S2_Sky_Ground_0_XU, S2_Sky_Ground_0_YU, gGameImg[1], TRUE);
-		DrawGraph(S2_Sky_Ground_1_XU, S2_Sky_Ground_1_YU, gGameImg[1], TRUE);
-		DrawGraph(S_Ground_Left_XU, S_Ground_Left_YU , gGameImg[8], TRUE);
-		DrawGraph(S_Ground_Right_XU, S_Ground_Right_YU, gGameImg[10], TRUE);
-		DrawGraph(160, 455, gGameImg[12], TRUE);
-		break;
-	case 3: // ステージ3
-		/*DrawFormatString(50, 0, C_RED, "各ステージに対応した数字(1～5)キーを押すことで押したキーのステージへ");*/
-		DrawFormatString(10, 30, C_RED, "6キーで強制終了");
-		DrawGraph(S3_Sky_Ground_1_XU, S3_Sky_Ground_1_YU, gGameImg[2], TRUE);
-		DrawGraph(S3_Sky_SGround_0_XU, S3_Sky_SGround_0_YU, gGameImg[3], TRUE);
-		DrawGraph(S3_Sky_SGround_1_XU, S3_Sky_SGround_1_YU, gGameImg[3], TRUE);
-		DrawGraph(S3_Sky_SGround_2_XU, S3_Sky_SGround_2_YU, gGameImg[3], TRUE);
-		DrawGraph(S3_Sky_Ground_0_XU, S3_Sky_Ground_0_YU, gGameImg[4], TRUE);
-		DrawGraph(S_Ground_Left_XU, S_Ground_Left_YU, gGameImg[8], TRUE);
-		DrawGraph(S_Ground_Right_XU, S_Ground_Right_YU, gGameImg[10], TRUE);
-		DrawGraph(160, 455, gGameImg[12], TRUE);
-		break;
-	case 4: // ステージ4
-		/*DrawFormatString(50, 0, C_RED, "各ステージに対応した数字(1～5)キーを押すことで押したキーのステージへ");*/
-		DrawFormatString(10, 30, C_RED, "6キーで強制終了");
-		DrawGraph(S4_Sky_Ground_0_XU, S4_Sky_Ground_0_YU, gGameImg[5], TRUE);
-		DrawGraph(S4_Sky_Ground_1_XU, S4_Sky_Ground_1_YU, gGameImg[5], TRUE);
-		DrawGraph(S4_Sky_Ground_2_XU, S4_Sky_Ground_2_YU, gGameImg[5], TRUE);
-		DrawGraph(S4_Sky_Ground_3_XU, S4_Sky_Ground_3_YU, gGameImg[5], TRUE);
-		DrawGraph(S4_Sky_Ground_4_XU, S4_Sky_Ground_4_YU, gGameImg[5], TRUE);
-		DrawGraph(S_Ground_Left_XU, S_Ground_Left_YU, gGameImg[9], TRUE);
-		DrawGraph(S_Ground_Right_XU, S_Ground_Right_YU, gGameImg[11], TRUE);
-		DrawGraph(160, 455, gGameImg[12], TRUE);
-		break;
-	case 5: // ステージ5
-		/*DrawFormatString(50, 0, C_RED, "各ステージに対応した数字(1～5)キーを押すことで押したキーのステージへ");*/
-		DrawFormatString(10, 30, C_RED, "6キーで強制終了");
-		DrawGraph(S5_Sky_Ground_0_XU, S5_Sky_Ground_0_YU, gGameImg[5], TRUE);
-		DrawGraph(S5_Sky_Ground_1_XU, S5_Sky_Ground_1_YU, gGameImg[5], TRUE);
-		DrawGraph(S5_Sky_Ground_2_XU, S5_Sky_Ground_2_YU, gGameImg[5], TRUE);
-		DrawGraph(S5_Sky_SGround_0_XU, S5_Sky_SGround_0_YU, gGameImg[6], TRUE);
-		DrawGraph(S5_Sky_SGround_1_XU, S5_Sky_SGround_1_YU, gGameImg[6], TRUE);
-		DrawGraph(S5_Sky_SGround_2_XU, S5_Sky_SGround_2_YU, gGameImg[7], TRUE);
-		DrawGraph(S_Ground_Left_XU, S_Ground_Left_YU, gGameImg[9], TRUE);
-		DrawGraph(S_Ground_Right_XU, S_Ground_Right_YU, gGameImg[11], TRUE);
-		DrawGraph(160, 455, gGameImg[12], TRUE);
-		break;
-	default:
-		break;
-	}
-	/*gstage.DrawStage1();*/
+	
 
 #ifdef DEBUG
 	//ステージの当たり判定(ステージ１)

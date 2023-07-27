@@ -96,9 +96,6 @@ private:
 	int XStick;			//ステック上下
 	int YStick;			//ステック左右
 
-	int MoX;			//マウスカーソルX座標
-	int MoY;			//マウスカーソルY座標
-
 	int NowStage;		//現在のステージ
 
 	static int NowFraem;//現在のフレーム
@@ -160,4 +157,6 @@ public:
 	//プレイヤーの座標取得
 	float GetPlayerX();
 	float GetPlayerY();
+
+	void PlayerDeathAnim();
 };

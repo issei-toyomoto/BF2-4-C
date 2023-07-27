@@ -19,7 +19,7 @@ private:
     bool DeathFlg;
     
 public:
-    void Draw() const;
+    void Draw(int gStageState) const;
 
     void Update();
 
