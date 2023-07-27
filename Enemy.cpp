@@ -55,16 +55,6 @@ void Enemy::Update()
 	}
 	else if (StartFlg != 0)
 	{
-		//EnemyMove();
-
-		//// 敵の座標更新
-		//for (int i = 0; i < ENEMY_MAX; i++)
-		//{
-		//	enemy[i].x += VectorX;
-		//	enemy[i].y += VectorY;
-		//}
-
-
 		for (int i = 0; i < ENEMY_MAX; i++)
 		{
 			if (enemy[i].life != 0)
@@ -74,15 +64,7 @@ void Enemy::Update()
 				HitStage(i);
 				HitFlg = HitEnemy(i);
 				HitPFlg = HitPlayer(i);
-
-				EnemyMoveX(i);
-				enemy[i].x += VectorX;
-
-
-				EnemyMoveY(i);
-				enemy[i].y += VectorY;
-
-				enemy[i].ground = 0;
+				EnemyMove(i);
 			}
 			else
 			{
@@ -154,7 +136,7 @@ void Enemy::Draw() const
 
 #endif // DEBUG
 
-	DrawFormatString(180, 30, 0xff0000, "Zキー押したら敵リセット");
+	DrawFormatString(180, 30, 0xff0000, "Zキーで敵リセット");
 
 	for (int i = 0; i < ENEMY_MAX; i++)
 	{
@@ -170,7 +152,7 @@ void Enemy::Draw() const
 			{
 				// スタート以外
 				// 画面内
-				if (enemy[i].direction != 1)
+				if (enemy[i].direction < 1)
 				{
 					DrawGraph((int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
 				}
@@ -178,6 +160,7 @@ void Enemy::Draw() const
 				{
 					DrawTurnGraph((int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
 				}
+
 
 				// 画面外
 				if (enemy[i].x < 0)
@@ -206,75 +189,52 @@ void Enemy::EnemyInit()
 }
 
 // 敵の移動処理
-void Enemy::EnemyMove()
+void Enemy::EnemyMove(int i)
 {
-
-	for (int i = 0; i < ENEMY_MAX; i++)
+	// 敵のX座標範囲
+	if (enemy[i].x <= 0.0f)
 	{
-		if (enemy[i].life != 0)
-		{
-			enemy[i].ran = rand() % 2 + 1;
-
-			HitStage(i);
-			HitFlg = HitEnemy(i);
-			HitPFlg = HitPlayer(i);
-
-			EnemyMoveX(i);
-			EnemyMoveY(i);
-
-			//// 敵のX座標範囲
-			//if (enemy[i].x <= 0.0f)
-			//{
-			//	enemy[i].x = 640.0f;
-			//}
-			//else if (enemy[i].x > 640.0f)
-			//{
-			//	enemy[i].x = 0.0f;
-			//}
-
-			//// 敵のY座標範囲
-			//if (enemy[i].y < -19.6f && enemy[i].y > -21.0f)
-			//{
-			//	VectorY *= -COR;
-			//	/*enemy[i].y = MinY;*/
-			//}
-			//else if (enemy[i].y > 356.0f)
-			//{
-			//	enemy[i].y = 356.0f;
-			//}
-
-
-			//// プレイヤーが敵より右にいるときは右に移動する
-			//if (Px >= enemy[i].x + 50.0f)
-			//{
-			//	EnemyRight(i);
-			//}
-			//else
-			//{
-			//	// プレイヤーが敵より左にいるときは左に移動する
-			//	EnemyLeft(i);
-			//}
-
-
-			//// プレイヤーが敵より上にいるときは浮上する
-			//if (Py < enemy[i].y || enemy[i].ground == 1)
-			//{
-			//	EnemyUp(i);
-			//}
-			//else
-			//{
-			//	// プレイヤーが敵より下にいるときは降下する
-			//	EnemyDown(i);
-			//}
-			enemy[i].ground = 0;
-		}
-		else
-		{
-			EnemyDie(i);
-		}
-
+		enemy[i].x = 640.0f;
 	}
-	
+	else if (enemy[i].x > 640.0f)
+	{
+		enemy[i].x = 0.0f;
+	}
+
+	// 敵のY座標範囲
+	if (enemy[i].y < -20.0f)
+	{
+		enemy[i].y = MinY;
+	}
+	else if (enemy[i].y > 356.0f)
+	{
+		enemy[i].y = 356.0f;
+	}
+
+
+	// プレイヤーが敵より右にいるときは右に移動する
+	if (Px >= enemy[i].x)
+	{
+		EnemyRight(i);
+	}
+	else
+	{
+		// プレイヤーが敵より左にいるときは左に移動する
+		EnemyLeft(i);
+	}
+
+
+	// プレイヤーが敵より上にいるときは浮上する
+	if (Py < enemy[i].y || enemy[i].ground == 1)
+	{
+		EnemyUp(i);
+	}
+	else
+	{
+		// プレイヤーが敵より下にいるときは降下する
+		EnemyDown(i);
+	}
+	enemy[i].ground = 0;	
 }
 
 // 敵のスタート処理
@@ -358,15 +318,9 @@ void Enemy::EnemyUp(int e)
 	{
 		enemy[e].flg = 9;
 	}
-	
-	VectorY = VectorY + -0.2f;	//速度＋加速度
 
-	if (VectorY <= -3.0f) 
-	{		//速度制限
-		VectorY = -3.0f;
-	}
 
-	/*enemy[e].y += -0.6f;*/
+	enemy[e].y += -0.6f;
 	
 }
 
@@ -393,13 +347,7 @@ void Enemy::EnemyDown(int e)
 		}
 	}
 
-	VectorY = VectorY + 0.2f;	//速度＋加速度
-	if (VectorY >= 3.0f) 
-	{		//速度制限
-		VectorY = 3.0f;
-	}
-
-	/*enemy[e].y += 0.6f;*/
+	enemy[e].y += 0.6f;
 
 
 	if (enemy[e].ran == 1)
@@ -418,13 +366,7 @@ void Enemy::EnemyDown(int e)
 			enemy[e].flg = 9;
 		}
 
-		VectorY = VectorY + -0.2f;	//速度＋加速度
-		if (VectorY <= -3.0f)
-		{		//速度制限
-			VectorY = -3.0f;
-		}
-
-		/*enemy[e].y += -1.0f;*/
+		enemy[e].y += -1.0f;
 	}
 	
 }
@@ -437,13 +379,7 @@ void Enemy::EnemyLeft(int e)
     // X座標減算
 	enemy[e].direction = 0;
 
-	VectorX = VectorX + -0.8f;	//速度＋加速度
-	if (VectorX <= -3.0f) 
-	{		//速度制限
-		VectorX = -3.0f;
-	}
-
-	/*enemy[e].x += -0.6f;*/
+	enemy[e].x += -0.6f;
 }
 
 // 敵の右移動処理
@@ -454,13 +390,7 @@ void Enemy::EnemyRight(int e)
 	// X座標減算
 	enemy[e].direction = 1;
 
-	VectorX = VectorX + 0.8f;	//速度＋加速度
-	if (VectorX >= 3.0f)
-	{		//速度制限
-		VectorX = 3.0f;
-	}
-
-	/*enemy[e].x += 0.6f;*/
+	enemy[e].x += 0.6f;
 
 }
 
@@ -668,51 +598,4 @@ void Enemy::EnemyDie(int e)
 }
 
 
-void Enemy::EnemyMoveX(int e)
-{
-	// プレイヤーが敵より右にいるときは右に移動する
-	if (Px >= enemy[e].x + 50.0f)
-	{
-		EnemyRight(e);
-	}
-	else
-	{
-		// プレイヤーが敵より左にいるときは左に移動する
-		EnemyLeft(e);
-	}
 
-	// 敵のX座標範囲
-	if (enemy[e].x <= 0.0f)
-	{
-		enemy[e].x = 640.0f;
-	}
-	else if (enemy[e].x > 640.0f)
-	{
-		enemy[e].x = 0.0f;
-	}
-}
-
-void Enemy::EnemyMoveY(int e)
-{
-	// プレイヤーが敵より上にいるときは浮上する
-	if (Py < enemy[e].y || enemy[e].ground == 1)
-	{
-		EnemyUp(e);
-	}
-	else
-	{
-		// プレイヤーが敵より下にいるときは降下する
-		EnemyDown(e);
-	}
-
-	// 敵のY座標範囲
-	if (enemy[e].y < -19.6f && enemy[e].y > -21.0f)
-	{
-		VectorY *= -COR;
-		/*enemy[i].y = MinY;*/
-	}
-	else if (enemy[e].y > 356.0f)
-	{
-		enemy[e].y = 356.0f;
-	}
-}
