@@ -27,6 +27,7 @@ AbstractScene* GameMain::Update()
 	fish.Update();
 	thunder.Update();
 	ui.Update();
+	stage.Update();
 
 	if (CheckHitKey(KEY_INPUT_1)) {
 		gStageState = 1;
@@ -45,7 +46,6 @@ AbstractScene* GameMain::Update()
 	}
 	else if (CheckHitKey(KEY_INPUT_6)) {
 		return nullptr;
-
 	}
 	return this;
 }
@@ -59,6 +59,7 @@ void GameMain::Draw()const
 	enemy.Draw();
 	fish.Draw();
 	ui.Draw();
+	stage.Draw();
 
 	/*ステージ遷移*/
 	switch (gStageState)

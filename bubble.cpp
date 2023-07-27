@@ -6,16 +6,19 @@
 int bubble::BubleScore;
 
 bubble::bubble() {
-	LoadDivGraph("images/Stage_BubbleAnimation.png", 4, 4, 1, 64, 64, BubbleImg);//画像読み込み
+	LoadDivGraph("images/Stage_BubbleAnimation.png", 4, 4, 1, 64, 64, BubbleImg);
 	bubbleX = 320;
 	bubbleY = 480;
 	FPSCount = 0;
 	px = 0;
 	py = 0;
+	px_old = 0;
+	py_old = 0;
 	BubbleFlg = 0;
 	BubleScore = 0;
 	Bubbledetection = 0;
 	BubbleAnimCount = 0;
+	BubbleScoreImg = LoadGraph("images-20230711T024428Z-001/images/Score/GetScore_500.png");
 	for(int i = 0; i < 4; i++)
 	{
 		BubbleAnimFase[i] = 0;
@@ -33,7 +36,7 @@ void bubble::Update()
 
 	bubble::BubleCollision();
 
-	bubbleY -= 0.25;
+	bubbleY -= 0.75;
 	if (FPSCount <= 29) {
 		bubbleX -= 1.5;
 	}
@@ -44,70 +47,46 @@ void bubble::Update()
 	if (FPSCount == 60) {
 		FPSCount = 0;
 	}
-	/*if (BubbleFlg == 1)
+	if (BubbleFlg == 1)
 	{
-		BubbleAnimCount;
+		BubbleAnimCount++;
 	}
-	if(BubbleAnimCount < 29)
+	if (BubbleAnimCount == 100)
 	{
-		BubbleAnimFase[0] = 1;
+		BubbleAnimCount = 0;
+		BubbleFlg = 0;
 	}
-	if (BubbleAnimCount < 59)
-	{
-		BubbleAnimFase[1] = 1;
-	}
-	if (BubbleAnimCount < 89)
-	{
-		BubbleAnimFase[2] = 1;
-	}
-	if (BubbleAnimCount == 119)
-	{
-		BubbleAnimFase[3] = 1;
-	}*/
 }
 
 void bubble::Draw() const
 {
-	/*if (BubbleFlg == 0 && BubbleAnimFase[0] == 0)
+	/*DrawFormatStringF(0, 200, C_RED, "%d", px_old);
+	DrawFormatStringF(20, 200, C_RED, "%d", py_old);*/
+	DrawFormatString(80, 300, C_RED, "%d", BubbleAnimCount);
+	if (BubbleFlg == 0 && Bubbledetection == 0)
 	{
 		DrawGraph((int)bubbleX, (int)bubbleY, BubbleImg[0], TRUE);
 		DrawBox((int)bubbleX + 15, (int)bubbleY + 15, (int)bubbleX + 50, (int)bubbleY + 50, C_RED, FALSE);
 	}
 	if (BubbleFlg == 1)
 	{
-		if (BubbleAnimCount < 29 && BubbleAnimFase[1] == 0)
+		if (BubbleAnimCount < 100)
 		{
-			DrawGraph((const int)bubbleX, (const int)bubbleY, BubbleImg[1], TRUE);
+			DrawGraph((int)px_old + 30, (int)py_old - 50, BubbleScoreImg, TRUE);
 		}
-		else if(BubbleAnimCount < 59 && BubbleAnimFase[2] == 0)
+		if (BubbleAnimCount < 3 && BubbleAnimCount > 1)
 		{
-			DrawGraph((const int)bubbleX, (const int)bubbleY, BubbleImg[2], TRUE);
+			DrawGraph((int)bubbleX, (int)bubbleY, BubbleImg[1], TRUE);
 		}
-		else if(BubbleAnimCount < 89 && BubbleAnimFase[3] == 0)
+		else if(BubbleAnimCount < 6 && BubbleAnimCount > 3)
 		{
-			DrawGraph((const int)bubbleX, (const int)bubbleY, BubbleImg[3], TRUE);
+			DrawGraph((int)bubbleX, (int)bubbleY, BubbleImg[2], TRUE);
 		}
-	}*/
-	switch (BubbleFlg)
-	{
-	case 0:
-		DrawGraph((int)bubbleX, (int)bubbleY, BubbleImg[0], TRUE);
-		DrawBox((int)bubbleX + 15, (int)bubbleY + 15, (int)bubbleX + 50, (int)bubbleY + 50, C_RED, FALSE);
-		break;
-	case 1:
-		DrawGraph((int)bubbleX, (int)bubbleY, BubbleImg[3], TRUE);
-		DrawFormatString((int)bubbleX + 20, (int)bubbleY, C_RED, "500");
-
-		DrawFormatString(80, 300, C_RED, "%d", BubleScore);
-
-		break;
-	default:
-		break;
+		else if(BubbleAnimCount < 9 && BubbleAnimCount > 6)
+		{
+			DrawGraph((int)bubbleX, (int)bubbleY, BubbleImg[3], TRUE);
+		}
 	}
-	
-	
-	//DrawBox((int)bubbleXY, (int)bubbleY, (int)bubbleX+10, (int)bubbleY +10, GetColor(255, 0, 0), TRUE);
-	//DrawFormatString(10, 100, C_WHITE, "%d", bubbleX);
 }
 // シャボン玉の当たり判定
 void bubble::BubleCollision()
@@ -122,7 +101,9 @@ void bubble::BubleCollision()
 
 	// シャボン玉とプレイヤーの当たり判定
 	if (((BubleX1 > px + 18 && BubleX1 < px + 40) || (BubleX1 < px + 18 && BubleX2 > px + 18)) && ((BubleY1 > py + 14 && BubleY1 < py + 64) || (py + 14 > BubleY1 && py + 14 < BubleY2)) && Bubbledetection == 0) {
-		BubleScore += 500;
+		BubleScore += 5501;
+		px_old = px;
+		py_old = py;
 		BubbleFlg = 1;
 		Bubbledetection = 1;
 	}

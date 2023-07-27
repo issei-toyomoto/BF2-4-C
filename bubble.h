@@ -14,9 +14,10 @@ private:
 	float Bubbledetection;
 	int BubbleAnimCount;
 	int BubbleAnimFase[4];
+	int BubbleScoreImg;
 
 
-	float px, py;
+	float px, py,px_old,py_old;
 	//int HitBoxPlayer(Player* p, bubble* e);
 public:
 
