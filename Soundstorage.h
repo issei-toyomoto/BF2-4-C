@@ -21,7 +21,7 @@ public:
 	int BubbleSE;
 	int TripBGM;
 
-	// インストラクタ
+	// コンストラクタ
 	Soundstorage() {};
 	// デストラクタ
 	~Soundstorage() {};
