@@ -344,6 +344,8 @@ void Enemy::EnemyUp(int e)
 		enemy[e].vecy = 1.0f;
 	}
 
+	enemy[e].vecy *= 0.95f;
+
 	enemy[e].y -= enemy[e].vecy;
 }
 
@@ -376,6 +378,8 @@ void Enemy::EnemyDown(int e)
 		enemy[e].vecy = 1.5f;
 	}
 
+	enemy[e].vecy *= 0.95f;
+
 	enemy[e].y += enemy[e].vecy;
 
 	if (enemy[e].ran == 1)
@@ -401,6 +405,8 @@ void Enemy::EnemyDown(int e)
 			enemy[e].vecy = 1.0f;
 		}
 
+		enemy[e].vecy *= 0.95f;
+
 		enemy[e].y -= enemy[e].vecy;
 	}
 	
@@ -420,6 +426,8 @@ void Enemy::EnemyLeft(int e)
 		enemy[e].vecx = 1.0f;
 	}
 
+	enemy[e].vecx *= 0.95f;
+
 	enemy[e].x -= enemy[e].vecx;
 }
 
@@ -436,6 +444,8 @@ void Enemy::EnemyRight(int e)
 	{
 		enemy[e].vecx = 1.0f;
 	}
+
+	enemy[e].vecx *= 0.95f;
 
 	enemy[e].x += enemy[e].vecx;
 
