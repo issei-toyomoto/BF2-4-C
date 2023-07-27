@@ -14,7 +14,7 @@ private:
 	int WaitTime = 5;// 待ち時間
 	int FPSCount;  // 点滅用
 	int FlashFlg;  // 点滅用フラグ
-		
+	int Timer;
 public:
 	int ThunderMoveX, ThunderMoveY;
 	float ThunderAngle = 0.575f;// 雷の角度
