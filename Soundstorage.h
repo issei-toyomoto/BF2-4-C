@@ -22,7 +22,7 @@ public:
 	int TripBGM;
 
 	// コンストラクタ
-	Soundstorage() {};
+	Soundstorage();
 	// デストラクタ
 	~Soundstorage() {};
 
