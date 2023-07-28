@@ -11,7 +11,7 @@ class Enemy
 private:
 	int StartFlg;      // スタート状態か判定する用
 	int EnemyImg[3][24];  // 敵の画像格納用
-	int FPScnt;        // FPSカウント
+	int Fcnt;        // FPSカウント
 	int StartMotion;   // スタート時、敵のモーション管理用
 	float Px, Py;      // プレイヤーのX座標、Y座標
 	int HitFlg;        // 敵同士の当たり判定用 
