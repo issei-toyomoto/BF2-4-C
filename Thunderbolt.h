@@ -1,26 +1,28 @@
 #pragma once
-#include"bubble.h"
+
+#define PlusPx 3			//px太くする（当たり判定）
+#define COR 1
+#define Sea_Level 470		//海面の高さ
+
 class Thunder
 {
 private:
-	int gCloudImg = LoadGraph("images/Stage_Cloud01.png");
-	int gThunderImg[2];
+	int gThunderImg[3];
+	int gCloudImg[3];
 
 	int ThunderX = 100;
 	int ThunderY = 100;// 雷の座標
+	int VectorX;
+	int VectorY;
 
 	int Speed;// 雷の速度
-	int ThunderFlg; // 雷の状態（0...移動中 1...物に接触 2...スタート状態）
-	int WaitTime = 5;// 待ち時間
-	int FPSCount;  // 点滅用
-	int FlashFlg;  // 点滅用フラグ
-	int Timer;
-public:
-	int ThunderMoveX, ThunderMoveY;
-	float ThunderAngle = 0.575f;// 雷の角度
-	void MoveThunderX();
-	void MoveThunderY();
+	int ThunderAnimCnt;  
+	int FlashFlg;
 
+	int NowImg;
+	int NowStage;
+		
+public:
 	//コンストラクタ
 	Thunder ();
 
@@ -28,10 +30,15 @@ public:
 	~Thunder() {};
 
 	//描画以外の更新を実装する
-	void Update();
+	void Update(int Stage);
 
 	//描画に関することを実装する
 	void Draw() const;
 
-	
+	void MoveThunderX();
+	void MoveThunderY();
+
+	void StageCollision();
+
+	void ThunderAnim();
 };
