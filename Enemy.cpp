@@ -602,65 +602,67 @@ int Enemy::HitPlayer(int e)
 	EnXR[e] = EnXL[e] + 45.0f;
 	EnYR[e] = EnYL[e] + 53.0f;
 
-	
-	if (enemy[e].life != 0)
+	if (enemy[e].life == 2)
 	{
 		if (EnXL[e] <= PXR && EnYL[e] <= PYR && EnXR[e] >= PXL && EnYR[e] >= PYL)
 		{
-			if (enemy[e].life == 2)
+			if (PYR < (EnYL[e] + 36))    // プレイヤーの位置(高さ)が敵キャラ(風船を除く人の部分)の半分より上にいる場合
 			{
-				if (PXR > EnYL[e] + 36)    // プレイヤーの位置(高さ)が敵キャラ(風船を除く人の部分)の半分より上にいる場合
-				{
-					enemy[e].flg = 17;
-					// 仮
-					enemy[e].life -= 1;
+				enemy[e].flg = 17;
+				// 仮
+				enemy[e].life -= 1;
 
-					HitPFlg = 1;
+				HitPFlg = 1;
 
-					return e;
-					
-				}
-				else if (EnYR[e] > Px + 51) // 敵の位置(高さ)がプレイヤー(風船を除く人の部分)の半分より上にいる場合
-				{
-					enemy[e].flg = 17;
+				return e;
 
-					HitPFlg = 2;
-
-					return 3;
-				}
-				else // 敵の位置とプレイヤの位置(高さ)に上記以上の差がない場合
-				{
-					enemy[e].flg = 17;
-
-					HitPFlg = 3;
-
-					return 3;
-				}
 			}
-			else
+			else if (EnYR[e] > (PYL + 37)) // 敵の位置(高さ)がプレイヤー(風船を除く人の部分)の半分より上にいる場合
 			{
-				if (PXR > EnYL[e] + 36)    // プレイヤーの位置(高さ)が敵キャラ(風船を除く人の部分)の半分より上にいる場合
-				{
-					enemy[e].flg = 17;
-					// 仮
-					enemy[e].life -= 1;
+				enemy[e].flg = 17;
 
-					HitPFlg = 1;
+				HitPFlg = 2;
 
-					return e;
+				return 3;
+			}
+			else // 敵の位置とプレイヤの位置(高さ)に上記以上の差がない場合
+			{
+				enemy[e].flg = 17;
 
-				}
-				else // 上記以上の場合
-				{
-					enemy[e].flg = 17;
+				HitPFlg = 3;
 
-					HitPFlg = 3;
-
-					return 3;
-				}
-
+				return 3;
 			}
 		}
+	}
+	else if(enemy[e].life == 1)
+	{
+		if (EnXL[e] <= PXR && EnYL[e] <= PYR && EnXR[e] >= PXL && EnYR[e] >= PYL)
+		{
+			if (PYR < (EnYL[e] + 36))    // プレイヤーの位置(高さ)が敵キャラ(風船を除く人の部分)の半分より上にいる場合
+			{
+				enemy[e].flg = 17;
+				// 仮
+				enemy[e].life -= 1;
+
+				HitPFlg = 1;
+
+				return e;
+
+			}
+			else // 上記以上の場合
+			{
+				enemy[e].flg = 17;
+
+				HitPFlg = 3;
+
+				return 3;
+			}
+		}	
+	}
+	else
+	{
+		return 3;
 	}
 		
 	return 3;
