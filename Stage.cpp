@@ -141,9 +141,9 @@ void gStage::Draw(int gStageState) const
 
 void gStage::Update()
 {
-	px = Player::PlayerX;
+	/*px = Player::PlayerX;
 	py = Player::PlayerY;
-	DeathFlg = Player::Death;
+	DeathFlg = Player::Death;*/
 
 	gStage::SeaBottom();
 
