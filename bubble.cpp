@@ -26,7 +26,6 @@ bubble::bubble() {
 }
 
 
-
 void bubble::Update()
 {
 	FPSCount++;
@@ -55,6 +54,7 @@ void bubble::Update()
 	{
 		BubbleAnimCount = 0;
 		BubbleFlg = 0;
+		bubble::Draw();
 	}
 }
 
@@ -62,7 +62,7 @@ void bubble::Draw() const
 {
 	/*DrawFormatStringF(0, 200, C_RED, "%d", px_old);
 	DrawFormatStringF(20, 200, C_RED, "%d", py_old);*/
-	DrawFormatString(80, 300, C_RED, "%d", BubbleAnimCount);
+	/*DrawFormatString(80, 300, C_RED, "%d", BubbleAnimCount);*/
 	if (BubbleFlg == 0 && Bubbledetection == 0)
 	{
 		DrawGraph((int)bubbleX, (int)bubbleY, BubbleImg[0], TRUE);
@@ -101,7 +101,7 @@ void bubble::BubleCollision()
 
 	// シャボン玉とプレイヤーの当たり判定
 	if (((BubleX1 > px + 18 && BubleX1 < px + 40) || (BubleX1 < px + 18 && BubleX2 > px + 18)) && ((BubleY1 > py + 14 && BubleY1 < py + 64) || (py + 14 > BubleY1 && py + 14 < BubleY2)) && Bubbledetection == 0) {
-		BubleScore += 5501;
+		BubleScore += 500;
 		BubbleX_Old = BubleX1;
 		BubbleY_Old = BubleY1;
 		BubbleFlg = 1;

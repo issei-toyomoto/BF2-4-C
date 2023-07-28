@@ -119,12 +119,12 @@ void gStage::Draw(int gStageState) const
 		break;
 	}
 
-	DrawFormatString(20, 300, C_RED, "%d", DeathFlg);
+	/*DrawFormatString(20, 300, C_RED, "%d", DeathFlg);
 	DrawFormatString(40, 300, C_RED, "%d", SeaAnimCount);
 	DrawFormatString(60, 300, C_RED, "%d", Seay);
 	DrawFormatString(80, 300, C_RED, "%d", Seax);
 	DrawFormatString(0, 200, C_RED, "%d", px);
-	DrawFormatString(20, 200, C_RED, "%d", py);
+	DrawFormatString(20, 200, C_RED, "%d", py);*/
 	if (SeaAnimCount < 5 && SeaAnimCount > 1 && DeathFlg == 1)
 	{
 		DrawGraph(Seax, Seay, SeaAnim[0], TRUE);
