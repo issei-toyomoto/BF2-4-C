@@ -9,11 +9,11 @@ bubble::bubble() {
 	LoadDivGraph("images/Stage_BubbleAnimation.png", 4, 4, 1, 64, 64, BubbleImg);
 	bubbleX = 320;
 	bubbleY = 480;
+	BubbleX_Old = 0;
+	BubbleY_Old = 0;
 	FPSCount = 0;
 	px = 0;
 	py = 0;
-	px_old = 0;
-	py_old = 0;
 	BubbleFlg = 0;
 	BubleScore = 0;
 	Bubbledetection = 0;
@@ -72,17 +72,17 @@ void bubble::Draw() const
 	{
 		if (BubbleAnimCount < 100)
 		{
-			DrawGraph((int)px_old + 30, (int)py_old - 50, BubbleScoreImg, TRUE);
+			DrawGraph(BubbleX_Old , BubbleY_Old -35, BubbleScoreImg, TRUE);
 		}
-		if (BubbleAnimCount < 3 && BubbleAnimCount > 1)
+		if (BubbleAnimCount < 2 && BubbleAnimCount > 1)
 		{
 			DrawGraph((int)bubbleX, (int)bubbleY, BubbleImg[1], TRUE);
 		}
-		else if(BubbleAnimCount < 6 && BubbleAnimCount > 3)
+		else if(BubbleAnimCount < 4 && BubbleAnimCount > 2)
 		{
 			DrawGraph((int)bubbleX, (int)bubbleY, BubbleImg[2], TRUE);
 		}
-		else if(BubbleAnimCount < 9 && BubbleAnimCount > 6)
+		else if(BubbleAnimCount < 6 && BubbleAnimCount > 4)
 		{
 			DrawGraph((int)bubbleX, (int)bubbleY, BubbleImg[3], TRUE);
 		}
@@ -102,8 +102,8 @@ void bubble::BubleCollision()
 	// シャボン玉とプレイヤーの当たり判定
 	if (((BubleX1 > px + 18 && BubleX1 < px + 40) || (BubleX1 < px + 18 && BubleX2 > px + 18)) && ((BubleY1 > py + 14 && BubleY1 < py + 64) || (py + 14 > BubleY1 && py + 14 < BubleY2)) && Bubbledetection == 0) {
 		BubleScore += 5501;
-		px_old = px;
-		py_old = py;
+		BubbleX_Old = BubleX1;
+		BubbleY_Old = BubleY1;
 		BubbleFlg = 1;
 		Bubbledetection = 1;
 	}
