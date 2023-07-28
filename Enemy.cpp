@@ -55,7 +55,7 @@ void Enemy::Update()
 	{
 		for (int i = 0; i < ENEMY_MAX; i++)
 		{
-			if (enemy[i].life != 0)
+			if (enemy[i].life == 2)
 			{
 				enemy[i].ran = rand() % 2 + 1;
 
@@ -84,11 +84,14 @@ void Enemy::Update()
 					enemy[i].y = 356.0f;
 				}
 			}
+			else if (enemy[i].life == 1)
+			{
+				EnemyPara(i);
+			}
 			else
 			{
 				EnemyDie(i);
 			}
-
 		}
 	}
 	
@@ -140,10 +143,11 @@ void Enemy::Draw() const
 					}
 					else
 					{
+						// 風船ありの敵の範囲（白）
 						DrawBox((int)EnXL[i], (int)EnYL[i], (int)EnXR[i], (int)EnYR[i], 0xffffff, FALSE);
 						// 風船抜きの敵の範囲（緑）
 						DrawBox((int)EnXL[i], (int)EnYL[i] + 20, (int)EnXR[i], (int)EnYR[i], 0x00ff00, FALSE);
-						// 風船抜きの敵の範囲の半分（緑）
+						// 風船抜きの敵の範囲の半分（青）
 						DrawBox((int)EnXL[i], (int)EnYL[i]+36, (int)EnXR[i], (int)EnYR[i], 0x0000ff, FALSE);
 					}
 				}
@@ -437,6 +441,48 @@ void Enemy::EnemyRight(int e)
 
 }
 
+// 敵のパラシュート処理
+void Enemy::EnemyPara(int e)
+{
+
+}
+
+// 敵の死亡モーション処理
+void Enemy::EnemyDie(int e)
+{
+	// パタパタ手を動かすモーション
+	if (Fcnt > 0 && Fcnt < 4 || Fcnt > 9 && Fcnt < 12 || Fcnt > 17 && Fcnt < 20)
+	{
+		enemy[e].flg = 13;
+	}
+	else if (Fcnt > 25 && Fcnt < 28 || Fcnt > 33 && Fcnt < 36 || Fcnt > 41 && Fcnt < 44)
+	{
+		enemy[e].flg = 13;
+	}
+	else if (Fcnt > 49 && Fcnt < 52 || Fcnt > 57 && Fcnt < 60)
+	{
+		enemy[e].flg = 13;
+	}
+	else
+	{
+		enemy[e].flg = 14;
+	}
+
+	if (enemy[e].die <= 8)
+	{
+		enemy[e].die++;
+		enemy[e].y -= 2.8f;
+	}
+	else if (enemy[e].die <= 15)
+	{
+		enemy[e].die++;
+	}
+	else if (enemy[e].y <= 490.0f)
+	{
+		enemy[e].y += 3.0f;
+	}
+}
+
 // 敵同士の当たり判定
 int Enemy::HitEnemy(int e)
 {
@@ -657,42 +703,3 @@ int Enemy::HitPlayer(int e)
 		
 	return 3;
 }
-
-// 敵の死亡モーション処理
-void Enemy::EnemyDie(int e)
-{
-	// パタパタ手を動かすモーション
-	if (Fcnt > 0 && Fcnt < 4 || Fcnt > 9 && Fcnt < 12 || Fcnt > 17 && Fcnt < 20)
-	{
-		enemy[e].flg = 13;
-	}
-	else if (Fcnt > 25 && Fcnt < 28 || Fcnt > 33 && Fcnt < 36 || Fcnt > 41 && Fcnt < 44)
-	{
-		enemy[e].flg = 13;
-	}
-	else if (Fcnt > 49 && Fcnt < 52 || Fcnt > 57 && Fcnt < 60)
-	{
-		enemy[e].flg = 13;
-	}
-	else
-	{
-		enemy[e].flg = 14;
-	}
-
-	if (enemy[e].die <= 8)
-	{
-		enemy[e].die++;
-		enemy[e].y -= 2.8f;
-	}
-	else if(enemy[e].die <= 15)
-	{
-		enemy[e].die++;
-	}
-	else if(enemy[e].y <= 490.0f)
-	{
-		enemy[e].y += 3.0f;
-	}
-}
-
-
-

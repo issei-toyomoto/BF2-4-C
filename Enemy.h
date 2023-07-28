@@ -46,21 +46,19 @@ public:
 	Enemy();   // コンストラクタ
 	~Enemy();  // デストラクタ
 
-	void EnemyInit();  // 敵の初期化処理
+	void EnemyInit();       // 敵の初期化処理
 	void EnemyMove(int i);  // 敵の移動処理
-	void StartMove();  // 敵のスタート処理
+	void StartMove();       // 敵のスタート処理
 	void EnemyUp(int e);    // 敵の浮上モーション処理
 	void EnemyDown(int e);  // 敵の降下モーション処理
 	void EnemyLeft(int e);  // 敵の左移動処理
 	void EnemyRight(int e); // 敵の右移動処理
-	int HitEnemy(int e);    // 敵同士の当たり判定
-	int HitPlayer(int e);   // 敵とプレイヤーの当たり判定
 	void HitStage(int e);   // 敵とステージの当たり判定
+	int HitEnemy(int e);    // 敵同士の当たり判定
 	int HitStart(int e);    // 敵とプレイヤーの当たり判定(スタート時)
+	int HitPlayer(int e);   // 敵とプレイヤーの当たり判定
 	void EnemyDie(int e);   // 敵の死亡モーション処理
-
-	void EnemyMoveX(int e);  // 敵の移動処理
-	void EnemyMoveY(int e);  // 敵の移動処理
+	void EnemyPara(int e);  // 敵のパラシュート処理
 	
 	//描画以外の更新を実装する
 	void Update();
