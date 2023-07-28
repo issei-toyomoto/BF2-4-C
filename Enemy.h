@@ -30,6 +30,8 @@ private:
 	{
 		float x = 0.0f;        // 敵のX座標
 		float y = 0.0f;        // 敵のY座標
+		float vecx = 0.0f;  // 敵の移動量X
+		float vecy = 0.0f;  // 敵の移動量Y
 		int state = 0;      // 敵の状態(0:ピンク 1:緑 2:黄色)
 		int life = 2;       // 敵のHP(0:死亡 1:パラシュート状態 2:風船1個状態)
 		int flg = 0;        // 敵の画像番号用
@@ -46,7 +48,7 @@ public:
 	~Enemy();  // デストラクタ
 
 	void EnemyInit();  // 敵の初期化処理
-	void EnemyMove();  // 敵の移動処理
+	void EnemyMove(int i);  // 敵の移動処理
 	void StartMove();  // 敵のスタート処理
 	void EnemyUp(int e);    // 敵の浮上モーション処理
 	void EnemyDown(int e);  // 敵の降下モーション処理
@@ -57,6 +59,9 @@ public:
 	void HitStage(int e);   // 敵とステージの当たり判定
 	int HitStart(int e);    // 敵とプレイヤーの当たり判定(スタート時)
 	void EnemyDie(int e);   // 敵の死亡モーション処理
+
+	void EnemyMoveX(int e);  // 敵の移動処理
+	void EnemyMoveY(int e);  // 敵の移動処理
 	
 	//描画以外の更新を実装する
 	void Update();

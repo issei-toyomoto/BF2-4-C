@@ -13,10 +13,12 @@ Thunder::Thunder()
 	VectorX = 3;
 	VectorY = 3;
 	ThunderAnimCnt = 0;
+
 }
 
 void Thunder::Update(int Stage)
 {
+
 	NowStage = Stage;
 	ThunderAnimCnt++;
 
@@ -31,7 +33,7 @@ void Thunder::Update(int Stage)
 
 	if (ThunderAnimCnt >= 8) {
 		ThunderAnimCnt = 0;
-	}
+	}	
 }
 
 void Thunder::Draw() const 

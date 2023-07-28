@@ -147,6 +147,7 @@
     <ClCompile Include="InputKey.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="Soundstorage.cpp" />
     <ClCompile Include="Thunderbolt.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="TitleScene.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="Fish.h" />
     <ClInclude Include="FPS.h" />
     <ClInclude Include="GameMain.h" />
+    <ClInclude Include="Soundstorage.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="InputKey.h" />
     <ClInclude Include="Player.h" />
