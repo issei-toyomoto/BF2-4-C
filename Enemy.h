@@ -15,12 +15,9 @@ private:
 	int StartMotion;   // スタート時、敵のモーション管理用
 	float Px, Py;      // プレイヤーのX座標、Y座標
 	int HitFlg;        // 敵同士の当たり判定用 
-	int HitPFlg;       // プレイヤーと敵の当たり判定用
+	int HitPeFlg;
 	float EnXL[ENEMY_MAX], EnYL[ENEMY_MAX]; //敵の左上座標
 	float EnXR[ENEMY_MAX], EnYR[ENEMY_MAX]; //敵の右下座標
-
-	float VectorX,VectorY;
-
 	int UpCnt, DownCnt;
 
 	const float MinY = -19.0f;
@@ -44,6 +41,8 @@ private:
 	struct ENEMY enemy[ENEMY_MAX];   // 敵のデータ(変数宣言)
 
 public:
+	 static int HitPFlg;       // プレイヤーと敵の当たり判定用
+
 	Enemy();   // コンストラクタ
 	~Enemy();  // デストラクタ
 
