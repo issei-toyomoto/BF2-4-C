@@ -3,6 +3,8 @@
 #include "Common.h"
 #include <math.h>
 
+#define DEBUG
+
 UI::UI()
 {
 	LoadDivGraph("images-20230711T024428Z-001/images/UI/UI_NumAnimation.png", 10, 10, 1, 32, 32, UINumber);
@@ -24,13 +26,13 @@ UI::~UI()
 void UI::Update()
 {
 	bubleScore = Bubble.BubleScore;
-	TotalScore = bubleScore; 
-	Score1 = TotalScore % 7 / 7;
-	Score10 = TotalScore % 6 / 6;
-	Score100 = TotalScore % 5 / 5;
-	Score1000 = TotalScore % 4 / 4;
-	Score10000 = TotalScore % 3 / 3;
-	Score100000 = TotalScore % 2 / 2;
+	TotalScore = bubleScore;
+	Score1      = TotalScore % 10;
+	Score10     = (TotalScore % 100) / 10;
+	Score100    = (TotalScore % 1000) / 100;
+	Score1000   = (TotalScore % 10000) / 1000;
+	Score10000  = (TotalScore % 100000) / 10000;
+	Score100000 = TotalScore / 100000;
 }
 
 void UI::Draw() const
@@ -53,4 +55,9 @@ void UI::Draw() const
 	DrawGraph(200, 8, UITop, TRUE);
 	DrawGraph(135, 28, UIStock, TRUE);
 	DrawGraph(150, 28, UIStock, TRUE);
+
+#ifdef DEBUG
+	DrawFormatString(200, 0, C_RED, "%d", TotalScore);
+#endif // DEBUG
+
 }

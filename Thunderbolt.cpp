@@ -2,6 +2,8 @@
 #include"Thunderbolt.h"
 #include"Common.h"
 
+#define DEBUG
+
 Thunder::Thunder()
 {
 	LoadDivGraph("images/Stage_ThunderEffectAnimation.png", 3, 3, 1, 32, 32, gThunderImg);	//画像読み込み
@@ -39,6 +41,13 @@ void Thunder::Update(int Stage)
 void Thunder::Draw() const 
 {
 	DrawGraph(ThunderX, ThunderY, NowImg, TRUE);
+
+#ifdef DEBUG
+	DrawBox(ThunderX, ThunderY, ThunderX + 32, ThunderY + 32, C_RED, FALSE);
+	DrawBox(ThunderX+4, ThunderY+4, ThunderX + 28, ThunderY + 28, C_GREEN, FALSE);
+	
+#endif // DEBUG
+
 }
 
 void Thunder::MoveThunderX()
@@ -63,7 +72,7 @@ void Thunder::MoveThunderY()
 
 void Thunder::StageCollision() 
 {
-	//プレイヤーの矩形の座標
+	//雷の矩形
 	int TXU_Left, TYU_Left;//左上
 	int TXL_Right, TYL_Right;//右下
 	TXU_Left = ThunderX;//左上X
