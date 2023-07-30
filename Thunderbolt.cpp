@@ -1,23 +1,26 @@
 #include"DxLib.h"
 #include"Thunderbolt.h"
 #include"Common.h"
+#include "InputKey.h"
 
 #define DEBUG
 
 Thunder::Thunder()
 {
-	LoadDivGraph("images/Stage_ThunderEffectAnimation.png", 3, 3, 1, 32, 32, thunder[2].Img);	//âÊëúì«Ç›çûÇ›
-	LoadDivGraph("images/Stage_CloudAnimation.png", 3, 3, 1, 32, 32, Cloud[2].Img);			//âÊëúì«Ç›çûÇ›
-
-	for (int i = 2; i < 2; i++) {
+	for (int i = 0; i < 2; i++) {
+		LoadDivGraph("images/Stage_ThunderEffectAnimation.png", 3, 3, 1, 32, 32, thunder[i].Img);	//âÊëúì«Ç›çûÇ›
+		LoadDivGraph("images/Stage_CloudAnimation.png", 3, 3, 1, 32, 32, Cloud[i].Img);				//âÊëúì«Ç›çûÇ›
+	}
+	
+	for (int i = 0; i < 2; i++) {
 		thunder[i].AnimCnt = 0;
 		thunder[i].X = 0;
 		thunder[i].Y = 0;
-		thunder[i].VX = 0;
-		thunder[i].VY = 0;
+		thunder[i].VX = 3;
+		thunder[i].VY = 3;
 	}
 
-	for (int i = 2; i < 2; i++) {
+	for (int i = 0; i < 2; i++) {
 		Cloud[i].AnimCnt = 0;
 		Cloud[i].X = 0;
 		Cloud[i].Y = 0;
@@ -26,9 +29,13 @@ Thunder::Thunder()
 
 void Thunder::Update(int Stage)
 {
+	InputKey::Update();
+
 	NowStage = Stage;
 	thunder[0].AnimCnt++;
 	thunder[1].AnimCnt++;
+
+	Cloud[0].AnimCnt++;
 
 	StageCollision();
 
@@ -46,20 +53,47 @@ void Thunder::Update(int Stage)
 	if (thunder[1].AnimCnt >= 8) {
 		thunder[1].AnimCnt = 0;
 	}
+
+	if (Cloud[0].AnimCnt >= 8) {
+		Cloud[0].AnimCnt = 0;
+	}
 }
 
 void Thunder::Draw() const 
 {
-	DrawGraph(thunder[0].X, thunder[0].Y, NowImg, TRUE);
-	DrawGraph(thunder[1].X, thunder[1].Y, NowImg, TRUE);
+	DrawCloud();
+	DrawThunder();
 
 #ifdef DEBUG
 	DrawBox(thunder[0].X, thunder[0].Y, thunder[0].X + 32, thunder[0].Y + 32, C_RED, FALSE);
 	DrawBox(thunder[1].X, thunder[1].Y, thunder[1].X + 32, thunder[1].Y + 32, C_RED, FALSE);
 	DrawBox(thunder[1].X + 4, thunder[1].Y + 4, thunder[1].X + 28, thunder[1].Y + 28, C_GREEN, FALSE);
 	DrawBox(thunder[1].X + 4, thunder[1].Y + 4, thunder[1].X + 28, thunder[1].Y + 28, C_GREEN, FALSE);
+
+	SetFontSize(16);
+	int i = 0;
+	if (InputKey::GetKeyDown(PAD_INPUT_1) == TRUE) {
+		i++;
+	}
+	DrawFormatString(400, 10, C_WHITE, "i:%d", i);
+	DrawFormatString(400, 30, C_WHITE, "X:%d Y:%d", thunder[i].X, thunder[i].Y);
+	DrawFormatString(400, 50, C_WHITE, "VX:%d VY:%d", thunder[i].VX, thunder[i].VY);
+	DrawFormatString(400, 70, C_WHITE, "AminCnt:%d", thunder[i].AnimCnt);
 #endif // DEBUG
 
+}
+
+void Thunder::DrawCloud() const
+{
+	if (NowStage == 1) {
+		DrawGraph(Cloud[0].X, Cloud[0].Y, C_NowImg, TRUE);
+	}
+}
+
+void Thunder::DrawThunder() const 
+{
+	DrawGraph(thunder[0].X, thunder[0].Y, T_NowImg, TRUE);
+	DrawGraph(thunder[1].X, thunder[1].Y, T_NowImg, TRUE);
 }
 
 void Thunder::StageCollision()
@@ -107,6 +141,26 @@ void Thunder::StageCollision()
 					thunder[i].VY *= -Inversion;
 				}
 			}
+
+			//âÊñ è„
+			if (TYU_Left <= 0) {
+				thunder[i].VY *= -Inversion;
+			}
+
+			//âÊñ â∫
+			if (TYL_Right >= _SCREEN_HEIGHT_) {
+				thunder[i].VY *= -Inversion;
+			}
+
+			//âÊñ âE
+			if (TXL_Right >= _SCREEN_WIDHT_) {
+				thunder[i].VX *= -Inversion;
+			}
+
+			//âÊñ ç∂
+			if (TXU_Left <= 0) {
+				thunder[i].VX *= -Inversion;
+			}
 		}
 	}
 }
@@ -115,13 +169,28 @@ void Thunder::ThunderAnim()
 {
 	for (int i = 0; i < 2; i++) {
 		if (thunder[i].AnimCnt >= 0 && thunder[i].AnimCnt <= 2) {
-			NowImg = thunder[i].Img[0];
+			T_NowImg = thunder[i].Img[0];
 		}
 		else if (thunder[i].AnimCnt >= 3 && thunder[i].AnimCnt <= 5) {
-			NowImg = thunder[i].Img[1];
+			T_NowImg = thunder[i].Img[1];
 		}
 		else if (thunder[i].AnimCnt <= 6 && thunder[i].AnimCnt <= 8) {
-			NowImg = thunder[i].Img[2];
+			T_NowImg = thunder[i].Img[2];
+		}
+	}
+}
+
+void Thunder::CloudAnim() 
+{
+	for (int i = 0; i < 2; i++) {
+		if (Cloud[i].AnimCnt >= 0 && Cloud[i].AnimCnt <= 2) {
+			C_NowImg = Cloud[i].Img[0];
+		}
+		else if (Cloud[i].AnimCnt >= 3 && Cloud[i].AnimCnt <= 5) {
+			C_NowImg = Cloud[i].Img[1];
+		}
+		else if (Cloud[i].AnimCnt >= 6 && Cloud[i].AnimCnt <= 8) {
+			C_NowImg = Cloud[i].Img[2];
 		}
 	}
 }

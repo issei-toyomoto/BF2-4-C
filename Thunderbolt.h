@@ -41,7 +41,9 @@ private:
 	
 	int FlashFlg;
 
-	int NowImg;
+	int T_NowImg;//Œ»İ‚Ì—‹‚Ì‰æ‘œ
+	int C_NowImg;//Œ»İ‚Ì‰_‚Ì‰æ‘œ
+
 	int NowStage;
 		
 public:
@@ -56,6 +58,9 @@ public:
 
 	//•`‰æ‚ÉŠÖ‚·‚é‚±‚Æ‚ğÀ‘•‚·‚é
 	void Draw() const;
+
+	void DrawThunder() const;
+	void DrawCloud() const;
 
 	void MoveThunderX();
 	void MoveThunderY();

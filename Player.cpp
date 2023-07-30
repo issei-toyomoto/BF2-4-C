@@ -4,7 +4,7 @@
 #include "Common.h"
 #include "Fish.h"
 
-#define DEBUG
+//#define DEBUG
 
 float Player::PlayerX;
 float Player::PlayerY;
