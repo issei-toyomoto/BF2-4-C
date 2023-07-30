@@ -1,22 +1,44 @@
 #pragma once
+//**ステージごとの雲の位置**//
+//ステージ１
+#define Stage_1_X 
+#define Stage_1_Y
+//ステージ２
 
-#define PlusPx 3			//px太くする（当たり判定）
-#define COR 1
-#define Sea_Level 470		//海面の高さ
+
+//**************************//
+#define PlusPx 3		//px太くする（当たり判定）
+#define Sea_Level 470	//海面の高さ
+#define Inversion 1     //反発用
 
 class Thunder
 {
 private:
-	int gThunderImg[3];
-	int gCloudImg[3];
 
-	int ThunderX = 100;
-	int ThunderY = 100;// 雷の座標
-	int VectorX;
-	int VectorY;
+	//雷
+	struct T {
+		int Img[3];
+		int X;
+		int Y;
+		int VX;
+		int VY;
+		int AnimCnt;
+	};	
+	T thunder[2];
+
+
+	struct C {
+		int Img[3];
+		int X;
+		int Y;
+		int AnimCnt;
+	};
+	//雲
+	
+	C Cloud[2];
 
 	int Speed;// 雷の速度
-	int ThunderAnimCnt;  
+	
 	int FlashFlg;
 
 	int NowImg;
@@ -41,4 +63,5 @@ public:
 	void StageCollision();
 
 	void ThunderAnim();
+	void CloudAnim();
 };
