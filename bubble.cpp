@@ -2,6 +2,7 @@
 #include"Dxlib.h"
 #include"Common.h"
 #include"Player.h"
+#define DEBUG
 
 int bubble::BubleScore;
 
@@ -73,7 +74,6 @@ void bubble::Update()
 		Bubble[BubbleNumber].detection = 0;
 		bubble::Draw();
 	}
-	}
 #endif // DEBUG
 
 	/*if (Bubble[0].AnimCount == 100)
@@ -91,7 +91,7 @@ void bubble::Draw() const
 {
 	/*DrawFormatStringF(0, 200, C_RED, "%d", px_old);
 	DrawFormatStringF(20, 200, C_RED, "%d", py_old);*/
-	/*DrawFormatString(80, 300, C_RED, "%d", BubbleAnimCount);*/
+	DrawFormatString(80, 300, C_RED, "%d", Bubble[BubbleNumber].AnimCount);
 	if (Bubble[BubbleNumber].Flg == 0 && Bubble[BubbleNumber].detection == 0)
 	{
 		DrawGraph((int)Bubble[0].X, (int)Bubble[BubbleNumber].Y, Bubble[BubbleNumber].Img[0], TRUE);
