@@ -121,7 +121,7 @@ void Enemy::Draw() const
 
 	for (int i = 0; i < ENEMY_MAX; i++)
 	{
-		if (enemy[i].life != 0)
+		if (enemy[i].life == 2)
 		{
 			// “G‚Ì“–‚½‚è”»’è•\¦
 			if (enemy[i].state != 3)
@@ -153,6 +153,9 @@ void Enemy::Draw() const
 				}
 			}
 		}
+		else if (enemy[i].life == 1)
+		{
+		}
 	}
 
 #endif // DEBUG
@@ -160,7 +163,7 @@ void Enemy::Draw() const
 	for (int i = 0; i < ENEMY_MAX; i++)
 	{
 		// “G‰æ‘œ‚Ì•\¦
-		if (enemy[i].life != 6)
+		if (enemy[i].life == 2)
 		{
 			if (StartFlg == 0)
 			{
@@ -190,6 +193,22 @@ void Enemy::Draw() const
 				{
 					DrawGraph((int)enemy[i].x - 640, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
 				}
+			}
+		}
+		else
+		{
+			// ƒXƒ^[ƒgˆÈŠO
+			// ‰æ–Ê“à
+			DrawGraph((int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
+
+			// ‰æ–ÊŠO
+			if (enemy[i].x < 0)
+			{
+				DrawGraph(640 + (int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
+			}
+			else if (enemy[i].x > 640 - 64)
+			{
+				DrawGraph((int)enemy[i].x - 640, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
 			}
 		}
 	}
@@ -444,7 +463,30 @@ void Enemy::EnemyRight(int e)
 // “G‚Ìƒpƒ‰ƒVƒ…[ƒgˆ—
 void Enemy::EnemyPara(int e)
 {
+	float amplitude = 0.85f;  // —h‚ê‚ÌU•
+	float frequency = 0.9f;   // —h‚ê‚Ìü”g”
 
+	if (enemy[e].para <= 1)
+	{
+		enemy[e].flg = 15;
+		enemy[e].para++;
+	}
+	else if(enemy[e].para <= 4)
+	{
+		enemy[e].flg = 16;
+		enemy[e].para++;
+	}
+	else
+	{
+		enemy[e].para = 5;
+		enemy[e].flg = 17;
+		
+		enemy[e].x += amplitude * sin(frequency * GetNowCount() / 1000.0f);
+
+		enemy[e].y += 0.3f;
+
+		HitPeFlg = HitPlayer(e);
+	}
 }
 
 // “G‚Ì€–Sƒ‚[ƒVƒ‡ƒ“ˆ—

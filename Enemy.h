@@ -36,6 +36,7 @@ private:
 		int ground = 0;     // 地面に触れているか(0:触れてない 1:触れている)
 		int die = 0;        // 敵死亡時用
 		int ran = 0;
+		int para = 0;
 	};
 
 	struct ENEMY enemy[ENEMY_MAX];   // 敵のデータ(変数宣言)
@@ -59,7 +60,7 @@ public:
 	int HitPlayer(int e);   // 敵とプレイヤーの当たり判定
 	void EnemyDie(int e);   // 敵の死亡モーション処理
 	void EnemyPara(int e);  // 敵のパラシュート処理
-	
+
 	//描画以外の更新を実装する
 	void Update();
 	//描画の更新を実装する
