@@ -5,20 +5,32 @@ class bubble  {
 private:
 	/*int i;*/
 	/*int y;*/
-	float bubbleX;// シャボン玉のX軸
-	float bubbleY;// シャボン玉のY軸
+	struct BubbleSet
+	{
+		float X;
+		float Y;
+		float detection;
+		bool Flg;
+		int Score;
+		int X_Old;
+		int Y_Old;
+		int Img[4];
+		int AnimCount;
+	};
+	struct BubbleSet Bubble[6];
+	//float bubbleX;// シャボン玉のX軸
+	//float bubbleY;// シャボン玉のY軸
 	int FPSCount; // フレームカウント
-	int VectorBubbleX=-1; 
-	int BubbleImg[4];
+	/*int BubbleImg[4];
 	int BubbleFlg;
-	float Bubbledetection;
-	int BubbleAnimCount;
+	int Bubbledetection;
+	int BubbleAnimCount;*/
 	int BubbleAnimFase[4];
 	int BubbleScoreImg;
-
-
-	float px, py,px_old,py_old;
-	//int HitBoxPlayer(Player* p, bubble* e);
+	/*int BubbleX_Old;
+	int BubbleY_Old;*/
+	float px, py;
+	int BubbleNumber;
 public:
 
 	bubble();
@@ -28,7 +40,6 @@ public:
     void Update();
 	void Draw() const;
 	void BubleCollision();
-	void BubbleScore();
 
 	static int BubleScore;
 };

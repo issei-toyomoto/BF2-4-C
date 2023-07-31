@@ -38,12 +38,12 @@ void UI::Update()
 void UI::Draw() const
 {
 	// プレイヤースコアに反映されるUI
-	DrawGraph(50, 0, UINumber[0], TRUE);
-	DrawGraph(70, 0, UINumber[0], TRUE); 
-	DrawGraph(90, 0, UINumber[0], TRUE);
-	DrawGraph(110, 0, UINumber[0], TRUE);
-	DrawGraph(130, 0, UINumber[0], TRUE);
-	DrawGraph(150, 0, UINumber[0], TRUE);
+	DrawGraph(50, 0, UINumber[Score100000], TRUE);
+	DrawGraph(70, 0, UINumber[Score10000], TRUE); 
+	DrawGraph(90, 0, UINumber[Score1000], TRUE);
+	DrawGraph(110, 0, UINumber[Score100], TRUE);
+	DrawGraph(130, 0, UINumber[Score10], TRUE);
+	DrawGraph(150, 0, UINumber[Score1], TRUE);
 	// ハイスコアに反映されるUI
 	DrawGraph(235, 0, UINumber[Score100000], TRUE);    
 	DrawGraph(255, 0, UINumber[Score10000], TRUE);
