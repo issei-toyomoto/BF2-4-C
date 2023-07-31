@@ -7,15 +7,17 @@
 Thunder::Thunder()
 {
 	LoadDivGraph("images/Stage_ThunderEffectAnimation.png", 3, 3, 1, 32, 32, gThunderImg);	//‰æ‘œ“Ç‚Ýž‚Ý
-	LoadDivGraph("images/Stage_CloudAnimation.png", 3, 3, 1, 32, 32, gCloudImg);			//‰æ‘œ“Ç‚Ýž‚Ý
+	LoadDivGraph("images/Stage_CloudAnimation.png", 3, 3, 1, 128, 64, gCloudImg);			//‰æ‘œ“Ç‚Ýž‚Ý
 
 	ThunderX = 100;//—‹‚ÌÀ•W
 	ThunderY = 100;
-
+	CloudX = 100; // ‰_‚ÌÀ•W
+	CloudY = 100;
 	VectorX = 3;
 	VectorY = 3;
 	ThunderAnimCnt = 0;
-
+	CloudAnimCount = 0;
+	gWaitTime = 0;
 }
 
 void Thunder::Update(int Stage)
@@ -23,28 +25,40 @@ void Thunder::Update(int Stage)
 
 	NowStage = Stage;
 	ThunderAnimCnt++;
-
+	CloudAnimCount++;
+	gWaitTime++;
 	//StageCollision();
-
-	MoveThunderX();
-	ThunderX += VectorX;
-	MoveThunderY();
-	ThunderY += VectorY;
-
+	if (gWaitTime >= 1500) {
+		MoveThunderX();
+		ThunderX += VectorX;
+		MoveThunderY();
+		ThunderY += VectorY;
+	}
 	ThunderAnim();//‰æ‘œˆ—
 
 	if (ThunderAnimCnt >= 8) {
 		ThunderAnimCnt = 0;
 	}	
+
+	CloudAnim();
+
+	if (CloudAnimCount >= 8) {
+		CloudAnimCount = 0;
+	}
+	
 }
 
 void Thunder::Draw() const 
 {
-	DrawGraph(ThunderX, ThunderY, NowImg, TRUE);
-
+	if (gWaitTime >= 1500) { 
+		DrawGraph(ThunderX, ThunderY, NowImg, TRUE);
+	}
+	DrawGraph(CloudX, CloudY, CNowImg, TRUE);
 #ifdef DEBUG
-	DrawBox(ThunderX, ThunderY, ThunderX + 32, ThunderY + 32, C_RED, FALSE);
-	DrawBox(ThunderX+4, ThunderY+4, ThunderX + 28, ThunderY + 28, C_GREEN, FALSE);
+	if (gWaitTime >= 1500) {
+		DrawBox(ThunderX, ThunderY, ThunderX + 32, ThunderY + 32, C_RED, FALSE);
+		DrawBox(ThunderX + 4, ThunderY + 4, ThunderX + 28, ThunderY + 28, C_GREEN, FALSE);
+	}
 	
 #endif // DEBUG
 
@@ -660,5 +674,22 @@ void Thunder::ThunderAnim()
 	}
 	else if (ThunderAnimCnt <= 6 && ThunderAnimCnt <= 8) {
 		NowImg = gThunderImg[2];
+	}
+}
+
+void Thunder::CloudAnim()
+{
+
+	if (CloudAnimCount >= 0 && CloudAnimCount <= 2) {
+		CNowImg = gCloudImg[0];
+	}
+	else if (gWaitTime >= 1500) {
+
+		if (CloudAnimCount >= 3 && CloudAnimCount <= 5) {
+			CNowImg = gCloudImg[1];
+		}
+		else if (CloudAnimCount <= 6 && CloudAnimCount <= 8) {
+			CNowImg = gCloudImg[2];
+		}
 	}
 }
