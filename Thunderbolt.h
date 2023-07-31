@@ -12,15 +12,20 @@ private:
 
 	int ThunderX = 100;
 	int ThunderY = 100;// 雷の座標
+	int CloudX;
+	int CloudY; // 雲の座標
 	int VectorX;
 	int VectorY;
 
 	int Speed;// 雷の速度
-	int ThunderAnimCnt;  
+	int ThunderAnimCnt; 
+	int CloudAnimCount;
 	int FlashFlg;
 
 	int NowImg;
 	int NowStage;
+	int CNowImg; // 雲の現在の画像
+	int gWaitTime;
 		
 public:
 	//コンストラクタ
@@ -41,4 +46,5 @@ public:
 	void StageCollision();
 
 	void ThunderAnim();
+	void CloudAnim();
 };
