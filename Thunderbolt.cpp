@@ -8,16 +8,20 @@ Thunder::Thunder()
 {
 	LoadDivGraph("images/Stage_ThunderEffectAnimation.png", 3, 3, 1, 32, 32, gThunderImg);	//‰æ‘œ“Ç‚Ýž‚Ý
 	LoadDivGraph("images/Stage_CloudAnimation.png", 3, 3, 1, 128, 64, gCloudImg);			//‰æ‘œ“Ç‚Ýž‚Ý
-
+	LoadDivGraph("images/Stage_ThunderAnimation.png", 6, 6, 1, 128, 64, glightningImg);
 	ThunderX = 100;//—‹‚ÌÀ•W
 	ThunderY = 100;
 	CloudX = 100; // ‰_‚ÌÀ•W
 	CloudY = 100;
+	lightningX = 200;
+	lightningY = 100;
 	VectorX = 3;
 	VectorY = 3;
 	ThunderAnimCnt = 0;
 	CloudAnimCount = 0;
+	lightningAnimCount = 0;
 	gWaitTime = 0;
+	gWaitTime2 = 0;
 }
 
 void Thunder::Update(int Stage)
@@ -26,13 +30,16 @@ void Thunder::Update(int Stage)
 	NowStage = Stage;
 	ThunderAnimCnt++;
 	CloudAnimCount++;
+	lightningAnimCount++;
 	gWaitTime++;
+	
 	//StageCollision();
-	if (gWaitTime >= 1500) {
+	if (gWaitTime >= 1500 || gWaitTime >= 1920 && gWaitTime <= 2040) {
 		MoveThunderX();
 		ThunderX += VectorX;
 		MoveThunderY();
 		ThunderY += VectorY;
+		
 	}
 	ThunderAnim();//‰æ‘œˆ—
 
@@ -45,15 +52,26 @@ void Thunder::Update(int Stage)
 	if (CloudAnimCount >= 8) {
 		CloudAnimCount = 0;
 	}
+
+	LightningAnim();
+
+	if (lightningAnimCount >= 17) {
+		lightningAnimCount = 0;
+	}
+
 	
 }
 
 void Thunder::Draw() const 
 {
-	if (gWaitTime >= 1500) { 
+	if (gWaitTime >= 1500 || gWaitTime >= 1920 && gWaitTime <= 2040) {
 		DrawGraph(ThunderX, ThunderY, NowImg, TRUE);
 	}
 	DrawGraph(CloudX, CloudY, CNowImg, TRUE);
+	if (gWaitTime >= 1500 || gWaitTime >= 1920 && gWaitTime <= 2040) {
+		DrawGraph(lightningX, lightningY, LNowImg, TRUE);
+
+	}
 #ifdef DEBUG
 	if (gWaitTime >= 1500) {
 		DrawBox(ThunderX, ThunderY, ThunderX + 32, ThunderY + 32, C_RED, FALSE);
@@ -666,7 +684,7 @@ void Thunder::StageCollision()
 
 void Thunder::ThunderAnim()
 {
-	if (ThunderAnimCnt >= 0 && ThunderAnimCnt <= 2) {
+	if (ThunderAnimCnt >= 0 && ThunderAnimCnt <= 2 || gWaitTime >= 1920 && gWaitTime <= 2040) {
 		NowImg = gThunderImg[0];
 	}
 	else if (ThunderAnimCnt >= 3 && ThunderAnimCnt <= 5) {
@@ -683,7 +701,7 @@ void Thunder::CloudAnim()
 	if (CloudAnimCount >= 0 && CloudAnimCount <= 2) {
 		CNowImg = gCloudImg[0];
 	}
-	else if (gWaitTime >= 1500&&gWaitTime<=1560) {
+	else if (gWaitTime >= 1500&&gWaitTime<=1560 || gWaitTime >= 1920 && gWaitTime <= 2040) {
 
 		if (CloudAnimCount >= 3 && CloudAnimCount <= 5) {
 			CNowImg = gCloudImg[1];
@@ -693,3 +711,27 @@ void Thunder::CloudAnim()
 		}
 	}
 }
+
+void Thunder::LightningAnim()
+{
+	if (lightningAnimCount >= 0 && lightningAnimCount <= 2) {
+		LNowImg = glightningImg[0];
+	}
+	else if (gWaitTime >= 1500 && gWaitTime <= 1620|| gWaitTime2 >= 0) {
+
+		if (lightningAnimCount >= 3 && lightningAnimCount <= 5) {
+			LNowImg = glightningImg[1];
+		}
+		else if (lightningAnimCount <= 6 && lightningAnimCount <= 8) {
+			LNowImg = glightningImg[2];
+		}else if (lightningAnimCount <= 9 && lightningAnimCount <= 11) {
+			LNowImg = glightningImg[3];
+		}else if (lightningAnimCount <= 12 && lightningAnimCount <= 14) {
+			LNowImg = glightningImg[4];
+		}else if (lightningAnimCount <= 15 && lightningAnimCount <= 17) {
+			LNowImg = glightningImg[5];
+		}
+		gWaitTime2++;
+	}
+}
+
