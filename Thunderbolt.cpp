@@ -683,7 +683,7 @@ void Thunder::CloudAnim()
 	if (CloudAnimCount >= 0 && CloudAnimCount <= 2) {
 		CNowImg = gCloudImg[0];
 	}
-	else if (gWaitTime >= 1500) {
+	else if (gWaitTime >= 1500&&gWaitTime<=1560) {
 
 		if (CloudAnimCount >= 3 && CloudAnimCount <= 5) {
 			CNowImg = gCloudImg[1];
