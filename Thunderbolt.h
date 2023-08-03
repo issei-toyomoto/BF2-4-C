@@ -22,19 +22,18 @@ private:
 		int Y;
 		int VX;
 		int VY;
-		int AnimCnt;
+		int AnimCnt;//アニメーションのフレームカウント
+		int WaitTime;//アニメーションまでのカウント
 	};	
 	T thunder[2];
 
-
+	//雲
 	struct C {
 		int Img[3];
 		int X;
 		int Y;
 		int AnimCnt;
 	};
-	//雲
-	
 	C Cloud[2];
 
 	int Speed;// 雷の速度
@@ -69,4 +68,6 @@ public:
 
 	void ThunderAnim();
 	void CloudAnim();
+
+	void CloudPosition();
 };
