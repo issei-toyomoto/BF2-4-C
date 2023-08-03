@@ -18,6 +18,7 @@ private:
 	//—‹
 	struct T {
 		int Img[3];
+		int T_NowImg;//Œ»İ‚Ì—‹‚Ì‰æ‘œ
 		int X;
 		int Y;
 		int VX;
@@ -30,9 +31,14 @@ private:
 	//‰_
 	struct C {
 		int Img[3];
+		int C_NowImg;//Œ»İ‚Ì‰_‚Ì‰æ‘œ
 		int X;
 		int Y;
 		int AnimCnt;
+		int WaitTimeFlg;
+		int WaitTime;
+		int WaitTimeCnt;
+		int StopAnimCnt;
 	};
 	C Cloud[2];
 
@@ -40,8 +46,8 @@ private:
 	
 	int FlashFlg;
 
-	int T_NowImg;//Œ»İ‚Ì—‹‚Ì‰æ‘œ
-	int C_NowImg;//Œ»İ‚Ì‰_‚Ì‰æ‘œ
+	
+	
 
 	int NowStage;
 		

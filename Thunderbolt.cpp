@@ -22,8 +22,13 @@ Thunder::Thunder()
 
 	for (int i = 0; i < 2; i++) {
 		Cloud[i].AnimCnt = 0;
+		Cloud[i].C_NowImg = Cloud[i].Img[0];
 		Cloud[i].X = 0;
 		Cloud[i].Y = 0;
+		Cloud[i].WaitTimeFlg = GetRand(2);
+		Cloud[i].WaitTimeCnt = 1;
+		Cloud[i].WaitTime = 0;
+		Cloud[i].StopAnimCnt = 0;
 	}
 }
 
@@ -36,6 +41,9 @@ void Thunder::Update(int Stage)
 	thunder[1].AnimCnt++;
 
 	Cloud[0].AnimCnt++;
+	if (Cloud[0].WaitTime != Cloud[0].WaitTimeCnt) {
+		Cloud[0].WaitTimeCnt++;
+	}
 
 	StageCollision();
 	CloudPosition();
@@ -57,6 +65,19 @@ void Thunder::Update(int Stage)
 
 	if (Cloud[0].AnimCnt >= 8) {
 		Cloud[0].AnimCnt = 0;
+	}
+
+	if (Cloud[0].WaitTime == Cloud[0].WaitTimeCnt) {
+		Cloud[0].StopAnimCnt++;
+		if (Cloud[0].StopAnimCnt >= 1.5 * 60) {
+			Cloud[0].WaitTimeCnt = 0;
+			Cloud[0].WaitTime = 5 * 60;
+			Cloud[0].StopAnimCnt = 0;
+			Cloud[0].C_NowImg = Cloud[0].Img[0];
+		}
+		else {
+			CloudAnim();
+		}
 	}
 }
 
@@ -82,6 +103,9 @@ void Thunder::Draw() const
 	DrawFormatString(400, 70, C_WHITE, "AminCnt:%d", thunder[i].AnimCnt);
 
 	DrawFormatString(400, 110, C_WHITE, "X:%d Y:%d", Cloud[0].X, Cloud[0].Y);
+	DrawFormatString(400, 130, C_WHITE, "WaitTime:%d", Cloud[0].WaitTime);
+	DrawFormatString(400, 150, C_WHITE, "WaitTimeCnt:%d", Cloud[0].WaitTimeCnt);
+	DrawFormatString(400, 170, C_WHITE, "StopAnimCnt:%d", Cloud[0].StopAnimCnt);
 #endif // DEBUG
 
 }
@@ -89,14 +113,14 @@ void Thunder::Draw() const
 void Thunder::DrawCloud() const
 {
 	if (NowStage == 1) {
-		DrawGraph(Cloud[0].X, Cloud[0].Y, C_NowImg, TRUE);
+		DrawGraph(Cloud[0].X, Cloud[0].Y, Cloud[0].C_NowImg, TRUE);
 	}
 }
 
 void Thunder::DrawThunder() const 
 {
-	DrawGraph(thunder[0].X, thunder[0].Y, T_NowImg, TRUE);
-	DrawGraph(thunder[1].X, thunder[1].Y, T_NowImg, TRUE);
+	DrawGraph(thunder[0].X, thunder[0].Y, thunder[0].T_NowImg, TRUE);
+	DrawGraph(thunder[1].X, thunder[1].Y, thunder[1].T_NowImg, TRUE);
 }
 
 //ÉXÉeÅ[ÉWÇ∆ÇÃìñÇΩÇËîªíË
@@ -174,13 +198,13 @@ void Thunder::ThunderAnim()
 {
 	for (int i = 0; i < 2; i++) {
 		if (thunder[i].AnimCnt >= 0 && thunder[i].AnimCnt <= 2) {
-			T_NowImg = thunder[i].Img[0];
+			thunder[i].T_NowImg = thunder[i].Img[0];
 		}
 		else if (thunder[i].AnimCnt >= 3 && thunder[i].AnimCnt <= 5) {
-			T_NowImg = thunder[i].Img[1];
+			thunder[i].T_NowImg = thunder[i].Img[1];
 		}
 		else if (thunder[i].AnimCnt <= 6 && thunder[i].AnimCnt <= 8) {
-			T_NowImg = thunder[i].Img[2];
+			thunder[i].T_NowImg = thunder[i].Img[2];
 		}
 	}
 }
@@ -190,22 +214,33 @@ void Thunder::CloudAnim()
 {
 	for (int i = 0; i < 2; i++) {
 		if (Cloud[i].AnimCnt >= 0 && Cloud[i].AnimCnt <= 2) {
-			C_NowImg = Cloud[i].Img[0];
+			Cloud[i].C_NowImg = Cloud[i].Img[0];
 		}
 		else if (Cloud[i].AnimCnt >= 3 && Cloud[i].AnimCnt <= 5) {
-			C_NowImg = Cloud[i].Img[1];
+			Cloud[i].C_NowImg = Cloud[i].Img[1];
 		}
 		else if (Cloud[i].AnimCnt >= 6 && Cloud[i].AnimCnt <= 8) {
-			C_NowImg = Cloud[i].Img[2];
+			Cloud[i].C_NowImg = Cloud[i].Img[2];
 		}
 	}
 }
 
 void Thunder::CloudPosition() 
 {
+	for (int i = 0; i < 2; i++) {//â_Ç™ÉqÉJÉäèoÇ∑éûä‘ÅiïbêîÅñÉtÉåÅ[ÉÄÉåÅ[ÉgÅj
+		if (Cloud[i].WaitTimeFlg == 0) {
+			Cloud[i].WaitTime = 25 * 60;//ÇQÇTïb
+		}
+		else if (Cloud[i].WaitTimeFlg == 1) {
+			Cloud[i].WaitTime = 30 * 60;//ÇRÇOïb
+		}
+		else if (Cloud[i].WaitTimeFlg == 2) {
+			Cloud[i].WaitTime = 35 * 60;//ÇRÇTïb
+		}
+	}
+
 	if (NowStage == 1) {
 		Cloud[0].X = 380;
 		Cloud[0].Y = 90;
-		C_NowImg = Cloud[0].Img[0];
 	}
 }
