@@ -3,15 +3,22 @@
 #include "Common.h"
 #include "stdio.h"
 #include "Player.h"
-#include"bubble.h"
-#include"Thunderbolt.h"
-#include"Fish.h"
-#include"Stage.h"
+#include "bubble.h"
+#include "Thunderbolt.h"
+#include "Fish.h"
+#include "TitleScene.h"
+#include "Stage.h"
+#include "InputKey.h"
 
 //#define DEBUG
 
+int GameMain::GameOverFont;
+int GameMain::GameoverFlg;
+int GameMain::WaitTime;
+
 AbstractScene* GameMain::Update()
 {
+	InputKey::Update();
 	player.Update(gStageState);
 	BUBBLE.Update();
 	enemy.Update();
@@ -19,6 +26,23 @@ AbstractScene* GameMain::Update()
 	thunder.Update(gStageState);
 	ui.Update();
 	stage.Update();
+	
+
+	if (InputKey::GetKey(PAD_INPUT_1) == TRUE) { // STARTが押されたとき
+		if (GameoverFlg == 0) { // まだ一度もPause状態になってないなら
+			GameoverFlg = 1; // Pause状態になるというフラグ
+		}
+		else {
+			GameoverFlg = 0;
+		}
+	}
+	if (GameoverFlg == 1) {
+		GameOver();
+	}
+	if (WaitTime > 180) {
+		WaitTime = 0;
+		return new Title();
+	}
 
 	if (CheckHitKey(KEY_INPUT_1)) {
 		gStageState = 1;
@@ -39,6 +63,7 @@ AbstractScene* GameMain::Update()
 		return nullptr;
 	}
 	return this;
+
 }
 
 void GameMain::Draw()const
@@ -54,6 +79,10 @@ void GameMain::Draw()const
 	DrawGraph(160, 455, gGameImg[12], TRUE);//海の表示
 	DrawGraph(0, 455, gGameImg[12], TRUE);
 	DrawGraph(480, 455, gGameImg[12], TRUE);
+	DrawFormatString(200, 300, C_RED, "%d", GameoverFlg);
+	if (GameoverFlg == 1) {
+		DrawGraph(200, 200, GameOverFont, TRUE);
+	}
 
 #ifdef DEBUG
 	//ステージの当たり判定(ステージ１)
@@ -165,5 +194,9 @@ void GameMain::Draw()const
 
 	}
 #endif // DEBUG
-
+}
+// ゲームオーバー画面
+void GameMain::GameOver()
+{
+	WaitTime++;
 }
