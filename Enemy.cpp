@@ -55,7 +55,7 @@ void Enemy::Update()
 	{
 		for (int i = 0; i < ENEMY_MAX; i++)
 		{
-			if (enemy[i].life != 0)
+			if (enemy[i].life == 2)
 			{
 				enemy[i].ran = rand() % 2 + 1;
 
@@ -84,11 +84,14 @@ void Enemy::Update()
 					enemy[i].y = 356.0f;
 				}
 			}
+			else if (enemy[i].life == 1)
+			{
+				EnemyPara(i);
+			}
 			else
 			{
 				EnemyDie(i);
 			}
-
 		}
 	}
 	
@@ -118,7 +121,7 @@ void Enemy::Draw() const
 
 	for (int i = 0; i < ENEMY_MAX; i++)
 	{
-		if (enemy[i].life != 0)
+		if (enemy[i].life == 2)
 		{
 			// 敵の当たり判定表示
 			if (enemy[i].state != 3)
@@ -140,14 +143,18 @@ void Enemy::Draw() const
 					}
 					else
 					{
+						// 風船ありの敵の範囲（白）
 						DrawBox((int)EnXL[i], (int)EnYL[i], (int)EnXR[i], (int)EnYR[i], 0xffffff, FALSE);
 						// 風船抜きの敵の範囲（緑）
 						DrawBox((int)EnXL[i], (int)EnYL[i] + 20, (int)EnXR[i], (int)EnYR[i], 0x00ff00, FALSE);
-						// 風船抜きの敵の範囲の半分（緑）
+						// 風船抜きの敵の範囲の半分（青）
 						DrawBox((int)EnXL[i], (int)EnYL[i]+36, (int)EnXR[i], (int)EnYR[i], 0x0000ff, FALSE);
 					}
 				}
 			}
+		}
+		else if (enemy[i].life == 1)
+		{
 		}
 	}
 
@@ -156,7 +163,7 @@ void Enemy::Draw() const
 	for (int i = 0; i < ENEMY_MAX; i++)
 	{
 		// 敵画像の表示
-		if (enemy[i].life != 6)
+		if (enemy[i].life == 2)
 		{
 			if (StartFlg == 0)
 			{
@@ -186,6 +193,22 @@ void Enemy::Draw() const
 				{
 					DrawGraph((int)enemy[i].x - 640, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
 				}
+			}
+		}
+		else
+		{
+			// スタート以外
+			// 画面内
+			DrawGraph((int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
+
+			// 画面外
+			if (enemy[i].x < 0)
+			{
+				DrawGraph(640 + (int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
+			}
+			else if (enemy[i].x > 640 - 64)
+			{
+				DrawGraph((int)enemy[i].x - 640, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
 			}
 		}
 	}
@@ -437,6 +460,71 @@ void Enemy::EnemyRight(int e)
 
 }
 
+// 敵のパラシュート処理
+void Enemy::EnemyPara(int e)
+{
+	float amplitude = 0.85f;  // 揺れの振幅
+	float frequency = 0.9f;   // 揺れの周波数
+
+	if (enemy[e].para <= 1)
+	{
+		enemy[e].flg = 15;
+		enemy[e].para++;
+	}
+	else if(enemy[e].para <= 4)
+	{
+		enemy[e].flg = 16;
+		enemy[e].para++;
+	}
+	else
+	{
+		enemy[e].para = 5;
+		enemy[e].flg = 17;
+		
+		enemy[e].x += amplitude * sin(frequency * GetNowCount() / 1000.0f);
+
+		enemy[e].y += 0.3f;
+
+		HitPeFlg = HitPlayer(e);
+	}
+}
+
+// 敵の死亡モーション処理
+void Enemy::EnemyDie(int e)
+{
+	// パタパタ手を動かすモーション
+	if (Fcnt > 0 && Fcnt < 4 || Fcnt > 9 && Fcnt < 12 || Fcnt > 17 && Fcnt < 20)
+	{
+		enemy[e].flg = 13;
+	}
+	else if (Fcnt > 25 && Fcnt < 28 || Fcnt > 33 && Fcnt < 36 || Fcnt > 41 && Fcnt < 44)
+	{
+		enemy[e].flg = 13;
+	}
+	else if (Fcnt > 49 && Fcnt < 52 || Fcnt > 57 && Fcnt < 60)
+	{
+		enemy[e].flg = 13;
+	}
+	else
+	{
+		enemy[e].flg = 14;
+	}
+
+	if (enemy[e].die <= 8)
+	{
+		enemy[e].die++;
+		enemy[e].y -= 2.8f;
+	}
+	else if (enemy[e].die <= 15)
+	{
+		enemy[e].die++;
+	}
+	else if (enemy[e].y <= 490.0f)
+	{
+		enemy[e].y += 3.0f;
+	}
+}
+
 // 敵同士の当たり判定
 int Enemy::HitEnemy(int e)
 {
@@ -657,42 +745,3 @@ int Enemy::HitPlayer(int e)
 		
 	return 3;
 }
-
-// 敵の死亡モーション処理
-void Enemy::EnemyDie(int e)
-{
-	// パタパタ手を動かすモーション
-	if (Fcnt > 0 && Fcnt < 4 || Fcnt > 9 && Fcnt < 12 || Fcnt > 17 && Fcnt < 20)
-	{
-		enemy[e].flg = 13;
-	}
-	else if (Fcnt > 25 && Fcnt < 28 || Fcnt > 33 && Fcnt < 36 || Fcnt > 41 && Fcnt < 44)
-	{
-		enemy[e].flg = 13;
-	}
-	else if (Fcnt > 49 && Fcnt < 52 || Fcnt > 57 && Fcnt < 60)
-	{
-		enemy[e].flg = 13;
-	}
-	else
-	{
-		enemy[e].flg = 14;
-	}
-
-	if (enemy[e].die <= 8)
-	{
-		enemy[e].die++;
-		enemy[e].y -= 2.8f;
-	}
-	else if(enemy[e].die <= 15)
-	{
-		enemy[e].die++;
-	}
-	else if(enemy[e].y <= 490.0f)
-	{
-		enemy[e].y += 3.0f;
-	}
-}
-
-
-
