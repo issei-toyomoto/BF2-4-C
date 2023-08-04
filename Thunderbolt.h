@@ -11,9 +11,15 @@
 #define Sea_Level 470	//海面の高さ
 #define Inversion 1     //反発用
 
+#define Thunder_Hide    0
+#define Thunder_Display 1
+#define Thuner_Touch    2
+
 class Thunder
 {
 private:
+	int ThunderNum;//ステージの雷の数
+	int CloudNum;//ステージの雲の数
 
 	//雷
 	struct T {
@@ -25,8 +31,10 @@ private:
 		int VY;
 		int AnimCnt;//アニメーションのフレームカウント
 		int WaitTime;//アニメーションまでのカウント
-	};	
+		int StateFlg;//（０：表示されていない　１：表示されている　２：プレイヤーと接触した）
+	};
 	T thunder[2];
+	
 
 	//雲
 	struct C {
@@ -59,21 +67,19 @@ public:
 	~Thunder() {};
 
 	//描画以外の更新を実装する
-	void Update(int Stage);
+	void Update(int i, int Stage);
 
 	//描画に関することを実装する
-	void Draw() const;
+	void Draw(int i) const;
 
 	void DrawThunder() const;
 	void DrawCloud() const;
 
-	void MoveThunderX();
-	void MoveThunderY();
+	void StageCollision(int i);
 
-	void StageCollision();
+	void ThunderAnim(int i);
+	void CloudAnim(int i);
 
-	void ThunderAnim();
-	void CloudAnim();
-
-	void CloudPosition();
+	void InitCloud();//雲の初期化
+	void CloudPosition();//ステージごとの雲の位置
 };
