@@ -20,6 +20,9 @@ private:
 	float EnXR[ENEMY_MAX], EnYR[ENEMY_MAX]; //敵の右下座標
 	int UpCnt, DownCnt;
 
+	int NowStage;
+	int es;
+
 	const float MinY = -19.0f;
 	
 	// 敵のデータ(構造体)
@@ -31,6 +34,7 @@ private:
 		float vecy = 0.0f;  // 敵の移動量Y
 		int state = 0;      // 敵の状態(0:ピンク 1:緑 2:黄色)
 		int life = 2;       // 敵のHP(0:死亡 1:パラシュート状態 2:風船1個状態)
+		int start = 0;
 		int flg = 0;        // 敵の画像番号用
 		int direction = 0;  // 敵の向いてる向き(0:左 1:右)
 		int ground = 0;     // 地面に触れているか(0:触れてない 1:触れている)
@@ -42,7 +46,7 @@ private:
 	struct ENEMY enemy[ENEMY_MAX];   // 敵のデータ(変数宣言)
 
 public:
-	 static int HitPFlg;       // プレイヤーと敵の当たり判定用
+	 static int HitPFlg;       // プレイヤーと敵の当たり判定(プレイヤーに値を渡す)
 
 	Enemy();   // コンストラクタ
 	~Enemy();  // デストラクタ
@@ -50,6 +54,7 @@ public:
 	void EnemyInit();       // 敵の初期化処理
 	void EnemyMove(int i);  // 敵の移動処理
 	void StartMove();       // 敵のスタート処理
+	void StartMove(int i);       // 敵のスタート処理
 	void EnemyUp(int e);    // 敵の浮上モーション処理
 	void EnemyDown(int e);  // 敵の降下モーション処理
 	void EnemyLeft(int e);  // 敵の左移動処理
@@ -62,7 +67,7 @@ public:
 	void EnemyPara(int e);  // 敵のパラシュート処理
 
 	//描画以外の更新を実装する
-	void Update();
+	void Update(int nowstage);
 	//描画の更新を実装する
 	void Draw() const;
 };

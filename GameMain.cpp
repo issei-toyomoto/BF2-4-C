@@ -14,7 +14,7 @@ AbstractScene* GameMain::Update()
 {
 	player.Update(gStageState);
 	BUBBLE.Update();
-	enemy.Update();
+	enemy.Update(gStageState);
 	fish.Update();
 	thunder.Update(gStageState);
 	ui.Update();
