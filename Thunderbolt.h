@@ -51,13 +51,10 @@ private:
 	C Cloud[2];
 
 	int Speed;// 雷の速度
-	
-	int FlashFlg;
-
-	
-	
 
 	int NowStage;
+
+	bool TouchFlg;//雷と触れたことをプレイヤーに伝えるよう
 		
 public:
 	//コンストラクタ

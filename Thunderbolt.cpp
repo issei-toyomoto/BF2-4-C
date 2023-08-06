@@ -1,7 +1,8 @@
-#include"DxLib.h"
-#include"Thunderbolt.h"
-#include"Common.h"
+#include "DxLib.h"
+#include "Thunderbolt.h"
+#include "Common.h"
 #include "InputKey.h"
+#include "Player.h"
 
 #define DEBUG
 
@@ -18,7 +19,7 @@ Thunder::Thunder()
 		thunder[i].Y = -50;
 		thunder[i].VX = 3;
 		thunder[i].VY = 3;
-		thunder[i].StateFlg = 0;
+		thunder[i].StateFlg = Thunder_Hide;
 	}
 
 	for (int i = 0; i < 2; i++) {
@@ -29,10 +30,12 @@ Thunder::Thunder()
 		Cloud[i].WaitTimeFlg = GetRand(2);
 		Cloud[i].WaitTimeCnt = 1;
 		Cloud[i].WaitTime = 0;
-		Cloud[i].StopAnimCnt = Thunder_Hide;
+		Cloud[i].StopAnimCnt = 0;
 	}
 
 	ThunderNum = 1;
+
+	TouchFlg = false;
 
 	InitCloud();
 }
@@ -102,11 +105,12 @@ void Thunder::Draw(int i) const
 	DrawFormatString(300, 50, C_WHITE, "VX:%d VY:%d", thunder[0].VX, thunder[0].VY);
 	DrawFormatString(300, 70, C_WHITE, "AminCnt:%d", thunder[0].AnimCnt);
 	DrawFormatString(300, 90, C_WHITE, "Flg:%d(0:表示なし 1:表示 2:プレイヤー接触)",thunder[0].StateFlg);
+	DrawFormatString(300, 110, C_WHITE, "TouchFlg:%d", TouchFlg);
 
-	DrawFormatString(300, 130, C_WHITE, "X:%d Y:%d", Cloud[0].X, Cloud[0].Y);
-	DrawFormatString(300, 150, C_WHITE, "WaitTime:%d", Cloud[0].WaitTime);
-	DrawFormatString(300, 170, C_WHITE, "WaitTimeCnt:%d", Cloud[0].WaitTimeCnt);
-	DrawFormatString(300, 190, C_WHITE, "StopAnimCnt:%d", Cloud[0].StopAnimCnt);
+	DrawFormatString(300, 150, C_WHITE, "X:%d Y:%d", Cloud[0].X, Cloud[0].Y);
+	DrawFormatString(300, 170, C_WHITE, "WaitTime:%d", Cloud[0].WaitTime);
+	DrawFormatString(300, 190, C_WHITE, "WaitTimeCnt:%d", Cloud[0].WaitTimeCnt);
+	DrawFormatString(300, 210, C_WHITE, "StopAnimCnt:%d", Cloud[0].StopAnimCnt);
 #endif // DEBUG
 
 }
@@ -142,6 +146,24 @@ void Thunder::StageCollision(int i)
 	TXL_Right = thunder[i].X + 28;//右下X
 	TYL_Right = thunder[i].Y + 28;//右下Y
 
+	//プレイヤーの矩形
+	int PXU_Left, PYU_Left;//左上
+	int PXL_Right, PYL_Right;//右下
+	PXU_Left = (int)Player::PlayerX + 18;//左上X
+	PYU_Left = (int)Player::PlayerY + 14;//左上Y
+	PXL_Right = (int)Player::PlayerX + 40;//右下X
+	PYL_Right = (int)Player::PlayerY + 64;//右下Y
+
+	//*****プレイヤーとの当たり判定*****//(未完成)
+	if (thunder[i].StateFlg == Thunder_Display) {
+		if (TXU_Left <= PXL_Right && TXL_Right >= PXU_Left) {
+			if (TYU_Left >= PXL_Right && TYL_Right <= PXU_Left) {
+				TouchFlg = true;
+				thunder[i].StateFlg = Thuner_Touch;
+			}
+		}
+	}
+	//***********************************//
 	if (NowStage == 1) {//***************　１ステージ　***************//
 		//左下の台
 		if (TXU_Left <= S_Ground_Left_XL && TYL_Right >= S_Ground_Left_YU + PlusPx) {//側面
