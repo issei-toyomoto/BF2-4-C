@@ -21,7 +21,7 @@ AbstractScene* GameMain::Update()
 	InputKey::Update();
 	player.Update(gStageState);
 	BUBBLE.Update();
-	enemy.Update();
+	enemy.Update(gStageState);
 	fish.Update();
 	for (int i = 0; i < 2; i++) {
 		thunder.Update(i, gStageState);
