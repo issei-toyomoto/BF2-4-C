@@ -16,7 +16,9 @@ AbstractScene* GameMain::Update()
 	BUBBLE.Update();
 	enemy.Update();
 	fish.Update();
-	thunder.Update(gStageState);
+	for (int i = 0; i < 2; i++) {
+		thunder.Update(i, gStageState);
+	}
 	ui.Update();
 	stage.Update();
 
@@ -44,7 +46,9 @@ AbstractScene* GameMain::Update()
 void GameMain::Draw()const
 {
 	stage.Draw(gStageState);
-	thunder.Draw();
+	for (int i = 0; i < 2; i++) {
+		thunder.Draw(i);
+	}
 	BUBBLE.Draw();
 	enemy.Draw();
 	fish.Draw();
