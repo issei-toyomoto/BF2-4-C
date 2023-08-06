@@ -7,6 +7,7 @@
 #include "Fish.h"
 #include "Stage.h"
 #include "UI.h"
+#include "InputKey.h"
 
 class GameMain :public AbstractScene
 {
@@ -19,6 +20,7 @@ private:
 	Fish fish;
 	UI ui;
 	gStage stage;
+	InputKey inputkey;
 
 	int gGameImg[14];
 	int gStageState;
@@ -29,6 +31,9 @@ private:
 	};
 
 public:
+	static int GameoverFlg;
+	static int GameOverFont;
+	static int WaitTime;
 	//コンストラクタ
 	GameMain() {
 		gGameImg[0] = LoadGraph("images/Stage_Footing01.png");      // ステージの足場1
@@ -46,6 +51,8 @@ public:
 		gGameImg[12] = LoadGraph("images/Stage_Sea01.png");          // 海の画像
 		gGameImg[13] = LoadGraph("images/ningen.png");               // プレイヤー画像
 		gStageState = 1;
+		GameOverFont = LoadGraph("images-20230711T024428Z-001/images/UI/UI_GameOver.png");
+		WaitTime = 0;
 	};
 
 	//デストラクタ
@@ -56,5 +63,7 @@ public:
 
 	//描画に関することを実装する
 	virtual void Draw() const  override;
+
+	static void GameOver();
 };
 
