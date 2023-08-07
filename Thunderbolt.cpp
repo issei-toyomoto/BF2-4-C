@@ -12,16 +12,16 @@ Thunder::Thunder()
 	for (int i = 0; i < 2; i++) {
 		LoadDivGraph("images/Stage_ThunderEffectAnimation.png", 3, 3, 1, 32, 32, thunder[i].Img);
 		LoadDivGraph("images/Stage_CloudAnimation.png", 3, 3, 1, 128, 64, Cloud[i].Img);
+		LoadDivGraph("images/Stage_ThunderAnimation.png", 6, 6, 1, 64, 64, OutThunder[i].Img);
 	}
-	LoadDivGraph("images/Stage_ThunderAnimation.png", 6, 6, 1, 64, 64, OutThunderImg);
 	
 	//雷の配列の初期化
 	for (int i = 0; i < 2; i++) {
 		thunder[i].AnimCnt = 0;
 		thunder[i].X = 0;
 		thunder[i].Y = -50;
-		thunder[i].VX = 3;
-		thunder[i].VY = 3;
+		thunder[i].VX = 2;
+		thunder[i].VY = 2;
 		thunder[i].StateFlg = Thunder_Hide;
 	}
 
@@ -29,16 +29,22 @@ Thunder::Thunder()
 	for (int i = 0; i < 2; i++) {
 		Cloud[i].AnimCnt = 0;
 		Cloud[i].C_NowImg = Cloud[i].Img[0];
-		Cloud[i].X = 0;
-		Cloud[i].Y = 0;
+		Cloud[i].X = -10;
+		Cloud[i].Y = -10;
 		Cloud[i].WaitTimeFlg = GetRand(2);
 		Cloud[i].WaitTimeCnt = 1;
 		Cloud[i].WaitTime = 0;
 		Cloud[i].StopAnimCnt = 0;
+		Cloud[i].StateFlg = Cloud_Hide;
 	}
 
-	OTAnimCnt = 0;
-	OTFlg = false;
+	//雷が出るときの雷の配列の初期化
+	for (int i = 0; i < 2; i++) {
+		OutThunder[i].OTAnimCnt = 0;
+		OutThunder[i].OTFlg = false;
+		OutThunder[i].X = 0;
+		OutThunder[i].Y = 0;
+	}
 
 	ThunderNum = 1;
 
@@ -49,26 +55,30 @@ Thunder::Thunder()
 
 void Thunder::Update(int i, int Stage)
 {
-	InputKey::Update();
 	NowStage = Stage;//現在のステージを更新
-	StageCollision(i);
+	StageCollision(i);//雷とステージの当たり判定
 
 	thunder[i].AnimCnt++;
 
 	Cloud[i].AnimCnt++;
-	if (Cloud[i].WaitTime != Cloud[i].WaitTimeCnt) {
-		Cloud[i].WaitTimeCnt++;
+	if (Cloud[i].WaitTime != Cloud[i].WaitTimeCnt) {//設定した待ち時間と待ち時間のカウントが同じじゃないなら
+		Cloud[i].WaitTimeCnt++;//待ち時間のカウントをインクリメント
 	}
 
-	if (OTFlg == true) {
-		OTAnimCnt++;
+	if (OutThunder[i].OTFlg == true) {//雲のアニメーションが終わったら
+		OutThunder[i].OTAnimCnt++;//雷が出るときのアニメーションのカウントをインクリメント
 	}
 
-	CloudPosition();
+	CloudPosition();//ステージごとの雲の位置を決定する処理
+	OutThunderAnim(i);//雲が出るときのアニメーション処理
 
-	if (thunder[i].StateFlg == Thunder_Display) {//雷が表示されているなら雷の移動処理を行う
-		thunder[i].X += thunder[i].VX;//雷のX座標
-		thunder[i].Y += thunder[i].VY;//雷のY座標
+	if (thunder[0].StateFlg == Thunder_Display) {//雷が表示されているなら雷の移動処理を行う
+		thunder[0].X += thunder[0].VX;//雷のX座標
+		thunder[0].Y += thunder[0].VY;//雷のY座標
+	}
+	else if (thunder[1].StateFlg == Thunder_Display) {
+		thunder[1].X += thunder[1].VX;//雷のX座標
+		thunder[1].Y += thunder[1].VY;//雷のY座標
 	}
 	
 	ThunderAnim(i);//雷の画像処理
@@ -79,6 +89,7 @@ void Thunder::Update(int i, int Stage)
 
 	if (Cloud[i].AnimCnt >= 8) {
 		Cloud[i].AnimCnt = 0;
+
 	}
 
 	if (Cloud[i].WaitTime == Cloud[i].WaitTimeCnt) {//設定した雲の点滅タイムがカウントと同じなら
@@ -86,32 +97,39 @@ void Thunder::Update(int i, int Stage)
 		thunder[i].StateFlg = Thunder_Display;
 		thunder[i].X = Cloud[i].X;
 		thunder[i].Y = Cloud[i].Y;
-		if (Cloud[i].StopAnimCnt >= 1.5 * 60) {
+		if (Cloud[i].StopAnimCnt >= 1 * 60) {//雲のアニメーションが１秒たったら
 			Cloud[i].WaitTimeCnt = 0;
 			Cloud[i].WaitTime = 8 * 60;//二回目以降の点滅タイム
 			Cloud[i].StopAnimCnt = 0;
 			Cloud[i].C_NowImg = Cloud[0].Img[0];
-			OTFlg = true;
+			OutThunder[i].OTFlg = true;
 		}
 		else {
 			CloudAnim(i);
 		}
 	}
 
-	if (OTAnimCnt >= 9) {
-		OTAnimCnt = 0;
-		OTFlg = false;
+	if (OutThunder[i].OTAnimCnt >= 47) {
+		OutThunder[i].OTAnimCnt = 0;
+		OutThunder[i].OTFlg = false;
+	}
+
+	if (NowStage == 1) {
+		Cloud[0].StateFlg = Cloud_Display;
+		Cloud[1].StateFlg = Cloud_Hide;
 	}
 }
 
 void Thunder::Draw(int i) const 
 {
-	DrawCloud();
-	if (thunder[i].StateFlg == 1) {
+	if (Cloud[i].StateFlg == Cloud_Display) {//ステートが表示だったら
+		DrawCloud();
+	}
+	if (thunder[i].StateFlg == Thunder_Display) {//ステートが表示だったら
 		DrawThunder();
 	}
-	if (OTFlg == true) {
-		DrawGraph(10, 10, Now_OutThunderImg, TRUE);
+	if (OutThunder[i].OTFlg == true) {
+		DrawOutThunder();
 	}
 
 #ifdef DEBUG
@@ -124,13 +142,24 @@ void Thunder::Draw(int i) const
 	DrawFormatString(300, 30, C_WHITE, "X:%d Y:%d", thunder[0].X, thunder[0].Y);
 	DrawFormatString(300, 50, C_WHITE, "VX:%d VY:%d", thunder[0].VX, thunder[0].VY);
 	DrawFormatString(300, 70, C_WHITE, "AminCnt:%d", thunder[0].AnimCnt);
-	DrawFormatString(300, 90, C_WHITE, "Flg:%d(0:表示なし 1:表示 2:プレイヤー接触)",thunder[0].StateFlg);
+	DrawFormatString(300, 90, C_WHITE, "Flg:%d",thunder[0].StateFlg);
 	DrawFormatString(300, 110, C_WHITE, "TouchFlg:%d", TouchFlg);
+
+	DrawFormatString(400, 30, C_WHITE, "X:%d Y:%d", thunder[1].X, thunder[1].Y);
+	DrawFormatString(400, 50, C_WHITE, "VX:%d VY:%d", thunder[1].VX, thunder[1].VY);
+	DrawFormatString(400, 70, C_WHITE, "AminCnt:%d", thunder[1].AnimCnt);
+	DrawFormatString(400, 90, C_WHITE, "Flg:%d", thunder[1].StateFlg);
+	DrawFormatString(400, 110, C_WHITE, "TouchFlg:%d", TouchFlg);
 
 	DrawFormatString(300, 150, C_WHITE, "X:%d Y:%d", Cloud[0].X, Cloud[0].Y);
 	DrawFormatString(300, 170, C_WHITE, "WaitTime:%d", Cloud[0].WaitTime);
 	DrawFormatString(300, 190, C_WHITE, "WaitTimeCnt:%d", Cloud[0].WaitTimeCnt);
 	DrawFormatString(300, 210, C_WHITE, "StopAnimCnt:%d", Cloud[0].StopAnimCnt);
+
+	DrawFormatString(450, 150, C_WHITE, "X:%d Y:%d", Cloud[1].X, Cloud[1].Y);
+	DrawFormatString(450, 170, C_WHITE, "WaitTime:%d", Cloud[1].WaitTime);
+	DrawFormatString(450, 190, C_WHITE, "WaitTimeCnt:%d", Cloud[1].WaitTimeCnt);
+	DrawFormatString(450, 210, C_WHITE, "StopAnimCnt:%d", Cloud[1].StopAnimCnt);
 #endif // DEBUG
 
 }
@@ -153,6 +182,13 @@ void Thunder::DrawThunder() const
 	}
 	
 	
+}
+
+void Thunder::DrawOutThunder() const 
+{
+	if (NowStage == 1) {
+		DrawGraph(Cloud[0].X + OutThunder[0].X, Cloud[0].Y + OutThunder[0].Y, OutThunder[0].Now_Img, TRUE);
+	}
 }
 
 //ステージとの当たり判定
@@ -272,26 +308,27 @@ void Thunder::CloudAnim(int i)
 //雷が出るときのアニメーション
 void Thunder::OutThunderAnim(int i) 
 {
-	if (OTAnimCnt >= 0 && OTAnimCnt <= 1) {
-		Now_OutThunderImg = OutThunderImg[0];
+	if (OutThunder[i].OTAnimCnt >= 0 && OutThunder[i].OTAnimCnt <= 7) {
+		OutThunder[i].Now_Img = OutThunder[i].Img[0];
 	}
-	else if (OTAnimCnt >= 2 && OTAnimCnt <= 3) {
-		Now_OutThunderImg = OutThunderImg[1];
+	else if (OutThunder[i].OTAnimCnt >= 8 && OutThunder[i].OTAnimCnt <= 15) {
+		OutThunder[i].Now_Img = OutThunder[i].Img[1];
 	}
-	else if (OTAnimCnt >= 4 && OTAnimCnt <= 5) {
-		Now_OutThunderImg = OutThunderImg[2];
+	else if (OutThunder[i].OTAnimCnt >= 16 && OutThunder[i].OTAnimCnt <= 23) {
+		OutThunder[i].Now_Img = OutThunder[i].Img[2];
 	}
-	else if (OTAnimCnt >= 6 && OTAnimCnt <= 7) {
-		Now_OutThunderImg = OutThunderImg[3];
+	else if (OutThunder[i].OTAnimCnt >= 24 && OutThunder[i].OTAnimCnt <= 31) {
+		OutThunder[i].Now_Img = OutThunder[i].Img[3];
 	}
-	else if (OTAnimCnt >= 8 && OTAnimCnt <= 9) {
-		Now_OutThunderImg = OutThunderImg[4];
+	else if (OutThunder[i].OTAnimCnt >= 32 && OutThunder[i].OTAnimCnt <= 39) {
+		OutThunder[i].Now_Img = OutThunder[i].Img[4];
 	}
-	else if (OTAnimCnt >= 6 && OTAnimCnt <= 8) {
-		Now_OutThunderImg = OutThunderImg[5];
+	else if (OutThunder[i].OTAnimCnt >= 40 && OutThunder[i].OTAnimCnt <= 47) {
+		OutThunder[i].Now_Img = OutThunder[i].Img[5];
 	}
 }
 
+//雲の初期化（雲がヒカリ出す時間を決めている　※今のところは）
 void Thunder::InitCloud() 
 {
 	for (int i = 0; i < 2; i++) {
@@ -307,6 +344,7 @@ void Thunder::InitCloud()
 	}
 }
 
+//ステージごとの雲の位置
 void Thunder::CloudPosition() 
 {
 	if (NowStage == 1) {

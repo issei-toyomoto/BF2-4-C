@@ -15,6 +15,9 @@
 #define Thunder_Display 1
 #define Thuner_Touch    2
 
+#define Cloud_Hide    0
+#define Cloud_Display 1
+
 class Thunder
 {
 private:
@@ -36,10 +39,15 @@ private:
 	T thunder[2];
 	
 	//—‹‚ªo‚é‚Æ‚«‚Ì—‹
-	int OutThunderImg[3];
-	int Now_OutThunderImg;
-	int OTAnimCnt;
-	bool OTFlg;
+	struct OT{
+		int Img[5];
+		int Now_Img;
+		int X;
+		int Y;
+		int OTAnimCnt;
+		bool OTFlg;
+	};
+	OT OutThunder[2];
 
 	//‰_
 	struct C {
@@ -52,6 +60,7 @@ private:
 		int WaitTime;
 		int WaitTimeCnt;
 		int StopAnimCnt;
+		int StateFlg;//(0:•\¦‚³‚ê‚Ä‚¢‚È‚¢ 1:•\¦‚³‚ê‚Ä‚¢‚é)
 	};
 	C Cloud[2];
 
@@ -76,6 +85,7 @@ public:
 
 	void DrawThunder() const;
 	void DrawCloud() const;
+	void DrawOutThunder() const;
 
 	void StageCollision(int i);
 
