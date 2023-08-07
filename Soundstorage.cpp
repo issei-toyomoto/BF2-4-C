@@ -1,5 +1,8 @@
 #include "Soundstorage.h"
 #include"Dxlib.h"
+
+int Soundstorage::gRestartSE;
+
 Soundstorage::Soundstorage() 
 {
 	 gStartSE=LoadSoundMem("sounds/SE_Start.wav");
