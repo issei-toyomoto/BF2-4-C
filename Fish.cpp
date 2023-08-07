@@ -40,54 +40,8 @@ void Fish::Draw() const {
 
 //出現エリア
 void Fish::Update() {
-	P_X = Player::PlayerX;
-	P_Y = Player::PlayerY;
-	//出現エリア判定
-	if (P_Y >= 358 && P_Y <= 460 && P_X >= 135 && P_X <= 479) {
-		Count++;
-		Second = Count / 60;
-		//三秒経過＆魚がいない
-		/*３秒後確率抽選。その後FALSEなら１秒ごとに抽選*/
-		if (Second >= 3 && SpawnFlg == FALSE) {
-			FishRand = GetRand(99);
-			Count = 0;
-			Second = 2;
-			//魚出現
-			if (FishRand <= 99/*29*/) {
-				FishRand = GetRand(1);
-				if (FishRand == 1) {
-					TurnFlg = TRUE;
-				}
-				SpawnFlg = TRUE;
-				MoveFish();
-			}
-		}
-		//魚移動
-		else if (SpawnFlg == TRUE) {
-			MoveFish();
-		}
-	}
-	//魚出現中にプレイヤーが範囲外に出たとき
-	if (P_Y < 358 && SpawnFlg == TRUE) {
-		//接触後
-		if (FishAnim <= 3) {
-			MoveFish();
-		}
-		//接触前
-		else if (FishAnim >= 4) {
-			FishAnim = 5;
-			f_PosY = f_PosY + 2;
-			if (f_PosY >= 440) {
-				InitFish();
-			}
-		}
-	}
-	//魚未出現時にプレイヤーが外に出たとき
-	else if (P_Y < 358 && SpawnFlg == FALSE) {
-		//抽選用時間リセット
-		Count = 0;
-		Second = 0;
-	}
+	CheckPlayer();
+
 }
 
 //魚移動
@@ -151,6 +105,63 @@ bool Fish::GetFishFlg() {
 bool Fish::E_GetFishFlg() {
 	static bool e = E_FishFlg;
 	return e;
+}
+
+//プレイヤー判定
+void Fish::CheckPlayer() {
+	P_X = Player::PlayerX;
+	P_Y = Player::PlayerY;
+	//出現エリア判定
+	if (P_Y >= 358 && P_Y <= 460 && P_X >= 135 && P_X <= 479) {
+		Count++;
+		Second = Count / 60;
+		//三秒経過＆魚がいない
+		/*３秒後確率抽選。その後FALSEなら１秒ごとに抽選*/
+		if (Second >= 3 && SpawnFlg == FALSE) {
+			FishRand = GetRand(99);
+			Count = 0;
+			Second = 2;
+			//魚出現
+			if (FishRand <= 99/*29*/) {
+				FishRand = GetRand(1);
+				if (FishRand == 1) {
+					TurnFlg = TRUE;
+				}
+				SpawnFlg = TRUE;
+				MoveFish();
+			}
+		}
+		//魚移動
+		else if (SpawnFlg == TRUE) {
+			MoveFish();
+		}
+	}
+	//魚出現中にプレイヤーが範囲外に出たとき
+	if (P_Y < 358 && SpawnFlg == TRUE) {
+		//接触後
+		if (FishAnim <= 3) {
+			MoveFish();
+		}
+		//接触前
+		else if (FishAnim >= 4) {
+			FishAnim = 5;
+			f_PosY = f_PosY + 2;
+			if (f_PosY >= 440) {
+				InitFish();
+			}
+		}
+	}
+	//魚未出現時にプレイヤーが外に出たとき
+	else if (P_Y < 358 && SpawnFlg == FALSE) {
+		//抽選用時間リセット
+		Count = 0;
+		Second = 0;
+	}
+}
+
+//エネミー判定
+void Fish::CheckEnemy() {
+
 }
 
 //左向き描画

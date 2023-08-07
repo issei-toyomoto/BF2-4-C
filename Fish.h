@@ -44,6 +44,8 @@ public:
 	void DrawRight() const;		//右向き描画
 	void DrawLeft() const;		//左向き描画
 	void Update();				//出現エリア判定
+	void CheckPlayer();			//プレイヤー判定
+	void CheckEnemy();			//エネミー判定
 	void MoveFish();			//魚移動
 	void TargetPlayer();		//プレイヤーを襲う処理
 	void TargetEnemy();			//敵を襲う処理
