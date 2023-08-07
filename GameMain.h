@@ -34,6 +34,7 @@ public:
 	static int GameoverFlg;
 	static int GameOverFont;
 	static int WaitTime;
+	static int PauseFlg;
 	//コンストラクタ
 	GameMain() {
 		gGameImg[0] = LoadGraph("images/Stage_Footing01.png");      // ステージの足場1
@@ -65,5 +66,6 @@ public:
 	virtual void Draw() const  override;
 
 	static void GameOver();
+	static void Pause();
 };
 

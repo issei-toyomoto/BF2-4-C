@@ -15,6 +15,7 @@
 int GameMain::GameOverFont;
 int GameMain::GameoverFlg;
 int GameMain::WaitTime;
+int GameMain::PauseFlg;
 
 AbstractScene* GameMain::Update()
 {
@@ -28,16 +29,14 @@ AbstractScene* GameMain::Update()
 	stage.Update();
 	
 
-	if (InputKey::GetKey(PAD_INPUT_1) == TRUE) { // STARTが押されたとき
-		if (GameoverFlg == 0) { // まだ一度もPause状態になってないなら
-			GameoverFlg = 1; // Pause状態になるというフラグ
-		}
-		else {
-			GameoverFlg = 0;
-		}
+	if (InputKey::GetKey(PAD_INPUT_8) == TRUE && PauseFlg == 0) { // STARTが押されたとき // まだ一度もPause状態になってないなら
+		PauseFlg = 1; // Pause状態になるというフラグ
 	}
-	if (GameoverFlg == 1) {
-		GameOver();
+	if(InputKey::GetKey(PAD_INPUT_8) == TRUE && PauseFlg == 1 && WaitTime > 120) {
+		PauseFlg = 0;
+		}
+	if (PauseFlg == 1) {
+		Pause();
 	}
 	if (WaitTime > 180) {
 		WaitTime = 0;
@@ -80,8 +79,11 @@ void GameMain::Draw()const
 	DrawGraph(0, 455, gGameImg[12], TRUE);
 	DrawGraph(480, 455, gGameImg[12], TRUE);
 	DrawFormatString(200, 300, C_RED, "%d", GameoverFlg);
-	if (GameoverFlg == 1) {
-		DrawGraph(200, 200, GameOverFont, TRUE);
+	if (PauseFlg == 1) {
+		SetFontSize(100);
+		DrawString(200, 320, "--- ポーズ中 ---", 0x000000);
+
+		/*DrawGraph(200, 200, GameOverFont, TRUE);*/
 	}
 
 #ifdef DEBUG
@@ -199,4 +201,8 @@ void GameMain::Draw()const
 void GameMain::GameOver()
 {
 	WaitTime++;
+}
+// ポーズ画面
+void GameMain::Pause()
+{
 }
