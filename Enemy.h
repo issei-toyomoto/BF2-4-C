@@ -21,7 +21,7 @@ private:
 	int UpCnt, DownCnt;
 
 	int NowStage;
-	int es;
+	
 
 	const float MinY = -19.0f;
 	
@@ -41,6 +41,9 @@ private:
 		int die = 0;        // “G€–S—p
 		int ran = 0;
 		int para = 0;
+		int sm = 0;
+		int waittime = 0;
+		int okballoon = 0;
 	};
 
 	struct ENEMY enemy[ENEMY_MAX];   // “G‚Ìƒf[ƒ^(•Ï”éŒ¾)

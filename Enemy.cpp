@@ -25,8 +25,7 @@ Enemy::Enemy()
 	UpCnt = 0;
 	DownCnt = 0;
 	NowStage = 0;
-	es = 0;
-
+	
 	LoadDivGraph("image/Enemy/Enemy_P_Animation.png", 18, 6, 3, 64, 64, EnemyImg[0]);  //画像読み込み(ピンク)
 	LoadDivGraph("image/Enemy/Enemy_G_Animation.png", 18, 6, 3, 64, 64, EnemyImg[1]);  //画像読み込み(みどり)
 	LoadDivGraph("image/Enemy/Enemy_R_Animation.png", 18, 6, 3, 64, 64, EnemyImg[2]);  //画像読み込み(きいろ)
@@ -58,15 +57,13 @@ void Enemy::Update(int nowstage)
 	}
 	else
 	{
-		if (enemy[es].start == 1 && StartMotion < 4)
+		for (int i = 0; i < ENEMY_MAX; i++)
 		{
-			StartMove();
-		}
-		else
-		{
-			enemy[es].start = 0;
-
-			for (int i = 0; i < ENEMY_MAX; i++)
+			if (enemy[i].start == 1 && enemy[i].sm < 4)
+			{
+				StartMove(i);
+			}
+			else
 			{
 				if (enemy[i].life == 2)
 				{
@@ -101,28 +98,39 @@ void Enemy::Update(int nowstage)
 				{
 					EnemyPara(i);
 
-					if (enemy[i].start == 1 && StartMotion < 4)
+					if (enemy[i].start == 1)
 					{
-						StartMove(i);
+
 					}
-					
+
 				}
 				else
 				{
 					EnemyDie(i);
 				}
+
 			}
 		}
-		
 	}
 	
 
 	//１秒たったらフレームカウント
 	if (Fcnt > 60) 
 	{
-		
 		Fcnt = 0;
-		StartMotion++;
+
+		if (StartFlg == 0)
+		{
+			StartMotion++;
+		}
+
+		for (int i = 0; i < ENEMY_MAX; i++)
+		{
+			if (enemy[i].start == 1)
+			{
+				enemy[i].sm++;
+			}
+		}
 	}
 }
 
@@ -244,6 +252,7 @@ void Enemy::EnemyInit()
 		enemy[i].y = ENEMY_Y;
 		enemy[i].state = 0;
 		enemy[i].life = 2;
+		enemy[i].sm = 0;
 	}
 }
 
@@ -356,7 +365,7 @@ void Enemy::StartMove(int i)
 	{
 		HitPeFlg = HitStart(i);
 
-		if (StartMotion == 0)
+		if (enemy[i].sm == 0)
 		{
 			if (Fcnt > 0 && Fcnt < 15 || Fcnt > 31 && Fcnt < 45)
 			{
@@ -367,7 +376,7 @@ void Enemy::StartMove(int i)
 				enemy[i].flg = 1;
 			}
 		}
-		else if (StartMotion == 1)
+		else if (enemy[i].sm == 1)
 		{
 			if (Fcnt > 0 && Fcnt < 15 || Fcnt > 31 && Fcnt < 45)
 			{
@@ -378,7 +387,7 @@ void Enemy::StartMove(int i)
 				enemy[i].flg = 3;
 			}
 		}
-		else if (StartMotion == 2)
+		else if (enemy[i].sm == 2)
 		{
 			if (Fcnt > 0 && Fcnt < 15 || Fcnt > 31 && Fcnt < 45)
 			{
@@ -389,7 +398,7 @@ void Enemy::StartMove(int i)
 				enemy[i].flg = 5;
 			}
 		}
-		else if (StartMotion == 3)
+		else if (enemy[i].sm == 3)
 		{
 			if (Fcnt > 0 && Fcnt < 15 || Fcnt > 31 && Fcnt < 45)
 			{
@@ -398,8 +407,15 @@ void Enemy::StartMove(int i)
 			else
 			{
 				enemy[i].flg = 7;
-				StartFlg = 1;
-				StartMotion = 0;
+
+				if (enemy[i].state != 2)
+				{
+					enemy[i].state++;
+				}
+
+				enemy[i].okballoon = 0;
+				enemy[i].start = 0;
+				enemy[i].sm = 0;
 			}
 		}
 	}
@@ -566,17 +582,14 @@ void Enemy::EnemyPara(int e)
 
 		enemy[e].y += 0.3f;
 
+		// パラシュート状態確認時コメントアウト
 		/*HitPeFlg = HitPlayer(e);*/
 
 		HitStage(e);
 
+		// 地面に着いたら風船を膨らませる
 		if (enemy[e].ground == 1)
 		{
-			if (enemy[e].state != 2)
-			{
-				enemy[e].state++;
-			}
-
 			enemy[e].life = 2;
 			enemy[e].start = 1;
 		}
