@@ -8,7 +8,6 @@ int bubble::BubleScore;
 
 bubble::bubble() 
 {
-	/*LoadDivGraph("images/Stage_BubbleAnimation.png", 4, 4, 1, 64, 64, BubbleImg);*/
 
 	for (int i = 0; i < 6; i++) {
 		LoadDivGraph("images/Stage_BubbleAnimation.png", 4, 4, 1, 64, 64, Bubble[i].Img);
