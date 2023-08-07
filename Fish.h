@@ -46,7 +46,8 @@ public:
 	void Update();				//出現エリア判定
 	void CheckPlayer();			//プレイヤー判定
 	void CheckEnemy();			//エネミー判定
-	void MoveFish();			//魚移動
+	void P_MoveFish();			//魚移動(プレイヤー)
+	void E_MoveFish();			//魚移動(敵)
 	void TargetPlayer();		//プレイヤーを襲う処理
 	void TargetEnemy();			//敵を襲う処理
 	void InitFish();			//初期化

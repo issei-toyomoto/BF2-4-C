@@ -44,19 +44,23 @@ void Fish::Update() {
 
 }
 
-//魚移動
-void Fish::MoveFish() {
+//魚移動(プレイヤー)
+void Fish::P_MoveFish() {
 	P_X = Player::PlayerX;
 	P_Y = Player::PlayerY;
-	//攻撃対象が敵
-	/*if (E_Y >= 358 && E_X >= 135 && E_X <= 479 || FishAnim <= 3) {
-		TargetEnemy();
-	}
-	*/
 	//攻撃対象がプレイヤー
 	if (P_Y >= 358 && P_Y <= 460 && P_X >= 135 && P_X <= 479 || FishAnim <= 3) {
 		TargetPlayer();
 	}
+}
+
+//魚移動(敵)
+void Fish::E_MoveFish() {
+	//攻撃対象が敵
+	/*if () {
+		TargetEnemy();
+	}
+	*/
 }
 
 //プレイヤーを襲う処理
@@ -122,25 +126,26 @@ void Fish::CheckPlayer() {
 			Count = 0;
 			Second = 2;
 			//魚出現
-			if (FishRand <= 99/*29*/) {
+			if (FishRand <= 29) {
+				//魚の向きを設定（ランダム）
 				FishRand = GetRand(1);
 				if (FishRand == 1) {
 					TurnFlg = TRUE;
 				}
 				SpawnFlg = TRUE;
-				MoveFish();
+				P_MoveFish();
 			}
 		}
 		//魚移動
 		else if (SpawnFlg == TRUE) {
-			MoveFish();
+			P_MoveFish();
 		}
 	}
 	//魚出現中にプレイヤーが範囲外に出たとき
 	if (P_Y < 358 && SpawnFlg == TRUE) {
 		//接触後
 		if (FishAnim <= 3) {
-			MoveFish();
+			P_MoveFish();
 		}
 		//接触前
 		else if (FishAnim >= 4) {
