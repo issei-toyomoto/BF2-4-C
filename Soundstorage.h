@@ -4,22 +4,22 @@ class Soundstorage
 private:
 
 public:
-	int gStartSE;
-	int gStageClearSE;
-	int gSplashSE;
+	static int gStartSE;
+	static int gStageClearSE;
+	static int gSplashSE;
 	static int gRestartSE;
-	int PlayerWalkSE;
-	int PlayerJumpSE;
-	int PerfectSE;
-	int ParachuteSE;
-	int GameOverSE;
-	int FallingSE;
-	int EnemyMoveSE;
-	int EatableSE;
-	int DefeatTheEnemySE;
-	int CrackSE;
-	int BubbleSE;
-	int TripBGM;
+	static int PlayerWalkSE;
+	static int PlayerJumpSE;
+	static int PerfectSE;
+	static int ParachuteSE; // パラシュート
+	static int GameOverSE;
+	static int FallingSE;
+	static int EnemyMoveSE;
+	static int EatableSE;
+	static int DefeatTheEnemySE; 
+	static int CrackSE;
+	static int BubbleSE;
+	static int TripBGM;
 
 	// コンストラクタ
 	Soundstorage();
