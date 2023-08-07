@@ -2,7 +2,7 @@
 #include "AbstractScene.h"
 #include "DxLib.h"
 #include "InputKey.h"
-
+#include"Soundstorage.h"
 class Title : public AbstractScene
 {
 private:
@@ -10,6 +10,7 @@ private:
 	int Now_key;
 	int Old_key;*/
 	InputKey inputkey;
+	Soundstorage soundstorage;
 
 	int gTitleFontImg;
 	int gTitleModeImg;

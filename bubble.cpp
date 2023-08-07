@@ -2,6 +2,7 @@
 #include"Dxlib.h"
 #include"Common.h"
 #include"Player.h"
+#include"Soundstorage.h"
 #define DEBUG
 
 int bubble::BubleScore;
@@ -63,6 +64,9 @@ void bubble::Update()
 	if (Bubble[BubbleNumber].Flg == 1)
 	{
 		Bubble[BubbleNumber].AnimCount++;
+	}
+	if (Bubble[BubbleNumber].AnimCount == 1) {
+		PlaySoundMem(soundstorage.BubbleSE, DX_PLAYTYPE_BACK, TRUE);
 	}
 #ifdef DEBUG
 	if (Bubble[BubbleNumber].AnimCount == 30)

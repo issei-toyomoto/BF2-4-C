@@ -54,6 +54,7 @@ public:
 		gStageState = 1;
 		GameOverFont = LoadGraph("images-20230711T024428Z-001/images/UI/UI_GameOver.png");
 		WaitTime = 0;
+		PauseFlg = 0;
 	};
 
 	//デストラクタ

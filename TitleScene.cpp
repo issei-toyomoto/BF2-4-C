@@ -22,6 +22,7 @@ Title::~Title() {
 
 AbstractScene* Title::Update()
 {
+	/*PlaySoundMem(soundstorage.TripBGM, DX_PLAYTYPE_LOOP, TRUE);*/
 	FPSCount++;
 	InputKey::Update();
 	gMenuY = MenuNumber * 30;

@@ -19,31 +19,47 @@ int GameMain::PauseFlg;
 
 AbstractScene* GameMain::Update()
 {
-	InputKey::Update();
-	player.Update(gStageState);
-	BUBBLE.Update();
-	enemy.Update(gStageState);
-	fish.Update();
-	for (int i = 0; i < 2; i++) {
-		thunder.Update(i, gStageState);
+	if (PauseFlg == 0) {
+		InputKey::Update();
+		player.Update(gStageState);
+		BUBBLE.Update();
+		enemy.Update(gStageState);
+		fish.Update();
+		for (int i = 0; i < 2; i++) {
+			thunder.Update(i, gStageState);
+		}
+		ui.Update();
+		stage.Update();
 	}
-	ui.Update();
-	stage.Update();
-	
-
-	if (InputKey::GetKey(PAD_INPUT_8) == TRUE && PauseFlg == 0) { // STARTが押されたとき // まだ一度もPause状態になってないなら
+	++WaitTime;
+	/*if (PauseFlg == 1)*/
+	if (inputkey.GetKey(PAD_INPUT_8) == TRUE && PauseFlg == 0 && WaitTime > 120) { // STARTが押された  // まだ一度もPause状態になってないなら
+		WaitTime = 0;
 		PauseFlg = 1; // Pause状態になるというフラグ
-	}
-	if(InputKey::GetKey(PAD_INPUT_8) == TRUE && PauseFlg == 1 && WaitTime > 120) {
+		}
+		else if(inputkey.GetKey(PAD_INPUT_8) == TRUE && PauseFlg == 1 && WaitTime > 120) {
+		WaitTime = 0;
 		PauseFlg = 0;
 		}
 	if (PauseFlg == 1) {
 		Pause();
 	}
-	if (WaitTime > 180) {
+	//if (InputKey::GetKey(PAD_INPUT_8) == TRUE && PauseFlg == 0) { // STARTが押されたとき // まだ一度もPause状態になってないなら
+	//	PauseFlg = 1; // Pause状態になるというフラグ
+	//	Pause();
+	//}
+	//WaitTime++;
+	//if (InputKey::GetKey(PAD_INPUT_8) == TRUE && PauseFlg == 1 && WaitTime > 120) {
+	//	WaitTime = 0;
+	//	PauseFlg = 0;
+	//}
+	/*if (PauseFlg == 1) {
+		
+	}*/
+	/*if (WaitTime > 180) {
 		WaitTime = 0;
 		return new Title();
-	}
+	}*/
 
 	if (CheckHitKey(KEY_INPUT_1)) {
 		gStageState = 1;
@@ -69,23 +85,25 @@ AbstractScene* GameMain::Update()
 
 void GameMain::Draw()const
 {
-	stage.Draw(gStageState);
-	for (int i = 0; i < 2; i++) {
+	/*if (PauseFlg == 0) {*/
+		stage.Draw(gStageState);
+		for (int i = 0; i < 2; i++) {
 		thunder.Draw(i);
 	}
-	BUBBLE.Draw();
-	enemy.Draw();
-	fish.Draw();
-	ui.Draw();
-	player.Draw();
-
-	DrawGraph(160, 455, gGameImg[12], TRUE);//海の表示
-	DrawGraph(0, 455, gGameImg[12], TRUE);
-	DrawGraph(480, 455, gGameImg[12], TRUE);
-	DrawFormatString(200, 300, C_RED, "%d", GameoverFlg);
+		BUBBLE.Draw();
+		enemy.Draw();
+		fish.Draw();
+		ui.Draw();
+		player.Draw();
+		DrawGraph(160, 455, gGameImg[12], TRUE);//海の表示
+		DrawGraph(0, 455, gGameImg[12], TRUE);
+		DrawGraph(480, 455, gGameImg[12], TRUE);
+		DrawFormatString(200, 300, C_RED, "%d", PauseFlg);
+	/*}*/
 	if (PauseFlg == 1) {
-		SetFontSize(100);
-		DrawString(200, 320, "--- ポーズ中 ---", 0x000000);
+		DrawString(200, 320, "--- ポーズ中 ---", C_WHITE);
+		DrawFormatString(200, 300, C_RED, "%d", PauseFlg);
+		DrawFormatString(200, 350, C_RED, "%d", WaitTime);
 
 		/*DrawGraph(200, 200, GameOverFont, TRUE);*/
 	}

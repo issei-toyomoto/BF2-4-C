@@ -1,8 +1,10 @@
 #pragma once
+#include"Soundstorage.h"
 //#define BUBBLE_X 320
 //#define BUBBLE_Y 480
 class bubble  {
 private:
+	Soundstorage soundstorage;
 	/*int i;*/
 	/*int y;*/
 	struct BubbleSet
