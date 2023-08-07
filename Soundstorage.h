@@ -7,7 +7,7 @@ public:
 	int gStartSE;
 	int gStageClearSE;
 	int gSplashSE;
-	int gRestartSE;
+	static int gRestartSE;
 	int PlayerWalkSE;
 	int PlayerJumpSE;
 	int PerfectSE;

@@ -3,6 +3,7 @@
 #include "InputKey.h"
 #include "Common.h"
 #include "Fish.h"
+#include "Soundstorage.h"
 
 //#define DEBUG
 
@@ -36,6 +37,8 @@ Player::Player()
 	RespawnCnt = 0;
 	Hide = false;
 
+	ReStartSoundFlg = false;
+
 	FishFlg = Fish::P_FishFlg;//Fish.cpp‚©‚ç’l‚ðŽæ“¾
 	BalloonCrack = Balloon_NotCrack;
 }
@@ -67,6 +70,14 @@ void Player::Update(int Stage) /***•`‰æˆÈŠO***/
 		if (XStick != 0 || Abtn == true || InputKey::GetKeyDown(PAD_INPUT_B) == TRUE) {
 			Respawn = false;
 		}
+		if (ReStartSoundFlg == false) {
+			PlaySoundMem(Soundstorage::gRestartSE, DX_PLAYTYPE_BACK, TRUE);
+			ReStartSoundFlg = true;
+		}
+	}
+
+	if (CheckSoundMem(Soundstorage::gRestartSE) == 0 && Respawn == false) {
+		ReStartSoundFlg = false;
 	}
 
 	if (Death == true) {

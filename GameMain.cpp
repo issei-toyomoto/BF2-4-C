@@ -9,6 +9,7 @@
 #include "TitleScene.h"
 #include "Stage.h"
 #include "InputKey.h"
+#include "Soundstorage.h"
 
 //#define DEBUG
 
@@ -18,6 +19,7 @@ int GameMain::WaitTime;
 
 AbstractScene* GameMain::Update()
 {
+	//ss.Update();
 	InputKey::Update();
 	player.Update(gStageState);
 	BUBBLE.Update();
