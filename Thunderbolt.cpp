@@ -8,11 +8,14 @@
 
 Thunder::Thunder()
 {
+	//画像読み込み
 	for (int i = 0; i < 2; i++) {
-		LoadDivGraph("images/Stage_ThunderEffectAnimation.png", 3, 3, 1, 32, 32, thunder[i].Img);	//画像読み込み
-		LoadDivGraph("images/Stage_CloudAnimation.png", 3, 3, 1, 128, 64, Cloud[i].Img);				//画像読み込み
+		LoadDivGraph("images/Stage_ThunderEffectAnimation.png", 3, 3, 1, 32, 32, thunder[i].Img);
+		LoadDivGraph("images/Stage_CloudAnimation.png", 3, 3, 1, 128, 64, Cloud[i].Img);
 	}
+	LoadDivGraph("images/Stage_ThunderAnimation.png", 6, 6, 1, 64, 64, OutThunderImg);
 	
+	//雷の配列の初期化
 	for (int i = 0; i < 2; i++) {
 		thunder[i].AnimCnt = 0;
 		thunder[i].X = 0;
@@ -22,6 +25,7 @@ Thunder::Thunder()
 		thunder[i].StateFlg = Thunder_Hide;
 	}
 
+	//雲の配列の初期化
 	for (int i = 0; i < 2; i++) {
 		Cloud[i].AnimCnt = 0;
 		Cloud[i].C_NowImg = Cloud[i].Img[0];
@@ -32,6 +36,9 @@ Thunder::Thunder()
 		Cloud[i].WaitTime = 0;
 		Cloud[i].StopAnimCnt = 0;
 	}
+
+	OTAnimCnt = 0;
+	OTFlg = false;
 
 	ThunderNum = 1;
 
@@ -53,9 +60,13 @@ void Thunder::Update(int i, int Stage)
 		Cloud[i].WaitTimeCnt++;
 	}
 
+	if (OTFlg == true) {
+		OTAnimCnt++;
+	}
+
 	CloudPosition();
 
-	if (thunder[i].StateFlg == Thunder_Display) {
+	if (thunder[i].StateFlg == Thunder_Display) {//雷が表示されているなら雷の移動処理を行う
 		thunder[i].X += thunder[i].VX;//雷のX座標
 		thunder[i].Y += thunder[i].VY;//雷のY座標
 	}
@@ -80,10 +91,16 @@ void Thunder::Update(int i, int Stage)
 			Cloud[i].WaitTime = 8 * 60;//二回目以降の点滅タイム
 			Cloud[i].StopAnimCnt = 0;
 			Cloud[i].C_NowImg = Cloud[0].Img[0];
+			OTFlg = true;
 		}
 		else {
 			CloudAnim(i);
 		}
+	}
+
+	if (OTAnimCnt >= 9) {
+		OTAnimCnt = 0;
+		OTFlg = false;
 	}
 }
 
@@ -92,6 +109,9 @@ void Thunder::Draw(int i) const
 	DrawCloud();
 	if (thunder[i].StateFlg == 1) {
 		DrawThunder();
+	}
+	if (OTFlg == true) {
+		DrawGraph(10, 10, Now_OutThunderImg, TRUE);
 	}
 
 #ifdef DEBUG
@@ -246,6 +266,29 @@ void Thunder::CloudAnim(int i)
 	}
 	else if (Cloud[i].AnimCnt >= 6 && Cloud[i].AnimCnt <= 8) {
 		Cloud[i].C_NowImg = Cloud[i].Img[2];
+	}
+}
+
+//雷が出るときのアニメーション
+void Thunder::OutThunderAnim(int i) 
+{
+	if (OTAnimCnt >= 0 && OTAnimCnt <= 1) {
+		Now_OutThunderImg = OutThunderImg[0];
+	}
+	else if (OTAnimCnt >= 2 && OTAnimCnt <= 3) {
+		Now_OutThunderImg = OutThunderImg[1];
+	}
+	else if (OTAnimCnt >= 4 && OTAnimCnt <= 5) {
+		Now_OutThunderImg = OutThunderImg[2];
+	}
+	else if (OTAnimCnt >= 6 && OTAnimCnt <= 7) {
+		Now_OutThunderImg = OutThunderImg[3];
+	}
+	else if (OTAnimCnt >= 8 && OTAnimCnt <= 9) {
+		Now_OutThunderImg = OutThunderImg[4];
+	}
+	else if (OTAnimCnt >= 6 && OTAnimCnt <= 8) {
+		Now_OutThunderImg = OutThunderImg[5];
 	}
 }
 
