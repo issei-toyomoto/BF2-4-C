@@ -10,6 +10,7 @@ private:
 	int Now_key;
 	int Old_key;*/
 	InputKey inputkey;
+
 	int gTitleFontImg;
 	int gTitleModeImg;
 	int gTitleCreditImg;

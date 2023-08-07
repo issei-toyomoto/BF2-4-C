@@ -4,6 +4,7 @@
 #include "GameMain.h"
 #include "Common.h"
 #include "TitleScene.h"
+#include "InputKey.h"
 //#include "UI.h"
 
 #define _SCREEN_COLOR_BIT_16_ 16
@@ -46,7 +47,7 @@ int WINAPI WinMain(_In_ HINSTANCE ih, _In_opt_ HINSTANCE ioh, _In_ LPSTR il, _In
 #ifdef DEBUG
 		fps.Draw();		//FPS描画
 #endif // DEBUG
-		ScreenFlip();	
+		ScreenFlip();
 	}
 
 	// DXライブラリの終了処理

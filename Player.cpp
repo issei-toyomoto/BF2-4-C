@@ -4,7 +4,7 @@
 #include "Common.h"
 #include "Fish.h"
 
-#define DEBUG
+//#define DEBUG
 
 float Player::PlayerX;
 float Player::PlayerY;
@@ -234,7 +234,7 @@ void Player::Draw() const /***描画***/
 	
 
 #ifdef DEBUG
-	DrawFormatString(400, 10, C_WHITE, "FPS:%d", FPSCnt);						//フレームカウント
+	DrawFormatString(400, 10, C_WHITE, "FPSCnt:%d", FPSCnt);					//フレームカウント
 	DrawFormatString(400, 30, C_WHITE, "Balloon:%d", BalloonNum);				//風船の数
 	DrawFormatString(400, 50, C_WHITE, "X:%.2f Y:%.2f", PlayerX, PlayerY);		//プレイヤー座標
 	DrawFormatString(400, 70, C_WHITE, "VX:%.2f VY:%.2f", VectorX, VectorY);	//加速度

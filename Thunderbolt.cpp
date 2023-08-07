@@ -1,664 +1,273 @@
-#include"DxLib.h"
-#include"Thunderbolt.h"
-#include"Common.h"
+#include "DxLib.h"
+#include "Thunderbolt.h"
+#include "Common.h"
+#include "InputKey.h"
+#include "Player.h"
 
 #define DEBUG
 
 Thunder::Thunder()
 {
-	LoadDivGraph("images/Stage_ThunderEffectAnimation.png", 3, 3, 1, 32, 32, gThunderImg);	//画像読み込み
-	LoadDivGraph("images/Stage_CloudAnimation.png", 3, 3, 1, 32, 32, gCloudImg);			//画像読み込み
+	for (int i = 0; i < 2; i++) {
+		LoadDivGraph("images/Stage_ThunderEffectAnimation.png", 3, 3, 1, 32, 32, thunder[i].Img);	//画像読み込み
+		LoadDivGraph("images/Stage_CloudAnimation.png", 3, 3, 1, 128, 64, Cloud[i].Img);				//画像読み込み
+	}
+	
+	for (int i = 0; i < 2; i++) {
+		thunder[i].AnimCnt = 0;
+		thunder[i].X = 0;
+		thunder[i].Y = -50;
+		thunder[i].VX = 3;
+		thunder[i].VY = 3;
+		thunder[i].StateFlg = Thunder_Hide;
+	}
 
-	ThunderX = 100;//雷の座標
-	ThunderY = 100;
+	for (int i = 0; i < 2; i++) {
+		Cloud[i].AnimCnt = 0;
+		Cloud[i].C_NowImg = Cloud[i].Img[0];
+		Cloud[i].X = 0;
+		Cloud[i].Y = 0;
+		Cloud[i].WaitTimeFlg = GetRand(2);
+		Cloud[i].WaitTimeCnt = 1;
+		Cloud[i].WaitTime = 0;
+		Cloud[i].StopAnimCnt = 0;
+	}
 
-	VectorX = 3;
-	VectorY = 3;
-	ThunderAnimCnt = 0;
+	ThunderNum = 1;
 
+	TouchFlg = false;
+
+	InitCloud();
 }
 
-void Thunder::Update(int Stage)
+void Thunder::Update(int i, int Stage)
 {
+	InputKey::Update();
+	NowStage = Stage;//現在のステージを更新
+	StageCollision(i);
 
-	NowStage = Stage;
-	ThunderAnimCnt++;
+	thunder[i].AnimCnt++;
 
-	//StageCollision();
+	Cloud[i].AnimCnt++;
+	if (Cloud[i].WaitTime != Cloud[i].WaitTimeCnt) {
+		Cloud[i].WaitTimeCnt++;
+	}
 
-	MoveThunderX();
-	ThunderX += VectorX;
-	MoveThunderY();
-	ThunderY += VectorY;
+	CloudPosition();
 
-	ThunderAnim();//画像処理
+	if (thunder[i].StateFlg == Thunder_Display) {
+		thunder[i].X += thunder[i].VX;//雷のX座標
+		thunder[i].Y += thunder[i].VY;//雷のY座標
+	}
+	
+	ThunderAnim(i);//雷の画像処理
 
-	if (ThunderAnimCnt >= 8) {
-		ThunderAnimCnt = 0;
-	}	
+	if (thunder[i].AnimCnt >= 8) {
+		thunder[i].AnimCnt = 0;
+	}
+
+	if (Cloud[i].AnimCnt >= 8) {
+		Cloud[i].AnimCnt = 0;
+	}
+
+	if (Cloud[i].WaitTime == Cloud[i].WaitTimeCnt) {//設定した雲の点滅タイムがカウントと同じなら
+		Cloud[i].StopAnimCnt++;
+		thunder[i].StateFlg = Thunder_Display;
+		thunder[i].X = Cloud[i].X;
+		thunder[i].Y = Cloud[i].Y;
+		if (Cloud[i].StopAnimCnt >= 1.5 * 60) {
+			Cloud[i].WaitTimeCnt = 0;
+			Cloud[i].WaitTime = 8 * 60;//二回目以降の点滅タイム
+			Cloud[i].StopAnimCnt = 0;
+			Cloud[i].C_NowImg = Cloud[0].Img[0];
+		}
+		else {
+			CloudAnim(i);
+		}
+	}
 }
 
-void Thunder::Draw() const 
+void Thunder::Draw(int i) const 
 {
-	DrawGraph(ThunderX, ThunderY, NowImg, TRUE);
+	DrawCloud();
+	if (thunder[i].StateFlg == 1) {
+		DrawThunder();
+	}
 
 #ifdef DEBUG
-	DrawBox(ThunderX, ThunderY, ThunderX + 32, ThunderY + 32, C_RED, FALSE);
-	DrawBox(ThunderX+4, ThunderY+4, ThunderX + 28, ThunderY + 28, C_GREEN, FALSE);
-	
+	DrawBox(thunder[0].X, thunder[0].Y, thunder[0].X + 32, thunder[0].Y + 32, C_RED, FALSE);
+	DrawBox(thunder[1].X, thunder[1].Y, thunder[1].X + 32, thunder[1].Y + 32, C_RED, FALSE);
+	DrawBox(thunder[0].X + 4, thunder[0].Y + 4, thunder[0].X + 28, thunder[0].Y + 28, C_GREEN, FALSE);
+	DrawBox(thunder[1].X + 4, thunder[1].Y + 4, thunder[1].X + 28, thunder[1].Y + 28, C_GREEN, FALSE);
+
+	SetFontSize(16);
+	DrawFormatString(300, 30, C_WHITE, "X:%d Y:%d", thunder[0].X, thunder[0].Y);
+	DrawFormatString(300, 50, C_WHITE, "VX:%d VY:%d", thunder[0].VX, thunder[0].VY);
+	DrawFormatString(300, 70, C_WHITE, "AminCnt:%d", thunder[0].AnimCnt);
+	DrawFormatString(300, 90, C_WHITE, "Flg:%d(0:表示なし 1:表示 2:プレイヤー接触)",thunder[0].StateFlg);
+	DrawFormatString(300, 110, C_WHITE, "TouchFlg:%d", TouchFlg);
+
+	DrawFormatString(300, 150, C_WHITE, "X:%d Y:%d", Cloud[0].X, Cloud[0].Y);
+	DrawFormatString(300, 170, C_WHITE, "WaitTime:%d", Cloud[0].WaitTime);
+	DrawFormatString(300, 190, C_WHITE, "WaitTimeCnt:%d", Cloud[0].WaitTimeCnt);
+	DrawFormatString(300, 210, C_WHITE, "StopAnimCnt:%d", Cloud[0].StopAnimCnt);
 #endif // DEBUG
 
 }
 
-void Thunder::MoveThunderX()
+void Thunder::DrawCloud() const
 {
-	if (ThunderX <= 0) {
-		VectorX *= -1;
-	}
-	else if (ThunderX >= _SCREEN_WIDHT_) {
-		VectorX *= -1;
+	if (NowStage == 1) {
+		DrawGraph(Cloud[0].X, Cloud[0].Y, Cloud[0].C_NowImg, TRUE);
 	}
 }
 
-void Thunder::MoveThunderY()
+void Thunder::DrawThunder() const 
 {
-	if (ThunderY <= 0) {
-		VectorY *= -1;
+	if (ThunderNum == 1) {
+		DrawGraph(thunder[0].X, thunder[0].Y, thunder[0].T_NowImg, TRUE);
 	}
-	else if (ThunderY >= _SCREEN_HEIGHT_) {
-		VectorY *= -1;
+	else if(ThunderNum == 2){
+		DrawGraph(thunder[0].X, thunder[0].Y, thunder[0].T_NowImg, TRUE);
+		DrawGraph(thunder[1].X, thunder[1].Y, thunder[1].T_NowImg, TRUE);
 	}
+	
+	
 }
 
-void Thunder::StageCollision() 
+//ステージとの当たり判定
+void Thunder::StageCollision(int i)
 {
 	//雷の矩形
 	int TXU_Left, TYU_Left;//左上
 	int TXL_Right, TYL_Right;//右下
-	TXU_Left = ThunderX;//左上X
-	TYU_Left = ThunderX;//左上Y
-	TXL_Right = ThunderX;//右下X
-	TYL_Right = ThunderX;//右下Y
+	TXU_Left = thunder[i].X + 4;//左上X
+	TYU_Left = thunder[i].Y + 4;//左上Y
+	TXL_Right = thunder[i].X + 28;//右下X
+	TYL_Right = thunder[i].Y + 28;//右下Y
 
+	//プレイヤーの矩形
+	int PXU_Left, PYU_Left;//左上
+	int PXL_Right, PYL_Right;//右下
+	PXU_Left = (int)Player::PlayerX + 18;//左上X
+	PYU_Left = (int)Player::PlayerY + 14;//左上Y
+	PXL_Right = (int)Player::PlayerX + 40;//右下X
+	PYL_Right = (int)Player::PlayerY + 64;//右下Y
+
+	//*****プレイヤーとの当たり判定*****//(未完成)
+	if (thunder[i].StateFlg == Thunder_Display) {
+		if (TXU_Left <= PXL_Right && TXL_Right >= PXU_Left) {
+			if (TYU_Left >= PXL_Right && TYL_Right <= PXU_Left) {
+				TouchFlg = true;
+				thunder[i].StateFlg = Thuner_Touch;
+			}
+		}
+	}
+	//***********************************//
 	if (NowStage == 1) {//***************　１ステージ　***************//
-		/*******************************************************************************************************************************/
-				//側面の当たり判定//
-		/*******************************************************************************************************************************/
-		
-		if (TXU_Left <= S_Ground_Left_XL && TYL_Right >= S_Ground_Left_YU + PlusPx) {//左下の台（側面）
-			VectorX *= -COR;
+		//左下の台
+		if (TXU_Left <= S_Ground_Left_XL && TYL_Right >= S_Ground_Left_YU + PlusPx) {//側面
+			thunder[i].VX *= -Inversion;
+		}
+		if (TYL_Right >= S_Ground_Left_YU && TYL_Right <= S_Ground_Left_YU + PlusPx && TXU_Left <= S_Ground_Left_XL) {//上辺
+			thunder[i].VY *= -Inversion;
 		}
 
-		if (TXL_Right >= S_Ground_Right_XU && TYL_Right >= S_Ground_Right_YU + PlusPx) {//右下の台（側面）
-			VectorX *= -COR;
+		//右下の台
+		if (TXL_Right >= S_Ground_Right_XU && TYL_Right >= S_Ground_Right_YU + PlusPx) {//側面
+			thunder[i].VX *= -Inversion;
+		}
+		if (TYL_Right >= S_Ground_Right_YU && TYL_Right <= S_Ground_Right_YU + PlusPx && TXL_Right >= S_Ground_Right_XU) {//上辺
+			thunder[i].VY *= -Inversion;
 		}
 
-		if (TYL_Right >= S_Sky_Ground_0_YU + PlusPx && TYU_Left <= S_Sky_Ground_0_YL - PlusPx) {//上の台（側面）
-			if (TXU_Left <= S_Sky_Ground_0_XL + PlusPx && TXL_Right >= S_Sky_Ground_0_XL) {//上の台の右
-				VectorX *= -COR;
+		//中央の台
+		if (TYL_Right >= S_Sky_Ground_0_YU + PlusPx && TYU_Left <= S_Sky_Ground_0_YL - PlusPx) {//側面
+			if (TXU_Left <= S_Sky_Ground_0_XL + PlusPx && TXL_Right >= S_Sky_Ground_0_XL) {//右
+				thunder[i].VX *= -Inversion;
 			}
-			else if (TXL_Right >= S_Sky_Ground_0_XU - PlusPx && TXL_Right <= S_Sky_Ground_0_XU) {//上の台の左
-				VectorX *= -COR;
+			else if (TXL_Right >= S_Sky_Ground_0_XU - PlusPx && TXL_Right <= S_Sky_Ground_0_XU) {//左
+				thunder[i].VX *= -Inversion;
 			}
 		}
-		/*******************************************************************************************************************************/
-				//下辺の当たり判定//
-		/*******************************************************************************************************************************/
+		if (TYL_Right >= S_Sky_Ground_0_YU && TYL_Right <= S_Sky_Ground_0_YU + PlusPx && TXU_Left <= S_Sky_Ground_0_XL && TXL_Right >= S_Sky_Ground_0_XU) {//上辺
+			thunder[i].VY *= -Inversion;
+		}
 		if (TYU_Left <= S_Sky_Ground_0_YL - PlusPx && TYL_Right >= S_Sky_Ground_0_YL) {//上の台（下辺）
 			if (TXU_Left <= S_Sky_Ground_0_XL && TXL_Right >= S_Sky_Ground_0_XU) {
-				VectorY *= -COR;
+				thunder[i].VY *= -Inversion;
 			}
 		}
 
-		if (TYU_Left <= 0) {//画面上の当たり判定
-			VectorY *= -COR;
+		//画面上
+		if (TYU_Left <= 0) {
+			thunder[i].VY *= -Inversion;
 		}
-		
 
-		if (TYU_Left > Sea_Level) {//海面
+		//画面下
+		if (TYL_Right >= _SCREEN_HEIGHT_ + 50) {
+			thunder[i].StateFlg = Thunder_Hide;
+		}
 
+		//画面右
+		if (TXL_Right >= _SCREEN_WIDHT_) {
+			thunder[i].VX *= -Inversion;
 		}
-		/*******************************************************************************************************************************/
-				//上辺の当たり判定//
-		/*******************************************************************************************************************************/
-		if (TYL_Right >= S_Ground_Left_YU && TYL_Right <= S_Ground_Left_YU + PlusPx && TXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
-			VectorY *= -COR;
-		}
-		else if (TYL_Right >= S_Ground_Right_YU && TYL_Right <= S_Ground_Right_YU + PlusPx && TXL_Right >= S_Ground_Right_XU) {//右下の台（上辺）
-			VectorY *= -COR;
-		}
-		else if (TYL_Right >= S_Sky_Ground_0_YU && TYL_Right <= S_Sky_Ground_0_YU + PlusPx && TXU_Left <= S_Sky_Ground_0_XL && TXL_Right >= S_Sky_Ground_0_XU) {//浮いている中央の台（上辺）
-			VectorY *= -COR;
+
+		//画面左
+		if (TXU_Left <= 0) {
+			thunder[i].VX *= -Inversion;
 		}
 	}
-	else if (NowStage == 2) {//***************　２ステージ　***************//
-		/*******************************************************************************************************************************/
-				//側面の当たり判定//
-		/*******************************************************************************************************************************/
-		if (TXU_Left <= S_Ground_Left_XL && TYL_Right >= S_Ground_Left_YU + PlusPx) {//左下の台（側面）
-			VectorX *= -COR;
-		}
-
-		if (TXL_Right >= S_Ground_Right_XU && TYL_Right >= S_Ground_Right_YU + PlusPx) {//右下の台（側面）
-			VectorX *= -COR;
-		}
-
-		if (TYL_Right >= S_Sky_Ground_0_YU + PlusPx && TYU_Left <= S_Sky_Ground_0_YL - PlusPx) {//上の台（側面）
-			if (TXU_Left <= S_Sky_Ground_0_XL + PlusPx && TXL_Right >= S_Sky_Ground_0_XL) {//上の台の右
-				VectorX *= -COR;
-			}
-			else if (TXL_Right >= S_Sky_Ground_0_XU - PlusPx && TXL_Right <= S_Sky_Ground_0_XU) {//上の台の左
-				VectorX *= -COR;
-			}
-		}
-
-		if (TYL_Right >= S2_Sky_Ground_0_YU + PlusPx && TYU_Left <= S2_Sky_Ground_0_YL - PlusPx) {//左上の台（側面）
-			if (TXU_Left <= S2_Sky_Ground_0_XL + PlusPx && TXL_Right >= S2_Sky_Ground_0_XL) {//左上の台の右
-				VectorX *= -COR;
-			}
-			else if (TXL_Right >= S2_Sky_Ground_0_XU - PlusPx && TXL_Right <= S2_Sky_Ground_0_XU) {//左上の台の左
-				VectorX *= -COR;
-			}
-		}
-
-		if (TYL_Right >= S2_Sky_Ground_1_YU + PlusPx && TYU_Left <= S2_Sky_Ground_1_YL - PlusPx) {//右上の台（側面）
-			if (TXU_Left <= S2_Sky_Ground_1_XL + PlusPx && TXL_Right >= S2_Sky_Ground_1_XL) {//右上の台の右
-				VectorX *= -COR;
-			}
-			else if (TXL_Right >= S2_Sky_Ground_1_XU - PlusPx && TXL_Right <= S2_Sky_Ground_1_XU) {//右上の台の左
-				VectorX *= -COR;
-			}
-		}
-		/*******************************************************************************************************************************/
-				//下辺の当たり判定//
-		/*******************************************************************************************************************************/
-		if (TYU_Left <= S_Sky_Ground_0_YL - PlusPx && TYL_Right >= S_Sky_Ground_0_YL) {//上の台（下辺）
-			if (TXU_Left <= S_Sky_Ground_0_XL && TXL_Right >= S_Sky_Ground_0_XU) {
-				VectorY *= -COR;
-			}
-		}
-
-		if (TYU_Left <= S2_Sky_Ground_0_YL - PlusPx && TYL_Right >= S2_Sky_Ground_0_YL) {//左上の台（下辺）
-			if (TXU_Left <= S2_Sky_Ground_0_XL && TXL_Right >= S2_Sky_Ground_0_XU) {
-				VectorY *= -COR;
-			}
-		}
-
-		if (TYU_Left <= S2_Sky_Ground_1_YL - PlusPx && TYL_Right >= S2_Sky_Ground_1_YL) {//右上の台（下辺）
-			if (TXU_Left <= S2_Sky_Ground_1_XL && TXL_Right >= S2_Sky_Ground_1_XU) {
-				VectorY *= -COR;
-			}
-		}
-
-		if (TYU_Left <= 0) {//画面上の当たり判定
-			VectorY *= -COR;
-		}
-
-		if (TYU_Left > Sea_Level) {//海面
-
-		}
-		
-		/*******************************************************************************************************************************/
-				//上辺の当たり判定//
-		/*******************************************************************************************************************************/
-		if (TYL_Right >= S_Ground_Left_YU && TYL_Right <= S_Ground_Left_YU + PlusPx && TXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
-			VectorY *= -COR;
-		}
-		else if (TYL_Right >= S_Ground_Right_YU && TYL_Right <= S_Ground_Right_YU + PlusPx && TXL_Right >= S_Ground_Right_XU) {//右下の台（上辺）
-			VectorY *= -COR;
-		}
-		else if (TYL_Right >= S_Sky_Ground_0_YU && TYL_Right <= S_Sky_Ground_0_YU + PlusPx && TXU_Left <= S_Sky_Ground_0_XL && TXL_Right >= S_Sky_Ground_0_XU) {//浮いている中央の台（上辺）
-			VectorY *= -COR;
-		}
-		else if (TYL_Right >= S2_Sky_Ground_0_YU && TYL_Right <= S2_Sky_Ground_0_YU + PlusPx && TXU_Left <= S2_Sky_Ground_0_XL && TXL_Right >= S2_Sky_Ground_0_XU) {//浮いている左上の台（上辺）
-			VectorY *= -COR;
-		}
-		else if (TYL_Right >= S2_Sky_Ground_1_YU && TYL_Right <= S2_Sky_Ground_1_YU + PlusPx && TXU_Left <= S2_Sky_Ground_1_XL && TXL_Right >= S2_Sky_Ground_1_XU) {//浮いている左上の台（上辺）
-			VectorY *= -COR;
-		}
-	}
-	else if (NowStage == 3) {//***************　３ステージ　***************//
-		/*******************************************************************************************************************************/
-				//側面の当たり判定//
-		/*******************************************************************************************************************************/
-		if (TXU_Left <= S_Ground_Left_XL && TYL_Right >= S_Ground_Left_YU + PlusPx) {//左下の台（側面）
-			VectorX *= -COR;
-		}
-
-		if (TXL_Right >= S_Ground_Right_XU && TYL_Right >= S_Ground_Right_YU + PlusPx) {//右下の台（側面）
-			VectorX *= -COR;
-		}
-
-		if (TYL_Right >= S3_Sky_SGround_0_YU + PlusPx && TYU_Left <= S3_Sky_SGround_0_YL - PlusPx) {//左鍾乳石（地面）
-			if (TXU_Left <= S3_Sky_SGround_0_XL + PlusPx && TXL_Right >= S3_Sky_SGround_0_XL) {//左鍾乳石の右
-				VectorX *= -COR;
-			}
-			else if (TXL_Right >= S3_Sky_SGround_0_XU - PlusPx && TXL_Right <= S3_Sky_SGround_0_XU) {//左鍾乳石の左
-				VectorX *= -COR;
-			}
-		}
-
-		if (TYL_Right >= S3_Sky_SStone_0_YU + PlusPx && TYU_Left <= S3_Sky_SStone_0_YL - PlusPx) {//左鍾乳石（石）
-			if (TXU_Left <= S3_Sky_SStone_0_XL + PlusPx && TXL_Right >= S3_Sky_SStone_0_XL) {//左鍾乳石の右
-				VectorX *= -COR;
-			}
-			else if (TXL_Right >= S3_Sky_SStone_0_XU - PlusPx && TXL_Right <= S3_Sky_SStone_0_XU) {//左鍾乳石の左
-				VectorX *= -COR;
-			}
-		}
-
-		if (TYL_Right >= S3_Sky_SGround_1_YU + PlusPx && TYU_Left <= S3_Sky_SGround_1_YL - PlusPx) {//中央鍾乳石（地面）
-			if (TXU_Left <= S3_Sky_SGround_1_XL + PlusPx && TXL_Right >= S3_Sky_SGround_1_XL) {//中央鍾乳石の右
-				VectorX *= -COR;
-			}
-			else if (TXL_Right >= S3_Sky_SGround_1_XU - PlusPx && TXL_Right <= S3_Sky_SGround_1_XU) {//中央鍾乳石の左
-				VectorX *= -COR;
-			}
-		}
-
-		if (TYL_Right >= S3_Sky_SStone_1_YU + PlusPx && TYU_Left <= S3_Sky_SStone_1_YL - PlusPx) {//中央鍾乳石（石）
-			if (TXU_Left <= S3_Sky_SStone_1_XL + PlusPx && TXL_Right >= S3_Sky_SStone_1_XL) {//中央鍾乳石の右
-				VectorX *= -COR;
-			}
-			else if (TXL_Right >= S3_Sky_SStone_1_XU - PlusPx && TXL_Right <= S3_Sky_SStone_1_XU) {//中央鍾乳石の左
-				VectorX *= -COR;
-			}
-		}
-
-		if (TYL_Right >= S3_Sky_SGround_2_YU + PlusPx && TYU_Left <= S3_Sky_SGround_2_YL - PlusPx) {//右鍾乳石（地面）
-			if (TXU_Left <= S3_Sky_SGround_2_XL + PlusPx && TXL_Right >= S3_Sky_SGround_2_XL) {//右鍾乳石の右
-				VectorX *= -COR;
-			}
-			else if (TXL_Right >= S3_Sky_SGround_2_XU - PlusPx && TXL_Right <= S3_Sky_SGround_2_XU) {//右鍾乳石の左
-				VectorX *= -COR;
-			}
-		}
-
-		if (TYL_Right >= S3_Sky_SStone_2_YU + PlusPx && TYU_Left <= S3_Sky_SStone_2_YL - PlusPx) {//右鍾乳石（石）
-			if (TXU_Left <= S3_Sky_SStone_2_XL + PlusPx && TXL_Right >= S3_Sky_SStone_2_XL) {//右鍾乳石の右
-				VectorX *= -COR;
-			}
-			else if (TXL_Right >= S3_Sky_SStone_2_XU - PlusPx && TXL_Right <= S3_Sky_SStone_2_XU) {//右鍾乳石の左
-				VectorX *= -COR;
-			}
-		}
-
-		if (TYL_Right >= S3_Sky_Ground_0_YU + PlusPx && TYU_Left <= S3_Sky_Ground_0_YL - PlusPx) {//上空中床
-			if (TXU_Left <= S3_Sky_Ground_0_XL + PlusPx && TXL_Right >= S3_Sky_Ground_0_XL) {//上空中床の右
-				VectorX *= -COR;
-			}
-			else if (TXL_Right >= S3_Sky_Ground_0_XU - PlusPx && TXL_Right <= S3_Sky_Ground_0_XU) {//上空中床の左
-				VectorX *= -COR;
-			}
-		}
-
-		if (TYL_Right >= S3_Sky_Ground_1_YU + PlusPx && TYU_Left <= S3_Sky_Ground_1_YL - PlusPx) {//下空中床
-			if (TXU_Left <= S3_Sky_Ground_1_XL + PlusPx && TXL_Right >= S3_Sky_Ground_1_XL) {//下空中床の右
-				VectorX *= -COR;
-			}
-			else if (TXL_Right >= S3_Sky_Ground_1_XU - PlusPx && TXL_Right <= S3_Sky_Ground_1_XU) {//下空中床の左
-				VectorX *= -COR;
-			}
-		}
-		/*******************************************************************************************************************************/
-				//下辺の当たり判定//
-		/*******************************************************************************************************************************/
-		if (TYU_Left <= S3_Sky_SGround_0_YL - PlusPx && TYL_Right >= S3_Sky_SGround_0_YL) {//左鍾乳石（地面）（下辺）
-			if (TXU_Left <= S3_Sky_SGround_0_XL && TXL_Right >= S3_Sky_SGround_0_XU) {
-				VectorY *= -COR;
-			}
-		}
-
-		if (TYU_Left <= S3_Sky_SStone_0_YL - PlusPx && TYL_Right >= S3_Sky_SStone_0_YL) {//左鍾乳石（石）（下辺）
-			if (TXU_Left <= S3_Sky_SStone_0_XL && TXL_Right >= S3_Sky_SStone_0_XU) {
-				VectorY *= -COR;
-			}
-		}
-
-		if (TYU_Left <= S3_Sky_SGround_1_YL - PlusPx && TYL_Right >= S3_Sky_SGround_1_YL) {//中央鍾乳石（地面）（下辺）
-			if (TXU_Left <= S3_Sky_SGround_1_XL && TXL_Right >= S3_Sky_SGround_1_XU) {
-				VectorY *= -COR;
-			}
-		}
-
-		if (TYU_Left <= S3_Sky_SStone_1_YL - PlusPx && TYL_Right >= S3_Sky_SStone_1_YL) {//中央鍾乳石（石）（下辺）
-			if (TXU_Left <= S3_Sky_SStone_1_XL && TXL_Right >= S3_Sky_SStone_1_XU) {
-				VectorY *= -COR;
-			}
-		}
-
-		if (TYU_Left <= S3_Sky_SGround_2_YL - PlusPx && TYL_Right >= S3_Sky_SGround_2_YL) {//左鍾乳石（地面）（下辺）
-			if (TXU_Left <= S3_Sky_SGround_2_XL && TXL_Right >= S3_Sky_SGround_2_XU) {
-				VectorY *= -COR;
-			}
-		}
-
-		if (TYU_Left <= S3_Sky_SStone_2_YL - PlusPx && TYL_Right >= S3_Sky_SStone_2_YL) {//左鍾乳石（石）（下辺）
-			if (TXU_Left <= S3_Sky_SStone_2_XL && TXL_Right >= S3_Sky_SStone_2_XU) {
-				VectorY *= -COR;
-			}
-		}
-
-		if (TYU_Left <= S3_Sky_Ground_0_YL - PlusPx && TYL_Right >= S3_Sky_Ground_0_YL) {//上空中床（下辺）
-			if (TXU_Left <= S3_Sky_Ground_0_XL && TXL_Right >= S3_Sky_Ground_0_XU) {
-				VectorY *= -COR;
-			}
-		}
-
-		if (TYU_Left <= S3_Sky_Ground_1_YL - PlusPx && TYL_Right >= S3_Sky_Ground_1_YL) {//下空中床（下辺）
-			if (TXU_Left <= S3_Sky_Ground_1_XL && TXL_Right >= S3_Sky_Ground_1_XU) {
-				VectorY *= -COR;
-			}
-		}
-
-		if (TYU_Left <= 0) {//画面上の当たり判定
-			VectorY *= -COR;
-		}
-
-		if (TYU_Left > Sea_Level) {//海面
-
-		}
-		/*******************************************************************************************************************************/
-				//上辺の当たり判定//
-		/*******************************************************************************************************************************/
-
-		if (TYL_Right >= S_Ground_Left_YU && TYL_Right <= S_Ground_Left_YU + PlusPx && TXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
-			VectorY *= -COR;
-		}
-		else if (TYL_Right >= S_Ground_Right_YU && TYL_Right <= S_Ground_Right_YU + PlusPx && TXL_Right >= S_Ground_Right_XU) {//右下の台（上辺）
-			VectorY *= -COR;
-		}
-		else if (TYL_Right >= S3_Sky_SGround_0_YU && TYL_Right <= S3_Sky_SGround_0_YU + PlusPx && TXU_Left <= S3_Sky_SGround_0_XL && TXL_Right >= S3_Sky_SGround_0_XU) {//左鍾乳石（上辺）
-			VectorY *= -COR;
-		}
-		else if (TYL_Right >= S3_Sky_SGround_1_YU && TYL_Right <= S3_Sky_SGround_1_YU + PlusPx && TXU_Left <= S3_Sky_SGround_1_XL && TXL_Right >= S3_Sky_SGround_1_XU) {//中央鍾乳石（上辺）
-			VectorY *= -COR;
-		}
-		else if (TYL_Right >= S3_Sky_SGround_2_YU && TYL_Right <= S3_Sky_SGround_2_YU + PlusPx && TXU_Left <= S3_Sky_SGround_2_XL && TXL_Right >= S3_Sky_SGround_2_XU) {//右鍾乳石（上辺）
-			VectorY *= -COR;
-		}
-		else if (TYL_Right >= S3_Sky_Ground_0_YU && TYL_Right <= S3_Sky_Ground_0_YU + PlusPx && TXU_Left <= S3_Sky_Ground_0_XL && TXL_Right >= S3_Sky_Ground_0_XU) {//上空中床（上辺）
-			VectorY *= -COR;
-		}
-		else if (TYL_Right >= S3_Sky_Ground_1_YU && TYL_Right <= S3_Sky_Ground_1_YU + PlusPx && TXU_Left <= S3_Sky_Ground_1_XL && TXL_Right >= S3_Sky_Ground_1_XU) {//下空中床（上辺）
-			VectorY *= -COR;
-		}
-
-	}
-	else if (NowStage == 4) {//***************　４ステージ　***************//
-		/*******************************************************************************************************************************/
-				//側面の当たり判定//
-		/*******************************************************************************************************************************/
-		if (TXU_Left <= S_Ground_Left_XL && TYL_Right >= S_Ground_Left_YU + PlusPx) {//左下の台（側面）
-			VectorX *= -COR;
-		}
-
-		if (TXL_Right >= S_Ground_Right_XU && TYL_Right >= S_Ground_Right_YU + PlusPx) {//右下の台（側面）
-			VectorX *= -COR;
-		}
-	}
-
-	if (TYL_Right >= S4_Sky_Ground_0_YU + PlusPx && TYU_Left <= S4_Sky_Ground_0_YL - PlusPx) {//１番左
-		if (TXU_Left <= S4_Sky_Ground_0_XL + PlusPx && TXL_Right >= S4_Sky_Ground_0_XL) {//１番左の右
-			VectorX *= -COR;
-		}
-		else if (TXL_Right >= S4_Sky_Ground_0_XU - PlusPx && TXL_Right <= S4_Sky_Ground_0_XU) {//１番左の左
-			VectorX *= -COR;
-		}
-	}
-
-	if (TYL_Right >= S4_Sky_Ground_1_YU + PlusPx && TYU_Left <= S4_Sky_Ground_1_YL - PlusPx) {//左から２番目
-		if (TXU_Left <= S4_Sky_Ground_1_XL + PlusPx && TXL_Right >= S4_Sky_Ground_1_XL) {//左から２番目の右
-			VectorX *= -COR;
-		}
-		else if (TXL_Right >= S4_Sky_Ground_1_XU - PlusPx && TXL_Right <= S4_Sky_Ground_1_XU) {//左から２番目の左
-			VectorX *= -COR;
-		}
-	}
-
-	if (TYL_Right >= S4_Sky_Ground_2_YU + PlusPx && TYU_Left <= S4_Sky_Ground_2_YL - PlusPx) {//１番上
-		if (TXU_Left <= S4_Sky_Ground_2_XL + PlusPx && TXL_Right >= S4_Sky_Ground_2_XL) {//１番上の右
-			VectorX *= -COR;
-		}
-		else if (TXL_Right >= S4_Sky_Ground_2_XU - PlusPx && TXL_Right <= S4_Sky_Ground_2_XU) {//１番上の左
-			VectorX *= -COR;
-		}
-	}
-
-	if (TYL_Right >= S4_Sky_Ground_3_YU + PlusPx && TYU_Left <= S4_Sky_Ground_3_YL - PlusPx) {//１番下
-		if (TXU_Left <= S4_Sky_Ground_3_XL + PlusPx && TXL_Right >= S4_Sky_Ground_3_XL) {//１番下の右
-			VectorX *= -COR;
-		}
-		else if (TXL_Right >= S4_Sky_Ground_3_XU - PlusPx && TXL_Right <= S4_Sky_Ground_3_XU) {//１番下の左
-			VectorX *= -COR;
-		}
-	}
-
-	if (TYL_Right >= S4_Sky_Ground_4_YU + PlusPx && TYU_Left <= S4_Sky_Ground_4_YL - PlusPx) {//１番右
-		if (TXU_Left <= S4_Sky_Ground_4_XL + PlusPx && TXL_Right >= S4_Sky_Ground_4_XL) {//１番右の右
-			VectorX *= -COR;
-		}
-		else if (TXL_Right >= S4_Sky_Ground_4_XU - PlusPx && TXL_Right <= S4_Sky_Ground_4_XU) {//１番右の左
-			VectorX *= -COR;
-		}
-	}
-	/*******************************************************************************************************************************/
-			//下辺の当たり判定//
-	/*******************************************************************************************************************************/
-	if (TYU_Left <= S4_Sky_Ground_0_YL - PlusPx && TYL_Right >= S4_Sky_Ground_0_YL) {//１番左
-		if (TXU_Left <= S4_Sky_Ground_0_XL && TXL_Right >= S4_Sky_Ground_0_XU) {
-			VectorY *= -COR;
-		}
-	}
-
-	if (TYU_Left <= S4_Sky_Ground_1_YL - PlusPx && TYL_Right >= S4_Sky_Ground_1_YL) {//左から２番目
-		if (TXU_Left <= S4_Sky_Ground_1_XL && TXL_Right >= S4_Sky_Ground_1_XU) {
-			VectorY *= -COR;
-		}
-	}
-
-	if (TYU_Left <= S4_Sky_Ground_2_YL - PlusPx && TYL_Right >= S4_Sky_Ground_2_YL) {//１番上
-		if (TXU_Left <= S4_Sky_Ground_2_XL && TXL_Right >= S4_Sky_Ground_2_XU) {
-			VectorY *= -COR;
-		}
-	}
-
-	if (TYU_Left <= S4_Sky_Ground_3_YL - PlusPx && TYL_Right >= S4_Sky_Ground_3_YL) {//１番下
-		if (TXU_Left <= S4_Sky_Ground_3_XL && TXL_Right >= S4_Sky_Ground_3_XU) {
-			VectorY *= -COR;
-		}
-	}
-
-	if (TYU_Left <= S4_Sky_Ground_4_YL - PlusPx && TYL_Right >= S4_Sky_Ground_4_YL) {//１番右
-		if (TXU_Left <= S4_Sky_Ground_4_XL && TXL_Right >= S4_Sky_Ground_4_XU) {
-			VectorY *= -COR;
-		}
-	}
-
-	if (TYU_Left <= 0) {//画面上の当たり判定
-		VectorY *= -COR;
-	}
-
-	if (TYU_Left > Sea_Level) {//海面
-
-	}
-	/*******************************************************************************************************************************/
-			//上辺の当たり判定//
-	/*******************************************************************************************************************************/
-
-	if (TYL_Right >= S_Ground_Left_YU && TYL_Right <= S_Ground_Left_YU + PlusPx && TXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
-		VectorY *= -COR;
-	}
-	else if (TYL_Right >= S_Ground_Right_YU && TYL_Right <= S_Ground_Right_YU + PlusPx && TXL_Right >= S_Ground_Right_XU) {//右下の台（上辺）
-		VectorY *= -COR;
-	}
-	else if (TYL_Right >= S4_Sky_Ground_0_YU && TYL_Right <= S4_Sky_Ground_0_YU + PlusPx && TXU_Left <= S4_Sky_Ground_0_XL && TXL_Right >= S4_Sky_Ground_0_XU) {//１番左の台
-		VectorY *= -COR;
-	}
-	else if (TYL_Right >= S4_Sky_Ground_1_YU && TYL_Right <= S4_Sky_Ground_1_YU + PlusPx && TXU_Left <= S4_Sky_Ground_1_XL && TXL_Right >= S4_Sky_Ground_1_XU) {//左から２番目の台
-		VectorY *= -COR;
-	}
-	else if (TYL_Right >= S4_Sky_Ground_2_YU && TYL_Right <= S4_Sky_Ground_2_YU + PlusPx && TXU_Left <= S4_Sky_Ground_2_XL && TXL_Right >= S4_Sky_Ground_2_XU) {//１番上の台
-		VectorY *= -COR;
-	}
-	else if (TYL_Right >= S4_Sky_Ground_3_YU && TYL_Right <= S4_Sky_Ground_3_YU + PlusPx && TXU_Left <= S4_Sky_Ground_3_XL && TXL_Right >= S4_Sky_Ground_3_XU) {//１番下の台
-		VectorY *= -COR;
-	}
-	else if (TYL_Right >= S4_Sky_Ground_4_YU && TYL_Right <= S4_Sky_Ground_4_YU + PlusPx && TXU_Left <= S4_Sky_Ground_4_XL && TXL_Right >= S4_Sky_Ground_4_XU) {//１番右の台
-		VectorY *= -COR;
-	}
-	else if (NowStage == 5) {//***************　５ステージ　***************//
-		/*******************************************************************************************************************************/
-				//側面の当たり判定//
-		/*******************************************************************************************************************************/
-		if (TXU_Left <= S_Ground_Left_XL && TYL_Right >= S_Ground_Left_YU + PlusPx) {//左下の台（側面）
-			VectorX *= -COR;
-		}
-
-		if (TXL_Right >= S_Ground_Right_XU && TYL_Right >= S_Ground_Right_YU + PlusPx) {//右下の台（側面）
-			VectorX *= -COR;
-		}	
-
-		if (TYL_Right >= S5_Sky_SGround_0_YU + PlusPx && TYU_Left <= S5_Sky_SGround_0_YL - PlusPx) {//左鍾乳石
-			if (TXU_Left <= S5_Sky_SGround_0_XL + PlusPx && TXL_Right >= S5_Sky_SGround_0_XL) {//左鍾乳石の右
-				VectorX *= -COR;
-			}
-			else if (TXL_Right >= S5_Sky_SGround_0_XU - PlusPx && TXL_Right <= S5_Sky_SGround_0_XU) {//左鍾乳石の左
-				VectorX *= -COR;
-			}
-		}
-
-		if (TYL_Right >= S5_Sky_SGround_1_YU + PlusPx && TYU_Left <= S5_Sky_SGround_1_YL - PlusPx) {//中央鍾乳石
-			if (TXU_Left <= S5_Sky_SGround_1_XL + PlusPx && TXL_Right >= S5_Sky_SGround_1_XL) {//中央鍾乳石の右
-				VectorX *= -COR;
-			}
-			else if (TXL_Right >= S5_Sky_SGround_1_XU - PlusPx && TXL_Right <= S5_Sky_SGround_1_XU) {//中央鍾乳石の左
-				VectorX *= -COR;
-			}
-		}
-
-		if (TYL_Right >= S5_Sky_SGround_2_YU + PlusPx && TYU_Left <= S5_Sky_SGround_2_YL - PlusPx) {//右鍾乳石
-			if (TXU_Left <= S5_Sky_SGround_2_XL + PlusPx && TXL_Right >= S5_Sky_SGround_2_XL) {//右鍾乳石の右
-				VectorX *= -COR;
-			}
-			else if (TXL_Right >= S5_Sky_SGround_2_XU - PlusPx && TXL_Right <= S5_Sky_SGround_2_XU) {//右鍾乳石の左
-				VectorX *= -COR;
-			}
-		}
-
-		if (TYL_Right >= S5_Sky_Ground_0_YU + PlusPx && TYU_Left <= S5_Sky_Ground_0_YL - PlusPx) {//１番上
-			if (TXU_Left <= S5_Sky_Ground_0_XL + PlusPx && TXL_Right >= S5_Sky_Ground_0_XL) {//１番上の右
-				VectorX *= -COR;
-			}
-			else if (TXL_Right >= S5_Sky_Ground_0_XU - PlusPx && TXL_Right <= S5_Sky_Ground_0_XU) {//１番上の左
-				VectorX *= -COR;
-			}
-		}
-
-		if (TYL_Right >= S5_Sky_Ground_1_YU + PlusPx && TYU_Left <= S5_Sky_Ground_1_YL - PlusPx) {//下の右
-			if (TXU_Left <= S5_Sky_Ground_1_XL + PlusPx && TXL_Right >= S5_Sky_Ground_1_XL) {//下の右の右
-				VectorX *= -COR;
-			}
-			else if (TXL_Right >= S5_Sky_Ground_1_XU - PlusPx && TXL_Right <= S5_Sky_Ground_1_XU) {//下の右の左
-				VectorX *= -COR;
-			}
-		}
-
-		if (TYL_Right >= S5_Sky_Ground_2_YU + PlusPx && TYU_Left <= S5_Sky_Ground_2_YL - PlusPx) {//下の左
-			if (TXU_Left <= S5_Sky_Ground_2_XL + PlusPx && TXL_Right >= S5_Sky_Ground_2_XL) {//下の左の右
-				VectorX *= -COR;
-			}
-			else if (TXL_Right >= S5_Sky_Ground_2_XU - PlusPx && TXL_Right <= S5_Sky_Ground_2_XU) {//下の左の左
-				VectorX *= -COR;
-			}
-		}
-		/*******************************************************************************************************************************/
-				//下辺の当たり判定//
-		/*******************************************************************************************************************************/
-		if (TYU_Left <= S5_Sky_SGround_0_YL - PlusPx && TYL_Right >= S5_Sky_SGround_0_YL) {//右鍾乳石
-			if (TXU_Left <= S5_Sky_SGround_0_XL && TXL_Right >= S5_Sky_SGround_0_XU) {
-				VectorY *= -COR;
-			}
-		}
-
-		if (TYU_Left <= S5_Sky_SGround_1_YL - PlusPx && TYL_Right >= S5_Sky_SGround_1_YL) {//中央鍾乳石
-			if (TXU_Left <= S5_Sky_SGround_1_XL && TXL_Right >= S5_Sky_SGround_1_XU) {
-				VectorY *= -COR;
-			}
-		}
-
-		if (TYU_Left <= S5_Sky_SGround_2_YL - PlusPx && TYL_Right >= S5_Sky_SGround_2_YL) {//右鍾乳石
-			if (TXU_Left <= S5_Sky_SGround_2_XL && TXL_Right >= S5_Sky_SGround_2_XU) {
-				VectorY *= -COR;
-			}
-		}
-
-		if (TYU_Left <= S5_Sky_Ground_0_YL - PlusPx && TYL_Right >= S5_Sky_Ground_0_YL) {//１番上
-			if (TXU_Left <= S5_Sky_Ground_0_XL && TXL_Right >= S5_Sky_Ground_0_XU) {
-				VectorY *= -COR;
-			}
-		}
-
-		if (TYU_Left <= S5_Sky_Ground_1_YL - PlusPx && TYL_Right >= S5_Sky_Ground_1_YL) {//下の右
-			if (TXU_Left <= S5_Sky_Ground_1_XL && TXL_Right >= S5_Sky_Ground_1_XU) {
-				VectorY *= -COR;
-			}
-		}
-
-		if (TYU_Left <= S5_Sky_Ground_2_YL - PlusPx && TYL_Right >= S5_Sky_Ground_2_YL) {//下の左
-			if (TXU_Left <= S5_Sky_Ground_2_XL && TXL_Right >= S5_Sky_Ground_2_XU) {
-				VectorY *= -COR;
-			}
-		}
-
-		if (TYU_Left <= 0) {//画面上の当たり判定
-			VectorY *= -COR;
-		}
-
-		if (TYU_Left > Sea_Level) {//海面\
-
-		}
-		/*******************************************************************************************************************************/
-				//上辺の当たり判定//
-		/*******************************************************************************************************************************/
-
-		if (TYL_Right >= S_Ground_Left_YU && TYL_Right <= S_Ground_Left_YU + PlusPx && TXU_Left <= S_Ground_Left_XL) {//左下の台（上辺）
-			VectorY *= -COR;
-		}
-		else if (TYL_Right >= S_Ground_Right_YU && TYL_Right <= S_Ground_Right_YU + PlusPx && TXL_Right >= S_Ground_Right_XU) {//右下の台（上辺）
-			VectorY *= -COR;
-		}
-		else if (TYL_Right >= S5_Sky_SGround_0_YU && TYL_Right <= S5_Sky_SGround_0_YU + PlusPx && TXU_Left <= S5_Sky_SGround_0_XL && TXL_Right >= S5_Sky_SGround_0_XU) {//左鍾乳石
-			VectorY *= -COR;
-		}
-		else if (TYL_Right >= S5_Sky_SGround_1_YU && TYL_Right <= S5_Sky_SGround_1_YU + PlusPx && TXU_Left <= S5_Sky_SGround_1_XL && TXL_Right >= S5_Sky_SGround_1_XU) {//中央鍾乳石
-			VectorY *= -COR;
-		}
-		else if (TYL_Right >= S5_Sky_SGround_2_YU && TYL_Right <= S5_Sky_SGround_2_YU + PlusPx && TXU_Left <= S5_Sky_SGround_2_XL && TXL_Right >= S5_Sky_SGround_2_XU) {//右鍾乳石
-			VectorY *= -COR;
-		}
-		else if (TYL_Right >= S5_Sky_Ground_0_YU && TYL_Right <= S5_Sky_Ground_0_YU + PlusPx && TXU_Left <= S5_Sky_Ground_0_XL && TXL_Right >= S5_Sky_Ground_0_XU) {//一番上
-			VectorY *= -COR;
-		}
-		else if (TYL_Right >= S5_Sky_Ground_1_YU && TYL_Right <= S5_Sky_Ground_1_YU + PlusPx && TXU_Left <= S5_Sky_Ground_1_XL && TXL_Right >= S5_Sky_Ground_1_XU) {//下の左
-			VectorY *= -COR;
-		}
-		else if (TYL_Right >= S5_Sky_Ground_2_YU && TYL_Right <= S5_Sky_Ground_2_YU + PlusPx && TXU_Left <= S5_Sky_Ground_2_XL && TXL_Right >= S5_Sky_Ground_2_XU) {//下の右
-			VectorY *= -COR;
-		}
-	}
-	
 }
 
-void Thunder::ThunderAnim()
+//雷のチカチカアニメーション
+void Thunder::ThunderAnim(int i)
 {
-	if (ThunderAnimCnt >= 0 && ThunderAnimCnt <= 2) {
-		NowImg = gThunderImg[0];
+	if (thunder[i].AnimCnt >= 0 && thunder[i].AnimCnt <= 2) {
+		thunder[i].T_NowImg = thunder[i].Img[0];
 	}
-	else if (ThunderAnimCnt >= 3 && ThunderAnimCnt <= 5) {
-		NowImg = gThunderImg[1];
+	else if (thunder[i].AnimCnt >= 3 && thunder[i].AnimCnt <= 5) {
+		thunder[i].T_NowImg = thunder[i].Img[1];
 	}
-	else if (ThunderAnimCnt <= 6 && ThunderAnimCnt <= 8) {
-		NowImg = gThunderImg[2];
+	else if (thunder[i].AnimCnt <= 6 && thunder[i].AnimCnt <= 8) {
+		thunder[i].T_NowImg = thunder[i].Img[2];
+	}
+}
+
+//雲のチカチカアニメーション
+void Thunder::CloudAnim(int i) 
+{
+	if (Cloud[i].AnimCnt >= 0 && Cloud[i].AnimCnt <= 2) {
+		Cloud[i].C_NowImg = Cloud[i].Img[0];
+	}
+	else if (Cloud[i].AnimCnt >= 3 && Cloud[i].AnimCnt <= 5) {
+		Cloud[i].C_NowImg = Cloud[i].Img[1];
+	}
+	else if (Cloud[i].AnimCnt >= 6 && Cloud[i].AnimCnt <= 8) {
+		Cloud[i].C_NowImg = Cloud[i].Img[2];
+	}
+}
+
+void Thunder::InitCloud() 
+{
+	for (int i = 0; i < 2; i++) {
+		if (Cloud[i].WaitTimeFlg == 0) {
+			Cloud[i].WaitTime = 25 * 60;//２５秒
+		}
+		else if (Cloud[i].WaitTimeFlg == 1) {
+			Cloud[i].WaitTime = 30 * 60;//３０秒
+		}
+		else if (Cloud[i].WaitTimeFlg == 2) {
+			Cloud[i].WaitTime = 35 * 60;//３５秒
+		}
+	}
+}
+
+void Thunder::CloudPosition() 
+{
+	if (NowStage == 1) {
+		Cloud[0].X = 380;
+		Cloud[0].Y = 90;
 	}
 }

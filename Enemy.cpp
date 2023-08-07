@@ -24,6 +24,8 @@ Enemy::Enemy()
 	HitPeFlg = 0;
 	UpCnt = 0;
 	DownCnt = 0;
+	NowStage = 0;
+	es = 0;
 
 	LoadDivGraph("image/Enemy/Enemy_P_Animation.png", 18, 6, 3, 64, 64, EnemyImg[0]);  //画像読み込み(ピンク)
 	LoadDivGraph("image/Enemy/Enemy_G_Animation.png", 18, 6, 3, 64, 64, EnemyImg[1]);  //画像読み込み(みどり)
@@ -37,9 +39,12 @@ Enemy::~Enemy()
 }
 
 // 描画以外の更新を実装する
-void Enemy::Update()
+void Enemy::Update(int nowstage)
 {
+	
 	Fcnt++;
+
+	NowStage = nowstage;
 
 	// プレイヤーの座標取得
 	Px = Player::PlayerX;
@@ -51,45 +56,64 @@ void Enemy::Update()
 	{
 		StartMove();
 	}
-	else if (StartFlg != 0)
+	else
 	{
-		for (int i = 0; i < ENEMY_MAX; i++)
+		if (enemy[es].start == 1 && StartMotion < 4)
 		{
-			if (enemy[i].life != 0)
-			{
-				enemy[i].ran = rand() % 2 + 1;
-
-				HitStage(i);
-				HitFlg = HitEnemy(i);
-				HitPeFlg = HitPlayer(i);
-				EnemyMove(i);
-
-				// 敵のX座標範囲
-				if (enemy[i].x <= 0.0f)
-				{
-					enemy[i].x = 640.0f;
-				}
-				else if (enemy[i].x > 640.0f)
-				{
-					enemy[i].x = 0.0f;
-				}
-
-				// 敵のY座標範囲
-				if (enemy[i].y < -19.0f)
-				{
-					enemy[i].y = -5.0f;
-				}
-				else if (enemy[i].y > 356.0f)
-				{
-					enemy[i].y = 356.0f;
-				}
-			}
-			else
-			{
-				EnemyDie(i);
-			}
-
+			StartMove();
 		}
+		else
+		{
+			enemy[es].start = 0;
+
+			for (int i = 0; i < ENEMY_MAX; i++)
+			{
+				if (enemy[i].life == 2)
+				{
+					enemy[i].ran = rand() % 2 + 1;
+
+					HitStage(i);
+					HitFlg = HitEnemy(i);
+					HitPeFlg = HitPlayer(i);
+					EnemyMove(i);
+
+					// 敵のX座標範囲
+					if (enemy[i].x <= 0.0f)
+					{
+						enemy[i].x = 640.0f;
+					}
+					else if (enemy[i].x > 640.0f)
+					{
+						enemy[i].x = 0.0f;
+					}
+
+					// 敵のY座標範囲
+					if (enemy[i].y < -19.0f)
+					{
+						enemy[i].y = -5.0f;
+					}
+					else if (enemy[i].y > 356.0f)
+					{
+						enemy[i].y = 356.0f;
+					}
+				}
+				else if (enemy[i].life == 1)
+				{
+					EnemyPara(i);
+
+					if (enemy[i].start == 1 && StartMotion < 4)
+					{
+						StartMove(i);
+					}
+					
+				}
+				else
+				{
+					EnemyDie(i);
+				}
+			}
+		}
+		
 	}
 	
 
@@ -118,7 +142,7 @@ void Enemy::Draw() const
 
 	for (int i = 0; i < ENEMY_MAX; i++)
 	{
-		if (enemy[i].life != 0)
+		if (enemy[i].life == 2)
 		{
 			// 敵の当たり判定表示
 			if (enemy[i].state != 3)
@@ -140,14 +164,18 @@ void Enemy::Draw() const
 					}
 					else
 					{
+						// 風船ありの敵の範囲（白）
 						DrawBox((int)EnXL[i], (int)EnYL[i], (int)EnXR[i], (int)EnYR[i], 0xffffff, FALSE);
 						// 風船抜きの敵の範囲（緑）
 						DrawBox((int)EnXL[i], (int)EnYL[i] + 20, (int)EnXR[i], (int)EnYR[i], 0x00ff00, FALSE);
-						// 風船抜きの敵の範囲の半分（緑）
+						// 風船抜きの敵の範囲の半分（青）
 						DrawBox((int)EnXL[i], (int)EnYL[i]+36, (int)EnXR[i], (int)EnYR[i], 0x0000ff, FALSE);
 					}
 				}
 			}
+		}
+		else if (enemy[i].life == 1)
+		{
 		}
 	}
 
@@ -156,7 +184,7 @@ void Enemy::Draw() const
 	for (int i = 0; i < ENEMY_MAX; i++)
 	{
 		// 敵画像の表示
-		if (enemy[i].life != 6)
+		if (enemy[i].life == 2)
 		{
 			if (StartFlg == 0)
 			{
@@ -186,6 +214,22 @@ void Enemy::Draw() const
 				{
 					DrawGraph((int)enemy[i].x - 640, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
 				}
+			}
+		}
+		else
+		{
+			// スタート以外
+			// 画面内
+			DrawGraph((int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
+
+			// 画面外
+			if (enemy[i].x < 0)
+			{
+				DrawGraph(640 + (int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
+			}
+			else if (enemy[i].x > 640 - 64)
+			{
+				DrawGraph((int)enemy[i].x - 640, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
 			}
 		}
 	}
@@ -243,7 +287,6 @@ void Enemy::EnemyMove(int i)
 	enemy[i].ground = 0;	
 }
 
-// 敵のスタート処理
 void Enemy::StartMove()
 {
 	for (int i = 0; i < ENEMY_MAX; i++)
@@ -304,6 +347,67 @@ void Enemy::StartMove()
 			EnemyDie(i);
 		}
 	}
+}
+
+// 敵のスタート処理
+void Enemy::StartMove(int i)
+{
+	if (enemy[i].life != 0)
+	{
+		HitPeFlg = HitStart(i);
+
+		if (StartMotion == 0)
+		{
+			if (Fcnt > 0 && Fcnt < 15 || Fcnt > 31 && Fcnt < 45)
+			{
+				enemy[i].flg = 0;
+			}
+			else
+			{
+				enemy[i].flg = 1;
+			}
+		}
+		else if (StartMotion == 1)
+		{
+			if (Fcnt > 0 && Fcnt < 15 || Fcnt > 31 && Fcnt < 45)
+			{
+				enemy[i].flg = 2;
+			}
+			else
+			{
+				enemy[i].flg = 3;
+			}
+		}
+		else if (StartMotion == 2)
+		{
+			if (Fcnt > 0 && Fcnt < 15 || Fcnt > 31 && Fcnt < 45)
+			{
+				enemy[i].flg = 4;
+			}
+			else
+			{
+				enemy[i].flg = 5;
+			}
+		}
+		else if (StartMotion == 3)
+		{
+			if (Fcnt > 0 && Fcnt < 15 || Fcnt > 31 && Fcnt < 45)
+			{
+				enemy[i].flg = 6;
+			}
+			else
+			{
+				enemy[i].flg = 7;
+				StartFlg = 1;
+				StartMotion = 0;
+			}
+		}
+	}
+	else
+	{
+		EnemyDie(i);
+	}
+	
 }
 
 // 敵の浮上モーション処理
@@ -437,6 +541,84 @@ void Enemy::EnemyRight(int e)
 
 }
 
+// 敵のパラシュート処理
+void Enemy::EnemyPara(int e)
+{
+	float amplitude = 0.85f;  // 揺れの振幅
+	float frequency = 0.9f;   // 揺れの周波数
+
+	if (enemy[e].para <= 1)
+	{
+		enemy[e].flg = 15;
+		enemy[e].para++;
+	}
+	else if(enemy[e].para <= 4)
+	{
+		enemy[e].flg = 16;
+		enemy[e].para++;
+	}
+	else
+	{
+		enemy[e].para = 5;
+		enemy[e].flg = 17;
+		
+		enemy[e].x += amplitude * sin(frequency * GetNowCount() / 1000.0f);
+
+		enemy[e].y += 0.3f;
+
+		/*HitPeFlg = HitPlayer(e);*/
+
+		HitStage(e);
+
+		if (enemy[e].ground == 1)
+		{
+			if (enemy[e].state != 2)
+			{
+				enemy[e].state++;
+			}
+
+			enemy[e].life = 2;
+			enemy[e].start = 1;
+		}
+	}
+}
+
+// 敵の死亡モーション処理
+void Enemy::EnemyDie(int e)
+{
+	// パタパタ手を動かすモーション
+	if (Fcnt > 0 && Fcnt < 4 || Fcnt > 9 && Fcnt < 12 || Fcnt > 17 && Fcnt < 20)
+	{
+		enemy[e].flg = 13;
+	}
+	else if (Fcnt > 25 && Fcnt < 28 || Fcnt > 33 && Fcnt < 36 || Fcnt > 41 && Fcnt < 44)
+	{
+		enemy[e].flg = 13;
+	}
+	else if (Fcnt > 49 && Fcnt < 52 || Fcnt > 57 && Fcnt < 60)
+	{
+		enemy[e].flg = 13;
+	}
+	else
+	{
+		enemy[e].flg = 14;
+	}
+
+	if (enemy[e].die <= 8)
+	{
+		enemy[e].die++;
+		enemy[e].y -= 2.8f;
+	}
+	else if (enemy[e].die <= 15)
+	{
+		enemy[e].die++;
+	}
+	else if (enemy[e].y <= 490.0f)
+	{
+		enemy[e].y += 3.0f;
+	}
+}
+
 // 敵同士の当たり判定
 int Enemy::HitEnemy(int e)
 {
@@ -485,57 +667,835 @@ int Enemy::HitEnemy(int e)
 // 敵とステージの当たり判定処理
 void Enemy::HitStage(int e)
 {
-	int EnXL[ENEMY_MAX] = { 0 }, EnYL[ENEMY_MAX] = { 0 };//左上
-	int EnXR[ENEMY_MAX] = { 0 }, EnYR[ENEMY_MAX] = { 0 };//右下
+	EnXL[e] = enemy[e].x + 10.0f;//左上X
+	EnYL[e] = enemy[e].y + 12.0f;//左上Y
+	EnXR[e] = EnXL[e] + 45.0f;//右下X
+	EnYR[e] = EnYL[e] + 53.0f;//右下Y
 
-	
-	EnXL[e] = (int)enemy[e].x + 10;
-	EnYL[e] = (int)enemy[e].y + 12;
-	EnXR[e] = EnXL[e] + 50;
-	EnYR[e] = EnYL[e] + 60;
-	
+	if (NowStage == 1) {//***************　１ステージ　***************//
+/*******************************************************************************************************************************/
+		//側面の当たり判定//
+/*******************************************************************************************************************************/
+		if (enemy[e].ground == 0) {
+			if (EnXL[e] <= S_Ground_Left_XL && EnYR[e] >= S_Ground_Left_YU + PlusPx) {//左下の台（側面）
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
 
-	if (EnXL[e] <= S_Ground_Left_XL && EnYR[e] >= S_Ground_Left_YU)
-	{//左下の台（側面）
-		enemy[e].ground = 1;
-		enemy[e].y -= 0.8f;//反発係数？
-	}
-	else if (EnXR[e] >= S_Ground_Right_XU && EnYR[e] >= S_Ground_Right_YU) 
-	{//右下の台（側面）
-		enemy[e].ground = 1;
-		enemy[e].y -= 0.8f;
-	}
-	else if (EnXR[e] >= S_Sky_Ground_0_XU && EnXR[e] <= S_Sky_Ground_0_XU && EnYR[e] >= S_Sky_Ground_0_YU  && EnYL[e] <= S_Sky_Ground_0_YL) 
-	{//上の台の左（側面）
-		enemy[e].ground = 1;
-		enemy[e].y -= 0.8f;
-	}
-	else if (EnXL[e] >= S_Sky_Ground_0_XL && EnXL[e] <= S_Sky_Ground_0_XL && EnYR[e] >= S_Sky_Ground_0_YU && EnYL[e] <= S_Sky_Ground_0_YL) 
-	{//上の台の右（側面）
-		enemy[e].ground = 1;
-		enemy[e].y -= 0.8f;
-	}
-	else if (EnYL[e] <= S_Sky_Ground_0_YL && EnYR[e] >= S_Sky_Ground_0_YU)
-	{//上の台（下辺）
-		if (EnXL[e] <= S_Sky_Ground_0_XL && EnXR[e] >= S_Sky_Ground_0_XU)
-		{
-			enemy[e].y -= 0.8f;
-			//if (VectorY >= 0)
-			//{//めり込まないようにするために加速度が０以上になると加速度に１足す
-			//	VectorY += 1.0f;
-			//}
+			if (EnXR[e] >= S_Ground_Right_XU && EnYR[e] >= S_Ground_Right_YU + PlusPx) {//右下の台（側面）
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+
+			if (EnYR[e] >= S_Sky_Ground_0_YU + PlusPx && EnYL[e] <= S_Sky_Ground_0_YL - PlusPx) {//上の台（側面）
+				if (EnXL[e] <= S_Sky_Ground_0_XL + PlusPx && EnXR[e] >= S_Sky_Ground_0_XL) {//上の台の右
+					enemy[e].vecx *= -COR;
+					if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+						enemy[e].vecx += 0.9f;
+					}
+				}
+				else if (EnXR[e] >= S_Sky_Ground_0_XU - PlusPx && EnXR[e] <= S_Sky_Ground_0_XU) {//上の台の左
+					enemy[e].vecx *= -COR;
+					if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+						enemy[e].vecx -= 0.9f;
+					}
+				}
+			}
+			/*******************************************************************************************************************************/
+					//下辺の当たり判定//
+			/*******************************************************************************************************************************/
+			if (EnYL[e] <= S_Sky_Ground_0_YL - PlusPx && EnYR[e] >= S_Sky_Ground_0_YL) {//上の台（下辺）
+				if (EnXL[e] <= S_Sky_Ground_0_XL && EnXR[e] >= S_Sky_Ground_0_XU) {
+					enemy[e].vecy *= -COR;
+					if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+						enemy[e].vecy += 0.9f;
+					}
+				}
+			}
+
+			if (EnYL[e] <= 0) {//画面上の当たり判定
+				enemy[e].vecy *= -COR;
+				if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecy += 0.9f;
+				}
+			}
+		}
+
+		/*******************************************************************************************************************************/
+				//上辺の当たり判定//
+		/*******************************************************************************************************************************/
+		if (EnYR[e] >= S_Ground_Left_YU && EnYR[e] <= S_Ground_Left_YU + PlusPx && EnXL[e] <= S_Ground_Left_XL) {//左下の台（上辺）
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S_Ground_Right_YU && EnYR[e] <= S_Ground_Right_YU + PlusPx && EnXR[e] >= S_Ground_Right_XU) {//右下の台（上辺）
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S_Sky_Ground_0_YU && EnYR[e] <= S_Sky_Ground_0_YU + PlusPx && EnXL[e] <= S_Sky_Ground_0_XL && EnXR[e] >= S_Sky_Ground_0_XU) {//浮いている中央の台（上辺）
+			enemy[e].ground = 1;
+		}
+		else {
+			enemy[e].ground = 0;
 		}
 	}
-	else if (EnYL[e] <= 0)
-	{//画面上の当たり判定
-		enemy[e].ground = 1;
-		enemy[e].y -= 0.8f;
-		//if (VectorY >= 0) 
-		//{//めり込まないようにするために加速度が０以上になると加速度に１足す
-		//	VectorY += 1.0f;
-		//}
+	else if (NowStage == 2) {//***************　２ステージ　***************//
+/*******************************************************************************************************************************/
+		//側面の当たり判定//
+/*******************************************************************************************************************************/
+		if (enemy[e].ground == 0) {
+			if (EnXL[e] <= S_Ground_Left_XL && EnYR[e] >= S_Ground_Left_YU + PlusPx) {//左下の台（側面）
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+
+			if (EnXR[e] >= S_Ground_Right_XU && EnYR[e] >= S_Ground_Right_YU + PlusPx) {//右下の台（側面）
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+
+			if (EnYR[e] >= S_Sky_Ground_0_YU + PlusPx && EnYL[e] <= S_Sky_Ground_0_YL - PlusPx) {//上の台（側面）
+				if (EnXL[e] <= S_Sky_Ground_0_XL + PlusPx && EnXR[e] >= S_Sky_Ground_0_XL) {//上の台の右
+					enemy[e].vecx *= -COR;
+					if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+						enemy[e].vecx += 0.9f;
+					}
+				}
+				else if (EnXR[e] >= S_Sky_Ground_0_XU - PlusPx && EnXR[e] <= S_Sky_Ground_0_XU) {//上の台の左
+					enemy[e].vecx *= -COR;
+					if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+						enemy[e].vecx -= 0.9f;
+					}
+				}
+			}
+
+			if (EnYR[e] >= S2_Sky_Ground_0_YU + PlusPx && EnYL[e] <= S2_Sky_Ground_0_YL - PlusPx) {//左上の台（側面）
+				if (EnXL[e] <= S2_Sky_Ground_0_XL + PlusPx && EnXR[e] >= S2_Sky_Ground_0_XL) {//左上の台の右
+					enemy[e].vecx *= -COR;
+					if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+						enemy[e].vecx += 0.9f;
+					}
+				}
+				else if (EnXR[e] >= S2_Sky_Ground_0_XU - PlusPx && EnXR[e] <= S2_Sky_Ground_0_XU) {//左上の台の左
+					enemy[e].vecx *= -COR;
+					if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+						enemy[e].vecx -= 0.9f;
+					}
+				}
+			}
+
+			if (EnYR[e] >= S2_Sky_Ground_1_YU + PlusPx && EnYL[e] <= S2_Sky_Ground_1_YL - PlusPx) {//右上の台（側面）
+				if (EnXL[e] <= S2_Sky_Ground_1_XL + PlusPx && EnXR[e] >= S2_Sky_Ground_1_XL) {//右上の台の右
+					enemy[e].vecx *= -COR;
+					if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+						enemy[e].vecx += 0.9f;
+					}
+				}
+				else if (EnXR[e] >= S2_Sky_Ground_1_XU - PlusPx && EnXR[e] <= S2_Sky_Ground_1_XU) {//右上の台の左
+					enemy[e].vecx *= -COR;
+					if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+						enemy[e].vecx -= 0.9f;
+					}
+				}
+			}
+			/*******************************************************************************************************************************/
+					//下辺の当たり判定//
+			/*******************************************************************************************************************************/
+			if (EnYL[e] <= S_Sky_Ground_0_YL - PlusPx && EnYR[e] >= S_Sky_Ground_0_YL) {//上の台（下辺）
+				if (EnXL[e] <= S_Sky_Ground_0_XL && EnXR[e] >= S_Sky_Ground_0_XU) {
+					enemy[e].vecy *= -COR;
+					if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+						enemy[e].vecy += 0.9f;
+					}
+				}
+			}
+
+			if (EnYL[e] <= S2_Sky_Ground_0_YL - PlusPx && EnYR[e] >= S2_Sky_Ground_0_YL) {//左上の台（下辺）
+				if (EnXL[e] <= S2_Sky_Ground_0_XL && EnXR[e] >= S2_Sky_Ground_0_XU) {
+					enemy[e].vecy *= -COR;
+					if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+						enemy[e].vecy += 0.9f;
+					}
+				}
+			}
+
+			if (EnYL[e] <= S2_Sky_Ground_1_YL - PlusPx && EnYR[e] >= S2_Sky_Ground_1_YL) {//右上の台（下辺）
+				if (EnXL[e] <= S2_Sky_Ground_1_XL && EnXR[e] >= S2_Sky_Ground_1_XU) {
+					enemy[e].vecy *= -COR;
+					if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+						enemy[e].vecy += 0.9f;
+					}
+				}
+			}
+
+			if (EnYL[e] <= 0) {//画面上の当たり判定
+				enemy[e].vecy *= -COR;
+				if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecy += 0.9f;
+				}
+			}
+		}
+		/*******************************************************************************************************************************/
+				//上辺の当たり判定//
+		/*******************************************************************************************************************************/
+		if (EnYR[e] >= S_Ground_Left_YU && EnYR[e] <= S_Ground_Left_YU + PlusPx && EnXL[e] <= S_Ground_Left_XL) {//左下の台（上辺）
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S_Ground_Right_YU && EnYR[e] <= S_Ground_Right_YU + PlusPx && EnXR[e] >= S_Ground_Right_XU) {//右下の台（上辺）
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S_Sky_Ground_0_YU && EnYR[e] <= S_Sky_Ground_0_YU + PlusPx && EnXL[e] <= S_Sky_Ground_0_XL && EnXR[e] >= S_Sky_Ground_0_XU) {//浮いている中央の台（上辺）
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S2_Sky_Ground_0_YU && EnYR[e] <= S2_Sky_Ground_0_YU + PlusPx && EnXL[e] <= S2_Sky_Ground_0_XL && EnXR[e] >= S2_Sky_Ground_0_XU) {//浮いている左上の台（上辺）
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S2_Sky_Ground_1_YU && EnYR[e] <= S2_Sky_Ground_1_YU + PlusPx && EnXL[e] <= S2_Sky_Ground_1_XL && EnXR[e] >= S2_Sky_Ground_1_XU) {//浮いている左上の台（上辺）
+			enemy[e].ground = 1;
+		}
+		else {
+			enemy[e].ground = 0;
+		}
 	}
-	
+	else if (NowStage == 3) {//***************　３ステージ　***************//
+/*******************************************************************************************************************************/
+		//側面の当たり判定//
+/*******************************************************************************************************************************/
+		if (enemy[e].ground == 0) {
+			if (EnXL[e] <= S_Ground_Left_XL && EnYR[e] >= S_Ground_Left_YU + PlusPx) {//左下の台（側面）
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+
+			if (EnXR[e] >= S_Ground_Right_XU && EnYR[e] >= S_Ground_Right_YU + PlusPx) {//右下の台（側面）
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+		}
+
+		if (EnYR[e] >= S3_Sky_SGround_0_YU + PlusPx && EnYL[e] <= S3_Sky_SGround_0_YL - PlusPx) {//左鍾乳石（地面）
+			if (EnXL[e] <= S3_Sky_SGround_0_XL + PlusPx && EnXR[e] >= S3_Sky_SGround_0_XL) {//左鍾乳石の右
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+			else if (EnXR[e] >= S3_Sky_SGround_0_XU - PlusPx && EnXR[e] <= S3_Sky_SGround_0_XU) {//左鍾乳石の左
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+		}
+
+		if (EnYR[e] >= S3_Sky_SStone_0_YU + PlusPx && EnYL[e] <= S3_Sky_SStone_0_YL - PlusPx) {//左鍾乳石（石）
+			if (EnXL[e] <= S3_Sky_SStone_0_XL + PlusPx && EnXR[e] >= S3_Sky_SStone_0_XL) {//左鍾乳石の右
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+			else if (EnXR[e] >= S3_Sky_SStone_0_XU - PlusPx && EnXR[e] <= S3_Sky_SStone_0_XU) {//左鍾乳石の左
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+		}
+
+		if (EnYR[e] >= S3_Sky_SGround_1_YU + PlusPx && EnYL[e] <= S3_Sky_SGround_1_YL - PlusPx) {//中央鍾乳石（地面）
+			if (EnXL[e] <= S3_Sky_SGround_1_XL + PlusPx && EnXR[e] >= S3_Sky_SGround_1_XL) {//中央鍾乳石の右
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+			else if (EnXR[e] >= S3_Sky_SGround_1_XU - PlusPx && EnXR[e] <= S3_Sky_SGround_1_XU) {//中央鍾乳石の左
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+		}
+
+		if (EnYR[e] >= S3_Sky_SStone_1_YU + PlusPx && EnYL[e] <= S3_Sky_SStone_1_YL - PlusPx) {//中央鍾乳石（石）
+			if (EnXL[e] <= S3_Sky_SStone_1_XL + PlusPx && EnXR[e] >= S3_Sky_SStone_1_XL) {//中央鍾乳石の右
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+			else if (EnXR[e] >= S3_Sky_SStone_1_XU - PlusPx && EnXR[e] <= S3_Sky_SStone_1_XU) {//中央鍾乳石の左
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+		}
+
+		if (EnYR[e] >= S3_Sky_SGround_2_YU + PlusPx && EnYL[e] <= S3_Sky_SGround_2_YL - PlusPx) {//右鍾乳石（地面）
+			if (EnXL[e] <= S3_Sky_SGround_2_XL + PlusPx && EnXR[e] >= S3_Sky_SGround_2_XL) {//右鍾乳石の右
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+			else if (EnXR[e] >= S3_Sky_SGround_2_XU - PlusPx && EnXR[e] <= S3_Sky_SGround_2_XU) {//右鍾乳石の左
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+		}
+
+		if (EnYR[e] >= S3_Sky_SStone_2_YU + PlusPx && EnYL[e] <= S3_Sky_SStone_2_YL - PlusPx) {//右鍾乳石（石）
+			if (EnXL[e] <= S3_Sky_SStone_2_XL + PlusPx && EnXR[e] >= S3_Sky_SStone_2_XL) {//右鍾乳石の右
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+			else if (EnXR[e] >= S3_Sky_SStone_2_XU - PlusPx && EnXR[e] <= S3_Sky_SStone_2_XU) {//右鍾乳石の左
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+		}
+
+		if (EnYR[e] >= S3_Sky_Ground_0_YU + PlusPx && EnYL[e] <= S3_Sky_Ground_0_YL - PlusPx) {//上空中床
+			if (EnXL[e] <= S3_Sky_Ground_0_XL + PlusPx && EnXR[e] >= S3_Sky_Ground_0_XL) {//上空中床の右
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+			else if (EnXR[e] >= S3_Sky_Ground_0_XU - PlusPx && EnXR[e] <= S3_Sky_Ground_0_XU) {//上空中床の左
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+		}
+
+		if (EnYR[e] >= S3_Sky_Ground_1_YU + PlusPx && EnYL[e] <= S3_Sky_Ground_1_YL - PlusPx) {//下空中床
+			if (EnXL[e] <= S3_Sky_Ground_1_XL + PlusPx && EnXR[e] >= S3_Sky_Ground_1_XL) {//下空中床の右
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+			else if (EnXR[e] >= S3_Sky_Ground_1_XU - PlusPx && EnXR[e] <= S3_Sky_Ground_1_XU) {//下空中床の左
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+		}
+		/*******************************************************************************************************************************/
+				//下辺の当たり判定//
+		/*******************************************************************************************************************************/
+		if (EnYL[e] <= S3_Sky_SGround_0_YL - PlusPx && EnYR[e] >= S3_Sky_SGround_0_YL) {//左鍾乳石（地面）（下辺）
+			if (EnXL[e] <= S3_Sky_SGround_0_XL && EnXR[e] >= S3_Sky_SGround_0_XU) {
+				enemy[e].vecy *= -COR;
+				if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecy += 0.9f;
+				}
+			}
+		}
+
+		if (EnYL[e] <= S3_Sky_SStone_0_YL - PlusPx && EnYR[e] >= S3_Sky_SStone_0_YL) {//左鍾乳石（石）（下辺）
+			if (EnXL[e] <= S3_Sky_SStone_0_XL && EnXR[e] >= S3_Sky_SStone_0_XU) {
+				enemy[e].vecy *= -COR;
+				if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecy += 0.9f;
+				}
+			}
+		}
+
+		if (EnYL[e] <= S3_Sky_SGround_1_YL - PlusPx && EnYR[e] >= S3_Sky_SGround_1_YL) {//中央鍾乳石（地面）（下辺）
+			if (EnXL[e] <= S3_Sky_SGround_1_XL && EnXR[e] >= S3_Sky_SGround_1_XU) {
+				enemy[e].vecy *= -COR;
+				if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecy += 0.9f;
+				}
+			}
+		}
+
+		if (EnYL[e] <= S3_Sky_SStone_1_YL - PlusPx && EnYR[e] >= S3_Sky_SStone_1_YL) {//中央鍾乳石（石）（下辺）
+			if (EnXL[e] <= S3_Sky_SStone_1_XL && EnXR[e] >= S3_Sky_SStone_1_XU) {
+				enemy[e].vecy *= -COR;
+				if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecy += 0.9f;
+				}
+			}
+		}
+
+		if (EnYL[e] <= S3_Sky_SGround_2_YL - PlusPx && EnYR[e] >= S3_Sky_SGround_2_YL) {//左鍾乳石（地面）（下辺）
+			if (EnXL[e] <= S3_Sky_SGround_2_XL && EnXR[e] >= S3_Sky_SGround_2_XU) {
+				enemy[e].vecy *= -COR;
+				if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecy += 0.9f;
+				}
+			}
+		}
+
+		if (EnYL[e] <= S3_Sky_SStone_2_YL - PlusPx && EnYR[e] >= S3_Sky_SStone_2_YL) {//左鍾乳石（石）（下辺）
+			if (EnXL[e] <= S3_Sky_SStone_2_XL && EnXR[e] >= S3_Sky_SStone_2_XU) {
+				enemy[e].vecy *= -COR;
+				if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecy += 0.9f;
+				}
+			}
+		}
+
+		if (EnYL[e] <= S3_Sky_Ground_0_YL - PlusPx && EnYR[e] >= S3_Sky_Ground_0_YL) {//上空中床（下辺）
+			if (EnXL[e] <= S3_Sky_Ground_0_XL && EnXR[e] >= S3_Sky_Ground_0_XU) {
+				enemy[e].vecy *= -COR;
+				if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecy += 0.9f;
+				}
+			}
+		}
+
+		if (EnYL[e] <= S3_Sky_Ground_1_YL - PlusPx && EnYR[e] >= S3_Sky_Ground_1_YL) {//下空中床（下辺）
+			if (EnXL[e] <= S3_Sky_Ground_1_XL && EnXR[e] >= S3_Sky_Ground_1_XU) {
+				enemy[e].vecy *= -COR;
+				if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecy += 0.9f;
+				}
+			}
+		}
+
+		if (EnYL[e] <= 0) {//画面上の当たり判定
+			enemy[e].vecy *= -COR;
+			if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+				enemy[e].vecy += 0.9f;
+			}
+		}
+
+		/*******************************************************************************************************************************/
+				//上辺の当たり判定//
+		/*******************************************************************************************************************************/
+
+		if (EnYR[e] >= S_Ground_Left_YU && EnYR[e] <= S_Ground_Left_YU + PlusPx && EnXL[e] <= S_Ground_Left_XL) {//左下の台（上辺）
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S_Ground_Right_YU && EnYR[e] <= S_Ground_Right_YU + PlusPx && EnXR[e] >= S_Ground_Right_XU) {//右下の台（上辺）
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S3_Sky_SGround_0_YU && EnYR[e] <= S3_Sky_SGround_0_YU + PlusPx && EnXL[e] <= S3_Sky_SGround_0_XL && EnXR[e] >= S3_Sky_SGround_0_XU) {//左鍾乳石（上辺）
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S3_Sky_SGround_1_YU && EnYR[e] <= S3_Sky_SGround_1_YU + PlusPx && EnXL[e] <= S3_Sky_SGround_1_XL && EnXR[e] >= S3_Sky_SGround_1_XU) {//中央鍾乳石（上辺）
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S3_Sky_SGround_2_YU && EnYR[e] <= S3_Sky_SGround_2_YU + PlusPx && EnXL[e] <= S3_Sky_SGround_2_XL && EnXR[e] >= S3_Sky_SGround_2_XU) {//右鍾乳石（上辺）
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S3_Sky_Ground_0_YU && EnYR[e] <= S3_Sky_Ground_0_YU + PlusPx && EnXL[e] <= S3_Sky_Ground_0_XL && EnXR[e] >= S3_Sky_Ground_0_XU) {//上空中床（上辺）
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S3_Sky_Ground_1_YU && EnYR[e] <= S3_Sky_Ground_1_YU + PlusPx && EnXL[e] <= S3_Sky_Ground_1_XL && EnXR[e] >= S3_Sky_Ground_1_XU) {//下空中床（上辺）
+			enemy[e].ground = 1;
+		}
+		else {
+			enemy[e].ground = 0;
+		}
+	}
+	else if (NowStage == 4) {//***************　４ステージ　***************//
+/*******************************************************************************************************************************/
+		//側面の当たり判定//
+/*******************************************************************************************************************************/
+		if (enemy[e].ground == 0) {
+			if (EnXL[e] <= S_Ground_Left_XL && EnYR[e] >= S_Ground_Left_YU + PlusPx) {//左下の台（側面）
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+
+			if (EnXR[e] >= S_Ground_Right_XU && EnYR[e] >= S_Ground_Right_YU + PlusPx) {//右下の台（側面）
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+		}
+
+		if (EnYR[e] >= S4_Sky_Ground_0_YU + PlusPx && EnYL[e] <= S4_Sky_Ground_0_YL - PlusPx) {//１番左
+			if (EnXL[e] <= S4_Sky_Ground_0_XL + PlusPx && EnXR[e] >= S4_Sky_Ground_0_XL) {//１番左の右
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+			else if (EnXR[e] >= S4_Sky_Ground_0_XU - PlusPx && EnXR[e] <= S4_Sky_Ground_0_XU) {//１番左の左
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+		}
+
+		if (EnYR[e] >= S4_Sky_Ground_1_YU + PlusPx && EnYL[e] <= S4_Sky_Ground_1_YL - PlusPx) {//左から２番目
+			if (EnXL[e] <= S4_Sky_Ground_1_XL + PlusPx && EnXR[e] >= S4_Sky_Ground_1_XL) {//左から２番目の右
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+			else if (EnXR[e] >= S4_Sky_Ground_1_XU - PlusPx && EnXR[e] <= S4_Sky_Ground_1_XU) {//左から２番目の左
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+		}
+
+		if (EnYR[e] >= S4_Sky_Ground_2_YU + PlusPx && EnYL[e] <= S4_Sky_Ground_2_YL - PlusPx) {//１番上
+			if (EnXL[e] <= S4_Sky_Ground_2_XL + PlusPx && EnXR[e] >= S4_Sky_Ground_2_XL) {//１番上の右
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+			else if (EnXR[e] >= S4_Sky_Ground_2_XU - PlusPx && EnXR[e] <= S4_Sky_Ground_2_XU) {//１番上の左
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+		}
+
+		if (EnYR[e] >= S4_Sky_Ground_3_YU + PlusPx && EnYL[e] <= S4_Sky_Ground_3_YL - PlusPx) {//１番下
+			if (EnXL[e] <= S4_Sky_Ground_3_XL + PlusPx && EnXR[e] >= S4_Sky_Ground_3_XL) {//１番下の右
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+			else if (EnXR[e] >= S4_Sky_Ground_3_XU - PlusPx && EnXR[e] <= S4_Sky_Ground_3_XU) {//１番下の左
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+		}
+
+		if (EnYR[e] >= S4_Sky_Ground_4_YU + PlusPx && EnYL[e] <= S4_Sky_Ground_4_YL - PlusPx) {//１番右
+			if (EnXL[e] <= S4_Sky_Ground_4_XL + PlusPx && EnXR[e] >= S4_Sky_Ground_4_XL) {//１番右の右
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+			else if (EnXR[e] >= S4_Sky_Ground_4_XU - PlusPx && EnXR[e] <= S4_Sky_Ground_4_XU) {//１番右の左
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+		}
+		/*******************************************************************************************************************************/
+				//下辺の当たり判定//
+		/*******************************************************************************************************************************/
+		if (EnYL[e] <= S4_Sky_Ground_0_YL - PlusPx && EnYR[e] >= S4_Sky_Ground_0_YL) {//１番左
+			if (EnXL[e] <= S4_Sky_Ground_0_XL && EnXR[e] >= S4_Sky_Ground_0_XU) {
+				enemy[e].vecy *= -COR;
+				if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecy += 0.9f;
+				}
+			}
+		}
+
+		if (EnYL[e] <= S4_Sky_Ground_1_YL - PlusPx && EnYR[e] >= S4_Sky_Ground_1_YL) {//左から２番目
+			if (EnXL[e] <= S4_Sky_Ground_1_XL && EnXR[e] >= S4_Sky_Ground_1_XU) {
+				enemy[e].vecy *= -COR;
+				if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecy += 0.9f;
+				}
+			}
+		}
+
+		if (EnYL[e] <= S4_Sky_Ground_2_YL - PlusPx && EnYR[e] >= S4_Sky_Ground_2_YL) {//１番上
+			if (EnXL[e] <= S4_Sky_Ground_2_XL && EnXR[e] >= S4_Sky_Ground_2_XU) {
+				enemy[e].vecy *= -COR;
+				if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecy += 0.9f;
+				}
+			}
+		}
+
+		if (EnYL[e] <= S4_Sky_Ground_3_YL - PlusPx && EnYR[e] >= S4_Sky_Ground_3_YL) {//１番下
+			if (EnXL[e] <= S4_Sky_Ground_3_XL && EnXR[e] >= S4_Sky_Ground_3_XU) {
+				enemy[e].vecy *= -COR;
+				if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecy += 0.9f;
+				}
+			}
+		}
+
+		if (EnYL[e] <= S4_Sky_Ground_4_YL - PlusPx && EnYR[e] >= S4_Sky_Ground_4_YL) {//１番右
+			if (EnXL[e] <= S4_Sky_Ground_4_XL && EnXR[e] >= S4_Sky_Ground_4_XU) {
+				enemy[e].vecy *= -COR;
+				if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecy += 0.9f;
+				}
+			}
+		}
+
+		if (EnYL[e] <= 0) {//画面上の当たり判定
+			enemy[e].vecy *= -COR;
+			if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+				enemy[e].vecy += 0.9f;
+			}
+		}
+
+		/*******************************************************************************************************************************/
+				//上辺の当たり判定//
+		/*******************************************************************************************************************************/
+
+		if (EnYR[e] >= S_Ground_Left_YU && EnYR[e] <= S_Ground_Left_YU + PlusPx && EnXL[e] <= S_Ground_Left_XL) {//左下の台（上辺）
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S_Ground_Right_YU && EnYR[e] <= S_Ground_Right_YU + PlusPx && EnXR[e] >= S_Ground_Right_XU) {//右下の台（上辺）
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S4_Sky_Ground_0_YU && EnYR[e] <= S4_Sky_Ground_0_YU + PlusPx && EnXL[e] <= S4_Sky_Ground_0_XL && EnXR[e] >= S4_Sky_Ground_0_XU) {//１番左の台
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S4_Sky_Ground_1_YU && EnYR[e] <= S4_Sky_Ground_1_YU + PlusPx && EnXL[e] <= S4_Sky_Ground_1_XL && EnXR[e] >= S4_Sky_Ground_1_XU) {//左から２番目の台
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S4_Sky_Ground_2_YU && EnYR[e] <= S4_Sky_Ground_2_YU + PlusPx && EnXL[e] <= S4_Sky_Ground_2_XL && EnXR[e] >= S4_Sky_Ground_2_XU) {//１番上の台
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S4_Sky_Ground_3_YU && EnYR[e] <= S4_Sky_Ground_3_YU + PlusPx && EnXL[e] <= S4_Sky_Ground_3_XL && EnXR[e] >= S4_Sky_Ground_3_XU) {//１番下の台
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S4_Sky_Ground_4_YU && EnYR[e] <= S4_Sky_Ground_4_YU + PlusPx && EnXL[e] <= S4_Sky_Ground_4_XL && EnXR[e] >= S4_Sky_Ground_4_XU) {//１番右の台
+			enemy[e].ground = 1;
+		}
+		else {
+			enemy[e].ground = 0;
+		}
+	}
+	else if (NowStage == 5) {//***************　５ステージ　***************//
+/*******************************************************************************************************************************/
+		//側面の当たり判定//
+/*******************************************************************************************************************************/
+		if (enemy[e].ground == 0) {
+			if (EnXL[e] <= S_Ground_Left_XL && EnYR[e] >= S_Ground_Left_YU + PlusPx) {//左下の台（側面）
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+
+			if (EnXR[e] >= S_Ground_Right_XU && EnYR[e] >= S_Ground_Right_YU + PlusPx) {//右下の台（側面）
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+		}
+
+		if (EnYR[e] >= S5_Sky_SGround_0_YU + PlusPx && EnYL[e] <= S5_Sky_SGround_0_YL - PlusPx) {//左鍾乳石
+			if (EnXL[e] <= S5_Sky_SGround_0_XL + PlusPx && EnXR[e] >= S5_Sky_SGround_0_XL) {//左鍾乳石の右
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+			else if (EnXR[e] >= S5_Sky_SGround_0_XU - PlusPx && EnXR[e] <= S5_Sky_SGround_0_XU) {//左鍾乳石の左
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+		}
+
+		if (EnYR[e] >= S5_Sky_SGround_1_YU + PlusPx && EnYL[e] <= S5_Sky_SGround_1_YL - PlusPx) {//中央鍾乳石
+			if (EnXL[e] <= S5_Sky_SGround_1_XL + PlusPx && EnXR[e] >= S5_Sky_SGround_1_XL) {//中央鍾乳石の右
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+			else if (EnXR[e] >= S5_Sky_SGround_1_XU - PlusPx && EnXR[e] <= S5_Sky_SGround_1_XU) {//中央鍾乳石の左
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+		}
+
+		if (EnYR[e] >= S5_Sky_SGround_2_YU + PlusPx && EnYL[e] <= S5_Sky_SGround_2_YL - PlusPx) {//右鍾乳石
+			if (EnXL[e] <= S5_Sky_SGround_2_XL + PlusPx && EnXR[e] >= S5_Sky_SGround_2_XL) {//右鍾乳石の右
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+			else if (EnXR[e] >= S5_Sky_SGround_2_XU - PlusPx && EnXR[e] <= S5_Sky_SGround_2_XU) {//右鍾乳石の左
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+		}
+
+		if (EnYR[e] >= S5_Sky_Ground_0_YU + PlusPx && EnYL[e] <= S5_Sky_Ground_0_YL - PlusPx) {//１番上
+			if (EnXL[e] <= S5_Sky_Ground_0_XL + PlusPx && EnXR[e] >= S5_Sky_Ground_0_XL) {//１番上の右
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+			else if (EnXR[e] >= S5_Sky_Ground_0_XU - PlusPx && EnXR[e] <= S5_Sky_Ground_0_XU) {//１番上の左
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+		}
+
+		if (EnYR[e] >= S5_Sky_Ground_1_YU + PlusPx && EnYL[e] <= S5_Sky_Ground_1_YL - PlusPx) {//下の右
+			if (EnXL[e] <= S5_Sky_Ground_1_XL + PlusPx && EnXR[e] >= S5_Sky_Ground_1_XL) {//下の右の右
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+			else if (EnXR[e] >= S5_Sky_Ground_1_XU - PlusPx && EnXR[e] <= S5_Sky_Ground_1_XU) {//下の右の左
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+		}
+
+		if (EnYR[e] >= S5_Sky_Ground_2_YU + PlusPx && EnYL[e] <= S5_Sky_Ground_2_YL - PlusPx) {//下の左
+			if (EnXL[e] <= S5_Sky_Ground_2_XL + PlusPx && EnXR[e] >= S5_Sky_Ground_2_XL) {//下の左の右
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecx += 0.9f;
+				}
+			}
+			else if (EnXR[e] >= S5_Sky_Ground_2_XU - PlusPx && EnXR[e] <= S5_Sky_Ground_2_XU) {//下の左の左
+				enemy[e].vecx *= -COR;
+				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
+					enemy[e].vecx -= 0.9f;
+				}
+			}
+		}
+		/*******************************************************************************************************************************/
+				//下辺の当たり判定//
+		/*******************************************************************************************************************************/
+		if (EnYL[e] <= S5_Sky_SGround_0_YL - PlusPx && EnYR[e] >= S5_Sky_SGround_0_YL) {//右鍾乳石
+			if (EnXL[e] <= S5_Sky_SGround_0_XL && EnXR[e] >= S5_Sky_SGround_0_XU) {
+				enemy[e].vecy *= -COR;
+				if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecy += 0.9f;
+				}
+			}
+		}
+
+		if (EnYL[e] <= S5_Sky_SGround_1_YL - PlusPx && EnYR[e] >= S5_Sky_SGround_1_YL) {//中央鍾乳石
+			if (EnXL[e] <= S5_Sky_SGround_1_XL && EnXR[e] >= S5_Sky_SGround_1_XU) {
+				enemy[e].vecy *= -COR;
+				if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecy += 0.9f;
+				}
+			}
+		}
+
+		if (EnYL[e] <= S5_Sky_SGround_2_YL - PlusPx && EnYR[e] >= S5_Sky_SGround_2_YL) {//右鍾乳石
+			if (EnXL[e] <= S5_Sky_SGround_2_XL && EnXR[e] >= S5_Sky_SGround_2_XU) {
+				enemy[e].vecy *= -COR;
+				if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecy += 0.9f;
+				}
+			}
+		}
+
+		if (EnYL[e] <= S5_Sky_Ground_0_YL - PlusPx && EnYR[e] >= S5_Sky_Ground_0_YL) {//１番上
+			if (EnXL[e] <= S5_Sky_Ground_0_XL && EnXR[e] >= S5_Sky_Ground_0_XU) {
+				enemy[e].vecy *= -COR;
+				if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecy += 0.9f;
+				}
+			}
+		}
+
+		if (EnYL[e] <= S5_Sky_Ground_1_YL - PlusPx && EnYR[e] >= S5_Sky_Ground_1_YL) {//下の右
+			if (EnXL[e] <= S5_Sky_Ground_1_XL && EnXR[e] >= S5_Sky_Ground_1_XU) {
+				enemy[e].vecy *= -COR;
+				if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecy += 0.9f;
+				}
+			}
+		}
+
+		if (EnYL[e] <= S5_Sky_Ground_2_YL - PlusPx && EnYR[e] >= S5_Sky_Ground_2_YL) {//下の左
+			if (EnXL[e] <= S5_Sky_Ground_2_XL && EnXR[e] >= S5_Sky_Ground_2_XU) {
+				enemy[e].vecy *= -COR;
+				if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+					enemy[e].vecy += 0.9f;
+				}
+			}
+		}
+
+		if (EnYL[e] <= 0) {//画面上の当たり判定
+			enemy[e].vecy *= -COR;
+			if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
+				enemy[e].vecy += 0.9f;
+			}
+		}
+
+		/*******************************************************************************************************************************/
+				//上辺の当たり判定//
+		/*******************************************************************************************************************************/
+
+		if (EnYR[e] >= S_Ground_Left_YU && EnYR[e] <= S_Ground_Left_YU + PlusPx && EnXL[e] <= S_Ground_Left_XL) {//左下の台（上辺）
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S_Ground_Right_YU && EnYR[e] <= S_Ground_Right_YU + PlusPx && EnXR[e] >= S_Ground_Right_XU) {//右下の台（上辺）
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S5_Sky_SGround_0_YU && EnYR[e] <= S5_Sky_SGround_0_YU + PlusPx && EnXL[e] <= S5_Sky_SGround_0_XL && EnXR[e] >= S5_Sky_SGround_0_XU) {//左鍾乳石
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S5_Sky_SGround_1_YU && EnYR[e] <= S5_Sky_SGround_1_YU + PlusPx && EnXL[e] <= S5_Sky_SGround_1_XL && EnXR[e] >= S5_Sky_SGround_1_XU) {//中央鍾乳石
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S5_Sky_SGround_2_YU && EnYR[e] <= S5_Sky_SGround_2_YU + PlusPx && EnXL[e] <= S5_Sky_SGround_2_XL && EnXR[e] >= S5_Sky_SGround_2_XU) {//右鍾乳石
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S5_Sky_Ground_0_YU && EnYR[e] <= S5_Sky_Ground_0_YU + PlusPx && EnXL[e] <= S5_Sky_Ground_0_XL && EnXR[e] >= S5_Sky_Ground_0_XU) {//一番上
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S5_Sky_Ground_1_YU && EnYR[e] <= S5_Sky_Ground_1_YU + PlusPx && EnXL[e] <= S5_Sky_Ground_1_XL && EnXR[e] >= S5_Sky_Ground_1_XU) {//下の左
+			enemy[e].ground = 1;
+		}
+		else if (EnYR[e] >= S5_Sky_Ground_2_YU && EnYR[e] <= S5_Sky_Ground_2_YU + PlusPx && EnXL[e] <= S5_Sky_Ground_2_XL && EnXR[e] >= S5_Sky_Ground_2_XU) {//下の右
+			enemy[e].ground = 1;
+		}
+		else {
+			enemy[e].ground = 0;
+		}
+  }
 }
 
 // 敵とプレイヤーの当たり判定(スタート時)
@@ -657,42 +1617,3 @@ int Enemy::HitPlayer(int e)
 		
 	return 3;
 }
-
-// 敵の死亡モーション処理
-void Enemy::EnemyDie(int e)
-{
-	// パタパタ手を動かすモーション
-	if (Fcnt > 0 && Fcnt < 4 || Fcnt > 9 && Fcnt < 12 || Fcnt > 17 && Fcnt < 20)
-	{
-		enemy[e].flg = 13;
-	}
-	else if (Fcnt > 25 && Fcnt < 28 || Fcnt > 33 && Fcnt < 36 || Fcnt > 41 && Fcnt < 44)
-	{
-		enemy[e].flg = 13;
-	}
-	else if (Fcnt > 49 && Fcnt < 52 || Fcnt > 57 && Fcnt < 60)
-	{
-		enemy[e].flg = 13;
-	}
-	else
-	{
-		enemy[e].flg = 14;
-	}
-
-	if (enemy[e].die <= 8)
-	{
-		enemy[e].die++;
-		enemy[e].y -= 2.8f;
-	}
-	else if(enemy[e].die <= 15)
-	{
-		enemy[e].die++;
-	}
-	else if(enemy[e].y <= 490.0f)
-	{
-		enemy[e].y += 3.0f;
-	}
-}
-
-
-
