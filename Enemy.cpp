@@ -97,12 +97,6 @@ void Enemy::Update(int nowstage)
 				else if (enemy[i].life == 1)
 				{
 					EnemyPara(i);
-
-					if (enemy[i].start == 1)
-					{
-
-					}
-
 				}
 				else
 				{
@@ -1551,21 +1545,21 @@ int Enemy::HitStart(int e)
 int Enemy::HitPlayer(int e)
 {
 	//プレイヤーの矩形の座標
-	float PXL, PYL;//左上
-	float PXR, PYR;//右下
+	float PXL, PYL; //左上
+	float PXR, PYR; //右下
 
-	PXL = Px + 18;//左上X
-	PYL = Py + 14;//左上Y
-	PXR = Px + 40;//右下X
-	PYR = Py+ 64;//右下Y
+	PXL = Px + 18;  //左上X
+	PYL = Py + 14;  //左上Y
+	PXR = Px + 40;  //右下X
+	PYR = Py+ 64;   //右下Y
 
 	
-	EnXL[e] = enemy[e].x + 10.0f;
-	EnYL[e] = enemy[e].y + 12.0f;
-	EnXR[e] = EnXL[e] + 45.0f;
-	EnYR[e] = EnYL[e] + 53.0f;
+	EnXL[e] = enemy[e].x + 10.0f;  //左上X
+	EnYL[e] = enemy[e].y + 12.0f;  //左上Y
+	EnXR[e] = EnXL[e] + 45.0f;     //右下X
+	EnYR[e] = EnYL[e] + 53.0f;     //右下Y
 
-	if (enemy[e].life == 2)
+	if (enemy[e].life == 2) // 敵が風船状態のとき
 	{
 		if (EnXL[e] <= PXR && EnYL[e] <= PYR && EnXR[e] >= PXL && EnYR[e] >= PYL)
 		{
@@ -1598,7 +1592,7 @@ int Enemy::HitPlayer(int e)
 			}
 		}
 	}
-	else if(enemy[e].life == 1)
+	else if(enemy[e].life == 1)  // 敵がパラシュート状態のとき
 	{
 		if (EnXL[e] <= PXR && EnYL[e] <= PYR && EnXR[e] >= PXL && EnYR[e] >= PYL)
 		{
