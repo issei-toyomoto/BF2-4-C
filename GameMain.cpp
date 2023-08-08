@@ -20,8 +20,9 @@ int GameMain::PauseFlg;
 
 AbstractScene* GameMain::Update()
 {
+	InputKey::Update();
+	++WaitTime;
 	if (PauseFlg == 0) {
-		InputKey::Update();
 		player.Update(gStageState);
 		BUBBLE.Update();
 		enemy.Update(gStageState);
@@ -32,13 +33,11 @@ AbstractScene* GameMain::Update()
 		ui.Update();
 		stage.Update();
 	}
-	++WaitTime;
-	/*if (PauseFlg == 1)*/
-	if (inputkey.GetKey(PAD_INPUT_8) == TRUE && PauseFlg == 0 && WaitTime > 120) { // STARTが押された  // まだ一度もPause状態になってないなら
-		WaitTime = 0;
+	if (InputKey::GetKey(PAD_INPUT_8) == TRUE && PauseFlg == 0 && WaitTime > 20) { // STARTが押された  // まだ一度もPause状態になってないなら
 		PauseFlg = 1; // Pause状態になるというフラグ
+		WaitTime = 0;
 		}
-		else if(inputkey.GetKey(PAD_INPUT_8) == TRUE && PauseFlg == 1 && WaitTime > 120) {
+		else if(inputkey.GetKey(PAD_INPUT_8) == TRUE && PauseFlg == 1 && WaitTime > 20) {
 		WaitTime = 0;
 		PauseFlg = 0;
 		}
@@ -86,21 +85,19 @@ AbstractScene* GameMain::Update()
 
 void GameMain::Draw()const
 {
-	/*if (PauseFlg == 0) {*/
-		stage.Draw(gStageState);
+	stage.Draw(gStageState);
+	ui.Draw();
+	if (PauseFlg == 0) {
+		
 		for (int i = 0; i < 2; i++) {
 		thunder.Draw(i);
 	}
 		BUBBLE.Draw();
 		enemy.Draw();
 		fish.Draw();
-		ui.Draw();
 		player.Draw();
-		DrawGraph(160, 455, gGameImg[12], TRUE);//海の表示
-		DrawGraph(0, 455, gGameImg[12], TRUE);
-		DrawGraph(480, 455, gGameImg[12], TRUE);
 		DrawFormatString(200, 300, C_RED, "%d", PauseFlg);
-	/*}*/
+	}
 	if (PauseFlg == 1) {
 		DrawString(200, 320, "--- ポーズ中 ---", C_WHITE);
 		DrawFormatString(200, 300, C_RED, "%d", PauseFlg);
@@ -108,6 +105,9 @@ void GameMain::Draw()const
 
 		/*DrawGraph(200, 200, GameOverFont, TRUE);*/
 	}
+	DrawGraph(160, 455, gGameImg[12], TRUE);//海の表示
+	DrawGraph(0, 455, gGameImg[12], TRUE);
+	DrawGraph(480, 455, gGameImg[12], TRUE);
 
 #ifdef DEBUG
 	//ステージの当たり判定(ステージ１)
