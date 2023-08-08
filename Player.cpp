@@ -5,7 +5,7 @@
 #include "Fish.h"
 #include "Soundstorage.h"
 
-//#define DEBUG
+#define DEBUG
 
 float Player::PlayerX;
 float Player::PlayerY;
@@ -38,6 +38,8 @@ Player::Player()
 	Hide = false;
 
 	ReStartSoundFlg = false;
+
+	Life = 2;
 
 	FishFlg = Fish::P_FishFlg;//Fish.cppから値を取得
 	BalloonCrack = Balloon_NotCrack;
@@ -83,6 +85,7 @@ void Player::Update(int Stage) /***描画以外***/
 	if (Death == true) {
 		RespawnCnt++;
 		Hide = true;
+		Life = Life - 1;
 	}
 
 	FishFlg = Fish::P_FishFlg;//魚のフラグ更新
@@ -254,6 +257,7 @@ void Player::Draw() const /***描画***/
 	DrawFormatString(400, 130, C_WHITE, "FishFlg:%d", FishFlg);
 	DrawFormatString(400, 150, C_WHITE, "Death:%d RespawnCnt:%d", Death, RespawnCnt);
 	DrawFormatString(400, 170, C_WHITE, "Hide:%d", Hide);
+	DrawFormatString(400, 190, C_WHITE, "Life:%d", Life);
 
 	//プレイヤー画像サイズ
 	DrawBox((int)PlayerX, (int)PlayerY, (int)PlayerX + 64, (int)PlayerY + 64, C_RED,FALSE);
