@@ -85,7 +85,10 @@ void Player::Update(int Stage) /***描画以外***/
 	if (Death == true) {
 		RespawnCnt++;
 		Hide = true;
-		Life = Life - 1;
+		static int tmp = Life;
+		if (tmp == Life) {
+			Life--;
+		}
 	}
 
 	FishFlg = Fish::P_FishFlg;//魚のフラグ更新
