@@ -2,7 +2,21 @@
 #include"Dxlib.h"
 
 int Soundstorage::gRestartSE;
-
+int Soundstorage::gStartSE;
+int Soundstorage::gStageClearSE;
+int Soundstorage::gSplashSE;
+int Soundstorage::PlayerWalkSE;
+int Soundstorage::PlayerJumpSE;
+int Soundstorage::PerfectSE;
+int Soundstorage::ParachuteSE;
+int Soundstorage::GameOverSE;
+int Soundstorage::FallingSE;
+int Soundstorage::EnemyMoveSE;
+int Soundstorage::EatableSE;
+int Soundstorage::DefeatTheEnemySE;
+int Soundstorage::CrackSE;
+int Soundstorage::BubbleSE;
+int Soundstorage::TripBGM;
 Soundstorage::Soundstorage() 
 {
 	 gStartSE=LoadSoundMem("sounds/SE_Start.wav");
