@@ -1,6 +1,5 @@
 #include "UI.h"
 #include "bubble.h"
-#include "GameMain.h"
 #include "Common.h"
 #include <math.h>
 
@@ -14,32 +13,45 @@ UI::UI()
 	UIStock = LoadGraph("images-20230711T024428Z-001/images/UI/UI_Stock.png", TRUE);
 	TotalScore = 0;
 	bubleScore = 0;
-	Score1 = 0;
-	Score10 = 0;
-	Score100 = 0;
-	Score1000 = 0;
-	Score10000 = 0;
-	Score100000 = 0;
+	TScore1 = 0;
+	HScore1 = 0;
+	TScore10 = 0;
+	HScore10 = 0;
+	TScore100 = 0;
+	HScore100 = 0;
+	TScore1000 = 0;
+	HScore1000 = 0;
+	TScore10000 = 0;
+	HScore10000 = 0;
+	TScore100000 = 0;
+	HScore100000 = 0;
 	HighScore = 0;
 };
 UI::~UI()
 {
 }
-void UI::Update()
+void UI::Update(int flg)
 {
 	bubleScore = Bubble.BubleScore;
 	TotalScore = bubleScore;
-	Score1      = TotalScore % 10;
-	Score10     = (TotalScore % 100) / 10;
-	Score100    = (TotalScore % 1000) / 100;
-	Score1000   = (TotalScore % 10000) / 1000;
-	Score10000  = (TotalScore % 100000) / 10000;
-	Score100000 = TotalScore / 100000;
-	if (gamemain.GameOverFlg == 1) {
-		if (TotalScore > HighScore) {
+	TScore1      = TotalScore % 10;
+	TScore10     = (TotalScore % 100) / 10;
+	TScore100    = (TotalScore % 1000) / 100;
+	TScore1000   = (TotalScore % 10000) / 1000;
+	TScore10000  = (TotalScore % 100000) / 10000;
+	TScore100000 = TotalScore / 100000;
+	HScore1      = HighScore % 10;
+	HScore10 = (HighScore % 100) / 10;
+	HScore100 = (HighScore % 1000) / 100;
+	HScore1000 = (HighScore % 10000) / 1000;
+	HScore10000 = (HighScore % 100000) / 10000;
+	HScore100000 = HighScore / 100000;
+	if (flg == 1) {
+		/*if (TotalScore > HighScore) {
 			HighScore = TotalScore;
 			TotalScore = 0;
-		}
+		}*/
+		bubleScore = 0;
 		TotalScore = 0;
 	}
 }
@@ -47,19 +59,19 @@ void UI::Update()
 void UI::Draw() const
 {
 	// プレイヤースコアに反映されるUI
-	DrawGraph(50, 0, UINumber[Score100000], TRUE);
-	DrawGraph(70, 0, UINumber[Score10000], TRUE); 
-	DrawGraph(90, 0, UINumber[Score1000], TRUE);
-	DrawGraph(110, 0, UINumber[Score100], TRUE);
-	DrawGraph(130, 0, UINumber[Score10], TRUE);
-	DrawGraph(150, 0, UINumber[Score1], TRUE);
+	DrawGraph(50, 0, UINumber[TScore100000], TRUE);
+	DrawGraph(70, 0, UINumber[TScore10000], TRUE); 
+	DrawGraph(90, 0, UINumber[TScore1000], TRUE);
+	DrawGraph(110, 0, UINumber[TScore100], TRUE);
+	DrawGraph(130, 0, UINumber[TScore10], TRUE);
+	DrawGraph(150, 0, UINumber[TScore1], TRUE);
 	// ハイスコアに反映されるUI
-	DrawGraph(235, 0, UINumber[Score100000], TRUE);    
-	DrawGraph(255, 0, UINumber[Score10000], TRUE);
-	DrawGraph(275, 0, UINumber[Score1000], TRUE);
-	DrawGraph(295, 0, UINumber[Score100], TRUE);
-	DrawGraph(315, 0, UINumber[Score10], TRUE);
-	DrawGraph(335, 0, UINumber[Score1], TRUE);
+	DrawGraph(235, 0, UINumber[HScore100000], TRUE);    
+	DrawGraph(255, 0, UINumber[HScore10000], TRUE);
+	DrawGraph(275, 0, UINumber[HScore1000], TRUE);
+	DrawGraph(295, 0, UINumber[HScore100], TRUE);
+	DrawGraph(315, 0, UINumber[HScore10], TRUE);
+	DrawGraph(335, 0, UINumber[HScore1], TRUE);
 	DrawGraph(35, 7, UIScore, TRUE);
 	DrawGraph(200, 8, UITop, TRUE);
 	DrawGraph(135, 28, UIStock, TRUE);

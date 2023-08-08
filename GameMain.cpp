@@ -10,6 +10,7 @@
 #include "Stage.h"
 #include "InputKey.h"
 #include "Soundstorage.h"
+#include "UI.h"
 
 //#define DEBUG
 
@@ -26,13 +27,13 @@ AbstractScene* GameMain::Update()
 	// ポーズ状態ではない間行う処理
 	if (PauseFlg == 0 && GameOverFlg == 0) {
 		player.Update(gStageState);
-		BUBBLE.Update();
+		BUBBLE.Update(GameOverFlg);
 		enemy.Update(gStageState);
 		fish.Update();
 		for (int i = 0; i < 2; i++) {
 			thunder.Update(i, gStageState);
 		}
-		ui.Update();
+		ui.Update(GameOverFlg);
 		stage.Update();
 	}
 	// ポーズ状態に遷移する処理(startボタン)
@@ -56,6 +57,8 @@ AbstractScene* GameMain::Update()
 			++GameOverWTime;
 		}
 		else {
+			ui.Update(GameOverFlg);
+			BUBBLE.Update(GameOverFlg);
 			GameOverFlg = 0;
 			GameOverWTime = 0;
 			return new Title();
