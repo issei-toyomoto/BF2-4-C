@@ -35,6 +35,11 @@ private:
 	};
 	T thunder[2];
 	
+	//雷が出るときの雷
+	int OutThunderImg[3];
+	int Now_OutThunderImg;
+	int OTAnimCnt;
+	bool OTFlg;
 
 	//雲
 	struct C {
@@ -52,7 +57,7 @@ private:
 
 	int Speed;// 雷の速度
 
-	int NowStage;
+	int NowStage;//現在のステージ
 
 	bool TouchFlg;//雷と触れたことをプレイヤーに伝えるよう
 		
@@ -74,8 +79,9 @@ public:
 
 	void StageCollision(int i);
 
-	void ThunderAnim(int i);
-	void CloudAnim(int i);
+	void ThunderAnim(int i);	//雷のアニメーション
+	void CloudAnim(int i);		//雲のアニメーション
+	void OutThunderAnim(int i);	//雷が出るときのアニメーション
 
 	void InitCloud();//雲の初期化
 	void CloudPosition();//ステージごとの雲の位置

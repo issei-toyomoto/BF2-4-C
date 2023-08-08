@@ -8,6 +8,7 @@
 #include "Stage.h"
 #include "UI.h"
 #include "InputKey.h"
+#include "Soundstorage.h"
 
 class GameMain :public AbstractScene
 {
@@ -21,6 +22,7 @@ private:
 	UI ui;
 	gStage stage;
 	InputKey inputkey;
+	Soundstorage ss;
 
 	int gGameImg[14];
 	int gStageState;

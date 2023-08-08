@@ -9,6 +9,7 @@
 #include "TitleScene.h"
 #include "Stage.h"
 #include "InputKey.h"
+#include "Soundstorage.h"
 
 //#define DEBUG
 
