@@ -1,5 +1,6 @@
 #include "UI.h"
 #include "bubble.h"
+#include "GameMain.h"
 #include "Common.h"
 #include <math.h>
 
@@ -19,6 +20,7 @@ UI::UI()
 	Score1000 = 0;
 	Score10000 = 0;
 	Score100000 = 0;
+	HighScore = 0;
 };
 UI::~UI()
 {
@@ -33,6 +35,13 @@ void UI::Update()
 	Score1000   = (TotalScore % 10000) / 1000;
 	Score10000  = (TotalScore % 100000) / 10000;
 	Score100000 = TotalScore / 100000;
+	if (gamemain.GameOverFlg == 1) {
+		if (TotalScore > HighScore) {
+			HighScore = TotalScore;
+			TotalScore = 0;
+		}
+		TotalScore = 0;
+	}
 }
 
 void UI::Draw() const
