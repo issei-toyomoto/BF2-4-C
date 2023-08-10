@@ -25,6 +25,8 @@ private:
 	int HScore100000;
 	int HighScore;
 
+	int UIflg;     // デバッグ用
+
 public:
 	// コンストラクタ
 	UI();
