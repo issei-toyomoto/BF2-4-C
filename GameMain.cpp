@@ -22,7 +22,6 @@ int GameMain::PauseFlg;
 
 AbstractScene* GameMain::Update()
 {
-	//InputKey::Update();
 	++PauseWTime;
 	// ポーズ状態ではない間行う処理
 	if (PauseFlg == 0 && GameOverFlg == 0) {
