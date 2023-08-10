@@ -12,6 +12,8 @@ float Player::PlayerY;
 
 bool Player::Death;
 
+int Player::Life;
+
 Player::Player() 
 {
 	LoadDivGraph("image/Player/Player_Animation.png", 32, 8, 4, 64, 64, PlayerImg);//画像読み込み
@@ -85,10 +87,6 @@ void Player::Update(int Stage) /***描画以外***/
 	if (Death == true) {
 		RespawnCnt++;
 		Hide = true;
-		static int tmp = Life;
-		if (tmp == Life) {
-			Life--;
-		}
 	}
 
 	FishFlg = Fish::P_FishFlg;//魚のフラグ更新
@@ -152,8 +150,18 @@ void Player::Update(int Stage) /***描画以外***/
 			Death = false;
 		}
 	}
+
+	//残機減算処理
+	if (RespawnCnt == RespawnTime - 1) {
+		Life--;
+	}
+
+	//残機が無くなったらプレイヤーを非表示
+	if (Life == -1) {
+		Hide = true;
+	}
 	
-	//画像処理
+	//*****画像処理*****//
 	if (PlayerState == P_State_Wait) {//待機状態
 		UpdatePlayerImgWait();
 	}
