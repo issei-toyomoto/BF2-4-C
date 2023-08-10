@@ -39,7 +39,7 @@ public:
 	~bubble() {};
 
    
-    void Update();
+    void Update(int flg);
 	void Draw() const;
 	void BubleCollision();
 

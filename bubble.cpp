@@ -40,7 +40,7 @@ bubble::bubble()
 }
 
 
-void bubble::Update()
+void bubble::Update(int flg)
 {
 	FPSCount++;
 	// プレイヤーのX座標、Y座標
@@ -76,6 +76,9 @@ void bubble::Update()
 		Bubble[BubbleNumber].Flg = 0;
 		Bubble[BubbleNumber].detection = 0;
 		bubble::Draw();
+	}
+	if (flg == 1) {
+		BubleScore = 0;
 	}
 #endif // DEBUG
 
