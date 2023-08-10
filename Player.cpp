@@ -49,6 +49,13 @@ Player::Player()
 
 void Player::Update(int Stage) /***描画以外***/
 {
+	//ジョイステック情報取得
+	InputKey::Update();
+	/*if (InputKey::GetKeyDown(PAD_INPUT_A) == TRUE) {
+		Abtn = true;
+	}*/
+	GetJoypadAnalogInput(&XStick, &YStick, DX_INPUT_PAD1);
+
 	NowStage = Stage;//現在のステージ
 
 	if (Abtn == false) {//Aボタンを押してから[AbtnIntervalFream]分フレームがたったらAbtnをＦＡＬＳＥに戻す処理
@@ -106,12 +113,6 @@ void Player::Update(int Stage) /***描画以外***/
 		
 	}
 
-	//ジョイステック情報取得
-	InputKey::Update();
-	GetJoypadAnalogInput(&XStick, &YStick, DX_INPUT_PAD1);
-	InputKey::GetJoyStickX(XStick);
-	InputKey::GetJoyStickY(YStick);
-
 	UpdateStageCollision();//プレイヤーとステージの当たり判定
 
 	//**移動処理と死亡処理**//
@@ -159,6 +160,7 @@ void Player::Update(int Stage) /***描画以外***/
 	//残機が無くなったらプレイヤーを非表示
 	if (Life == -1) {
 		Hide = true;
+		//リスポーン時のSEを鳴らさない
 	}
 	
 	//*****画像処理*****//

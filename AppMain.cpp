@@ -40,6 +40,7 @@ int WINAPI WinMain(_In_ HINSTANCE ih, _In_opt_ HINSTANCE ioh, _In_ LPSTR il, _In
 	//ゲームループ
 	while (ProcessMessage() != -1 && sceneMng.Update() != nullptr)
 	{
+		InputKey::Update();
 		ClearDrawScreen();
 		fps.Update();	//FPS計測
 		sceneMng.Draw();//シーン描画

@@ -19,6 +19,7 @@ bubble::bubble()
 		Bubble[i].X_Old = 0;
 		Bubble[i].Y_Old = 0;
 		Bubble[i].AnimCount = 0;
+		Bubble[i].Event = 0;
 	}
 	BubbleNumber = 0;
 	/*bubbleX = 320;
@@ -28,7 +29,6 @@ bubble::bubble()
 	FPSCount = 0;
 	px = 0;
 	py = 0;
-	Y2 = 0;
 	/*BubbleFlg = 0;
 	BubleScore = 0;
 	Bubbledetection = 0;*/
@@ -38,6 +38,12 @@ bubble::bubble()
 	{
 		BubbleAnimFase[i] = 0;
 	}
+#ifdef DEBUG
+	LoadDivGraph("image/Enemy/Enemy_P_Animation.png", 18, 6, 3, 64, 64, BubbleVEnemy);
+	BEnemyX = 250.0f;
+	BEnemyY = 300.0f;
+#endif // DEBUG
+
 }
 
 
@@ -48,45 +54,52 @@ void bubble::Update(int flg)
 	px = Player::PlayerX;
 	py = Player::PlayerY;
 
-	bubble::BubleCollision();
-
-	Bubble[BubbleNumber].Y -= 0.25;
-	if (FPSCount <= 29) {
-		Bubble[BubbleNumber].X -= 2;
-		Bubble[BubbleNumber].Y -= 0.5;
-		Y2++;
+	BEnemyY += 1;
+	if (BEnemyY > 470 && Bubble[BubbleNumber].Event == 0) {
+		Bubble[BubbleNumber].Event = 1;
 	}
-	if (FPSCount >= 30 && FPSCount <= 60) {
-		Bubble[BubbleNumber].X += 2;
-		Bubble[BubbleNumber].Y += 0.5;
-	}
-
-	if (FPSCount == 60) {
-		FPSCount = 0;
-		Y2++;
-	}
-	if (Y2 == Y2) {
-		Bubble[BubbleNumber].Y -= 0.25;
-	}
-	if (Bubble[BubbleNumber].Flg == 1)
+	/*else
 	{
-		Bubble[BubbleNumber].AnimCount++;
-	}
-	if (Bubble[BubbleNumber].AnimCount == 1) {
-		PlaySoundMem(soundstorage.BubbleSE, DX_PLAYTYPE_BACK, TRUE);
-	}
+		BubbleNumber += 1;
+	}*/
+
+	if (Bubble[BubbleNumber].Event == 1) {
+		bubble::BubleCollision();
+
+		Bubble[BubbleNumber].Y -= FPSCount % 10 * 0.25f;
+		if (FPSCount <= 29) {
+			Bubble[BubbleNumber].X -= FPSCount % 10 * 0.25f;// 1.5f
+			Bubble[BubbleNumber].X += FPSCount % 10 * 0.05f;// 1.5f
+		}
+		if (FPSCount >= 30 && FPSCount <= 60) {
+			Bubble[BubbleNumber].X += FPSCount % 10 * 0.25f; // 1.5f
+			Bubble[BubbleNumber].X -= FPSCount % 10 * 0.05f;// 1.5f
+		}
+
+		if (FPSCount == 60) {
+			FPSCount = 0;
+		}
+		if (Bubble[BubbleNumber].Flg == 1)
+		{
+			Bubble[BubbleNumber].AnimCount++;
+		}
+		if (Bubble[BubbleNumber].AnimCount == 1) {
+			PlaySoundMem(soundstorage.BubbleSE, DX_PLAYTYPE_BACK, TRUE);
+		}
 #ifdef DEBUG
-	if (Bubble[BubbleNumber].AnimCount == 30)
-	{
-		Bubble[BubbleNumber].X = 320;
-		Bubble[BubbleNumber].Y = 480;
-		Bubble[BubbleNumber].AnimCount = 0;
-		Bubble[BubbleNumber].Flg = 0;
-		Bubble[BubbleNumber].detection = 0;
-		bubble::Draw();
-	}
-	if (flg == 1) {
-		BubleScore = 0;
+		if (Bubble[BubbleNumber].AnimCount == 30)
+		{
+			Bubble[BubbleNumber].X = BEnemyX;
+			Bubble[BubbleNumber].Y = 480;
+			Bubble[BubbleNumber].AnimCount = 0;
+			Bubble[BubbleNumber].Flg = 0;
+			Bubble[BubbleNumber].detection = 0;
+			Bubble[BubbleNumber].Event = 0;
+			bubble::Draw();
+		}
+		if (flg == 1) {
+			BubleScore = 0;
+		}
 	}
 #endif // DEBUG
 
@@ -105,31 +118,37 @@ void bubble::Draw() const
 {
 	/*DrawFormatStringF(0, 200, C_RED, "%d", px_old);
 	DrawFormatStringF(20, 200, C_RED, "%d", py_old);*/
-	DrawFormatString(80, 300, C_RED, "%d", Bubble[BubbleNumber].AnimCount);
-	if (Bubble[BubbleNumber].Flg == 0 && Bubble[BubbleNumber].detection == 0)
-	{
-		DrawGraph((int)Bubble[0].X, (int)Bubble[BubbleNumber].Y, Bubble[BubbleNumber].Img[0], TRUE);
-		DrawBox((int)Bubble[BubbleNumber].X + 15, (int)Bubble[BubbleNumber].Y + 15, (int)Bubble[BubbleNumber].X + 50, (int)Bubble[BubbleNumber].Y + 50, C_RED, FALSE);
+	if (Bubble[BubbleNumber].Event == 1) {
+		DrawFormatString(80, 300, C_RED, "%d", Bubble[BubbleNumber].AnimCount);
+		if (Bubble[BubbleNumber].Flg == 0 && Bubble[BubbleNumber].detection == 0)
+		{
+			DrawGraph((int)Bubble[BubbleNumber].X, (int)Bubble[BubbleNumber].Y, Bubble[BubbleNumber].Img[0], TRUE);
+			DrawBox((int)Bubble[BubbleNumber].X + 15, (int)Bubble[BubbleNumber].Y + 15, (int)Bubble[BubbleNumber].X + 50, (int)Bubble[BubbleNumber].Y + 50, C_RED, FALSE);
+		}
+		if (Bubble[0].Flg == 1)
+		{
+			if (Bubble[BubbleNumber].AnimCount < 100)
+			{
+				DrawGraph(Bubble[BubbleNumber].X_Old, Bubble[BubbleNumber].Y_Old - 35, BubbleScoreImg, TRUE);
+			}
+			if (Bubble[0].AnimCount < 2 && Bubble[0].AnimCount > 0)
+			{
+				DrawGraph((int)Bubble[BubbleNumber].X, (int)Bubble[BubbleNumber].Y, Bubble[BubbleNumber].Img[1], TRUE);
+			}
+			else if (Bubble[0].AnimCount < 4 && Bubble[0].AnimCount > 2)
+			{
+				DrawGraph((int)Bubble[BubbleNumber].X, (int)Bubble[BubbleNumber].Y, Bubble[BubbleNumber].Img[2], TRUE);
+			}
+			else if (Bubble[BubbleNumber].AnimCount < 6 && Bubble[BubbleNumber].AnimCount > 4)
+			{
+				DrawGraph((int)Bubble[BubbleNumber].X, (int)Bubble[BubbleNumber].Y, Bubble[BubbleNumber].Img[3], TRUE);
+			}
+		}
 	}
-	if (Bubble[0].Flg == 1)
-	{
-		if (Bubble[BubbleNumber].AnimCount < 100)
-		{
-			DrawGraph(Bubble[BubbleNumber].X_Old, Bubble[BubbleNumber].Y_Old - 35, BubbleScoreImg, TRUE);
-		}
-		if (Bubble[0].AnimCount < 2 && Bubble[0].AnimCount > 1)
-		{
-			DrawGraph((int)Bubble[BubbleNumber].X, (int)Bubble[BubbleNumber].Y, Bubble[BubbleNumber].Img[1], TRUE);
-		}
-		else if (Bubble[0].AnimCount < 4 && Bubble[0].AnimCount > 2)
-		{
-			DrawGraph((int)Bubble[BubbleNumber].X, (int)Bubble[BubbleNumber].Y, Bubble[BubbleNumber].Img[2], TRUE);
-		}
-		else if (Bubble[BubbleNumber].AnimCount < 6 && Bubble[BubbleNumber].AnimCount > 4)
-		{
-			DrawGraph((int)Bubble[BubbleNumber].X, (int)Bubble[BubbleNumber].Y, Bubble[BubbleNumber].Img[3], TRUE);
-		}
-	}
+#ifdef DEBUG
+	DrawGraph(BEnemyX, BEnemyY, BubbleVEnemy[9],TRUE);
+#endif // DEBUG
+
 }
 // シャボン玉の当たり判定
 void bubble::BubleCollision()
@@ -144,7 +163,7 @@ void bubble::BubleCollision()
 
 	// シャボン玉とプレイヤーの当たり判定
 	if (((BubleX1 > px + 18 && BubleX1 < px + 40) || (BubleX1 < px + 18 && BubleX2 > px + 18)) && ((BubleY1 > py + 14 && BubleY1 < py + 64) || (py + 14 > BubleY1 && py + 14 < BubleY2)) && Bubble[0].detection == 0) {
-		BubleScore += 500;
+		BubleScore += 4500;
 		Bubble[BubbleNumber].X_Old = BubleX1;
 		Bubble[BubbleNumber].Y_Old = BubleY1;
 		Bubble[BubbleNumber].Flg = 1;

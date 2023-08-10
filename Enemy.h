@@ -6,6 +6,13 @@
 #define ENEMY_H 65     // 敵の高さ
 #define ENEMY_MAX 3    // 敵の最大数
 
+struct ENEMY2
+{
+	float x = 0.0f;
+	float y = 0.0f;     // 敵のY座標
+	int state = 0;      // 敵の状態(0:ピンク 1:緑 2:黄色)
+};
+
 class Enemy
 {
 private:
@@ -54,6 +61,8 @@ private:
 public:
 	 static int HitPFlg;       // プレイヤーと敵の当たり判定(プレイヤーに値を渡す)
 
+	 static ENEMY2 EnemyData[ENEMY_MAX]; // 敵の座標、状態（色）渡す用
+
 	Enemy();   // コンストラクタ
 	~Enemy();  // デストラクタ
 
@@ -71,6 +80,8 @@ public:
 	int HitPlayer(int e);   // 敵とプレイヤーの当たり判定
 	void EnemyDie(int e);   // 敵の死亡モーション処理
 	void EnemyPara(int e);  // 敵のパラシュート処理
+	void EnMove(int e);
+	void SetEnemyData(int e);
 
 	//描画以外の更新を実装する
 	void Update(int nowstage);

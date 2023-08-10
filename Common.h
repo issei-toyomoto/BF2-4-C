@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include"DxLib.h"
 
+//フレーム
+#define Frame 60
+
 //画面サイズ
 #define _SCREEN_HEIGHT_ 480	//縦
 #define _SCREEN_WIDHT_	640	//横

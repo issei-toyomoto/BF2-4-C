@@ -22,7 +22,6 @@ int GameMain::PauseFlg;
 
 AbstractScene* GameMain::Update()
 {
-	InputKey::Update();
 	++PauseWTime;
 	// ポーズ状態ではない間行う処理
 	if (PauseFlg == 0 && GameOverFlg == 0) {
@@ -47,9 +46,9 @@ AbstractScene* GameMain::Update()
 	if (PauseFlg == 1) {
 		Pause();
 	}
-	if (InputKey::GetKey(PAD_INPUT_7) == TRUE && GameOverFlg == 0/* && GameOverWTime > 20*/) { // STARTが押された  // まだ一度もPause状態になってないなら
-		GameOverFlg = 1; // Pause状態になるというフラグ
+	if (GameOverFlg == 0 && player.Life < 0) { // STARTが押された  // まだ一度もPause状態になってないなら
 		PlaySoundMem(ss.GameOverSE, DX_PLAYTYPE_BACK, TRUE);
+		GameOverFlg = 1; // GameOvereになるというフラグ
 	}
 	if (GameOverFlg == 1) {
 		if (GameOverWTime < 480) {
@@ -63,27 +62,7 @@ AbstractScene* GameMain::Update()
 			return new Title();
 		}
 	}
-	//else if (inputkey.GetKey(PAD_INPUT_7) == TRUE && GameOverFlg == 1 && PauseWTime > 20) {
-	//	PauseWTime = 0;
-	//	PauseFlg = 0;
-	//}
-	//if (InputKey::GetKey(PAD_INPUT_8) == TRUE && PauseFlg == 0) { // STARTが押されたとき // まだ一度もPause状態になってないなら
-	//	PauseFlg = 1; // Pause状態になるというフラグ
-	//	Pause();
-	//}
-	//WaitTime++;
-	//if (InputKey::GetKey(PAD_INPUT_8) == TRUE && PauseFlg == 1 && WaitTime > 120) {
-	//	WaitTime = 0;
-	//	PauseFlg = 0;
-	//}
-	/*if (PauseFlg == 1) {
-		
-	}*/
-	/*if (WaitTime > 180) {
-		WaitTime = 0;
-		return new Title();
-	}*/
-
+	
 	if (CheckHitKey(KEY_INPUT_1)) {
 		gStageState = 1;
 	}
@@ -125,7 +104,7 @@ void GameMain::Draw()const
 		DrawFormatString(200, 350, C_RED, "%d", PauseWTime);
 	}
 	if (GameOverFlg == 1) {
-		DrawGraph(200, 200, GameOverFont, TRUE);
+		DrawGraph(250, 200, GameOverFont, TRUE);
 	}
 	DrawGraph(160, 455, gGameImg[12], TRUE);//海の表示
 	DrawGraph(0, 455, gGameImg[12], TRUE);
