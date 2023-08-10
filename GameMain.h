@@ -9,6 +9,7 @@
 #include "UI.h"
 #include "InputKey.h"
 #include "Soundstorage.h"
+#include "Cloud.h"
 
 class GameMain : public AbstractScene
 {
@@ -23,6 +24,7 @@ private:
 	gStage stage;
 	InputKey inputkey;
 	Soundstorage ss;
+	Cloud cloud;
 
 	int gGameImg[14];
 	int gStageState;

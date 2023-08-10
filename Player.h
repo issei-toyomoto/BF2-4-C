@@ -115,7 +115,7 @@ private:
 	int OldStage;
 	int BalloonCrack;	//風船の数を割られた時の変数（0:割られてない　１：割られた）*Enemy.cppから値を取得する*（未完成）
 
-	int LifeNom;		//残機数
+	int Life;		//残機数
 
 	bool ReStartSoundFlg;
 public:

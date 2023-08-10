@@ -18,7 +18,10 @@ private:
 	int HitPeFlg;
 	float EnXL[ENEMY_MAX], EnYL[ENEMY_MAX]; //敵の左上座標
 	float EnXR[ENEMY_MAX], EnYR[ENEMY_MAX]; //敵の右下座標
-	int UpCnt, DownCnt;
+	float MaxSpeed;      // 最大速度
+	float acceleration;  // 加速度
+	float friction;      // 摩擦係数
+
 
 	int NowStage;
 	
@@ -28,13 +31,13 @@ private:
 	// 敵のデータ(構造体)
 	struct ENEMY
 	{
-		float x = 0.0f;        // 敵のX座標
-		float y = 0.0f;        // 敵のY座標
+		float x = 0.0f;     // 敵のX座標
+		float y = 0.0f;     // 敵のY座標
 		float vecx = 0.0f;  // 敵の移動量X
 		float vecy = 0.0f;  // 敵の移動量Y
 		int state = 0;      // 敵の状態(0:ピンク 1:緑 2:黄色)
 		int life = 2;       // 敵のHP(0:死亡 1:パラシュート状態 2:風船1個状態)
-		int start = 0;
+		int start = 0;      // パラシュート状態後の風船膨らませる用
 		int flg = 0;        // 敵の画像番号用
 		int direction = 0;  // 敵の向いてる向き(0:左 1:右)
 		int ground = 0;     // 地面に触れているか(0:触れてない 1:触れている)
@@ -57,13 +60,13 @@ public:
 	void EnemyInit();       // 敵の初期化処理
 	void EnemyMove(int i);  // 敵の移動処理
 	void StartMove();       // 敵のスタート処理
-	void StartMove(int i);       // 敵のスタート処理
+	void StartMove(int i);  // 敵のスタート処理(パラシュート後)
 	void EnemyUp(int e);    // 敵の浮上モーション処理
 	void EnemyDown(int e);  // 敵の降下モーション処理
 	void EnemyLeft(int e);  // 敵の左移動処理
 	void EnemyRight(int e); // 敵の右移動処理
 	void HitStage(int e);   // 敵とステージの当たり判定
-	int HitEnemy(int e);    // 敵同士の当たり判定
+	int HitEnemy(int e,int e2);    // 敵同士の当たり判定
 	int HitStart(int e);    // 敵とプレイヤーの当たり判定(スタート時)
 	int HitPlayer(int e);   // 敵とプレイヤーの当たり判定
 	void EnemyDie(int e);   // 敵の死亡モーション処理
