@@ -35,6 +35,7 @@ AbstractScene* Title::Update()
 	if (inputkey.GetJoyStickY(inputkey.Y_now) && inputkey.key_flg && inputkey.Y_now < 0)
 		if (--MenuNumber < 0)MenuNumber = 2;
 	if (inputkey.GetKey(PAD_INPUT_1) == TRUE && MenuNumber == 0 || inputkey.GetKey(PAD_INPUT_8)) {
+		PlaySoundMem(ss.gStartSE, DX_PLAYTYPE_BACK, TRUE);
 		return new GameMain();
 	}
 	else if (CheckHitKey(KEY_INPUT_6)) {
