@@ -5,7 +5,7 @@
 #include "Fish.h"
 #include "Soundstorage.h"
 
-#define DEBUG
+//#define DEBUG
 
 float Player::PlayerX;
 float Player::PlayerY;
@@ -415,7 +415,7 @@ void Player::UpdateStageCollision()
 	PXU_Left  = (int)PlayerX + 18;//左上X
 	PYU_Left  = (int)PlayerY + 14;//左上Y
 	PXL_Right = (int)PlayerX + 40;//右下X
-	PYL_Right = (int)PlayerY + 64;//右下Y
+	PYL_Right = (int)PlayerY + 61;//右下Y
 
 	if (NowStage == 1) {//***************　１ステージ　***************//
 /*******************************************************************************************************************************/

@@ -1,7 +1,7 @@
 #include "Cloud.h"
 #include "Common.h"
 
-//#define DEBUG
+#define DEBUG
 
 Cloud::Cloud() 
 {
@@ -72,8 +72,13 @@ void Cloud::Draw(int Stage) const
 	StageDrawCloud(Stage);
 
 #ifdef DEBUG
-	DrawFormatString(200, 40, C_WHITE, "Time 0 %d", WaitTimeFlg[0]);
-	DrawFormatString(200, 60, C_WHITE, "Time 1 %d", WaitTimeFlg[1]);
+	DrawFormatString(200, 40, C_WHITE, "TimeF 0 %d", WaitTimeFlg[0]);
+	DrawFormatString(200, 60, C_WHITE, "Time %d", WaitTime[0]);
+	DrawFormatString(200, 80, C_WHITE, "TimeC %d", WaitTimeCnt[0]);
+	DrawFormatString(200, 100, C_WHITE, "AnimC %d", AnimCnt[0]);
+
+	DrawFormatString(300, 40, C_WHITE, "TimeF 1 %d", WaitTimeFlg[1]);
+	
 #endif // DEBUG
 
 }
