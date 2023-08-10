@@ -25,15 +25,22 @@ UI::UI()
 	HScore10000 = 0;
 	TScore100000 = 0;
 	HScore100000 = 0;
-	HighScore = 0;
+	HighScore = 10000;
+	LifeCnt = 0;
+
+	UIflg = 0;
 };
 UI::~UI()
 {
 }
 void UI::Update(int flg)
 {
+	LifeCnt = player.Life;
 	bubleScore = Bubble.BubleScore;
 	TotalScore = bubleScore;
+	if (TotalScore > HighScore) {
+		HighScore = TotalScore;
+	}
 	TScore1      = TotalScore % 10;
 	TScore10     = (TotalScore % 100) / 10;
 	TScore100    = (TotalScore % 1000) / 100;
@@ -47,10 +54,11 @@ void UI::Update(int flg)
 	HScore10000 = (HighScore % 100000) / 10000;
 	HScore100000 = HighScore / 100000;
 	if (flg == 1) {
-		/*if (TotalScore > HighScore) {
-			HighScore = TotalScore;
+		if (TotalScore > HighScore) {
+			UIflg = flg;
 			TotalScore = 0;
-		}*/
+		}
+		UIflg = flg;
 		bubleScore = 0;
 		TotalScore = 0;
 	}
@@ -58,6 +66,9 @@ void UI::Update(int flg)
 
 void UI::Draw() const
 {
+	for (int i = 0; i < LifeCnt; i++) {
+		DrawGraph(135 + 15 * i, 28, UIStock, TRUE);
+	}
 	// プレイヤースコアに反映されるUI
 	DrawGraph(50, 0, UINumber[TScore100000], TRUE);
 	DrawGraph(70, 0, UINumber[TScore10000], TRUE); 
@@ -74,11 +85,11 @@ void UI::Draw() const
 	DrawGraph(335, 0, UINumber[HScore1], TRUE);
 	DrawGraph(35, 7, UIScore, TRUE);
 	DrawGraph(200, 8, UITop, TRUE);
-	DrawGraph(135, 28, UIStock, TRUE);
-	DrawGraph(150, 28, UIStock, TRUE);
+	/*DrawGraph(150, 28, UIStock, TRUE);*/
 
 #ifdef DEBUG
-	DrawFormatString(200, 0, C_RED, "%d", TotalScore);
+	DrawFormatString(200, 0, C_RED, "%d", HighScore);
+	DrawFormatString(300, 0, C_RED, "%d",UIflg);
 #endif // DEBUG
 
 }

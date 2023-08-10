@@ -1,14 +1,16 @@
 #pragma once
 #include "DxLib.h"
 #include "bubble.h"
+#include"Player.h"
 class  UI
 {
 private:
 	bubble Bubble;
+	Player player;
 	int UIScore;
 	int UITop;
 	int UIStock;
-	int UINumber[9];
+	int UINumber[10];
 	int bubleScore;
 	int TotalScore;
 	int TScore1;
@@ -24,6 +26,9 @@ private:
 	int HScore10000;
 	int HScore100000;
 	int HighScore;
+	int LifeCnt;
+
+	int UIflg;     // デバッグ用
 
 public:
 	// コンストラクタ

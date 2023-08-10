@@ -10,7 +10,7 @@ private:
 	int Now_key;
 	int Old_key;*/
 	InputKey inputkey;
-	Soundstorage soundstorage;
+	Soundstorage ss;
 
 	int gTitleFontImg;
 	int gTitleModeImg;
