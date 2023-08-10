@@ -49,12 +49,14 @@ void bubble::Update(int flg)
 
 	bubble::BubleCollision();
 
-	Bubble[BubbleNumber].Y -= 0.75;
+	Bubble[BubbleNumber].Y -= 0.25;
 	if (FPSCount <= 29) {
-		Bubble[BubbleNumber].X -= 1.5;
+		Bubble[BubbleNumber].X -= 2;
+		Bubble[BubbleNumber].Y -= 0.5;
 	}
 	if (FPSCount >= 30 && FPSCount <= 60) {
-		Bubble[BubbleNumber].X += 1.5;
+		Bubble[BubbleNumber].X += 2;
+		Bubble[BubbleNumber].Y += 0.5;
 	}
 
 	if (FPSCount == 60) {
