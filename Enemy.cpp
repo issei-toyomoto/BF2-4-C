@@ -1701,7 +1701,6 @@ int Enemy::HitPlayer(int e)
 			}
 			else if (EnYR[e] > (PYL + 37)) // 敵の位置(高さ)がプレイヤー(風船を除く人の部分)の半分より上にいる場合
 			{
-				enemy[e].flg = 17;
 
 				HitPFlg = 2; // プレイヤーが敵に跳ね返る(風船あり)、プレイヤーの風船が一個減る
 
@@ -1709,7 +1708,6 @@ int Enemy::HitPlayer(int e)
 			}
 			else // 敵の位置とプレイヤの位置(高さ)に上記以上の差がない場合
 			{
-				enemy[e].flg = 17;
 
 				HitPFlg = 1; // プレイヤーが敵に跳ね返る
 
