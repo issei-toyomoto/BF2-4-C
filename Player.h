@@ -115,14 +115,14 @@ private:
 	int OldStage;
 	int BalloonCrack;	//風船の数を割られた時の変数（0:割られてない　１：割られた）*Enemy.cppから値を取得する*（未完成）
 
-	int Life;		//残機数
-
 	bool ReStartSoundFlg;
 public:
 	static float PlayerX;	//プレイヤーX座標(画像の左上X座標)
 	static float PlayerY;	//プレイヤーY座標(画像の左上Y座標)
 
 	static bool Death;		//(true:死亡した               false:死亡していない          )
+
+	static int Life;		//残機数
 
 	//コンストラクタ
 	Player();
