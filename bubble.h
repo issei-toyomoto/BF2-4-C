@@ -33,6 +33,7 @@ private:
 	int BubbleY_Old;*/
 	float px, py;
 	int BubbleNumber;
+	int Y2;
 public:
 
 	bubble();

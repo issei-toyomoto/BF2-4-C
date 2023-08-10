@@ -28,6 +28,7 @@ bubble::bubble()
 	FPSCount = 0;
 	px = 0;
 	py = 0;
+	Y2 = 0;
 	/*BubbleFlg = 0;
 	BubleScore = 0;
 	Bubbledetection = 0;*/
@@ -53,6 +54,7 @@ void bubble::Update(int flg)
 	if (FPSCount <= 29) {
 		Bubble[BubbleNumber].X -= 2;
 		Bubble[BubbleNumber].Y -= 0.5;
+		Y2++;
 	}
 	if (FPSCount >= 30 && FPSCount <= 60) {
 		Bubble[BubbleNumber].X += 2;
@@ -61,6 +63,10 @@ void bubble::Update(int flg)
 
 	if (FPSCount == 60) {
 		FPSCount = 0;
+		Y2++;
+	}
+	if (Y2 == Y2) {
+		Bubble[BubbleNumber].Y -= 0.25;
 	}
 	if (Bubble[BubbleNumber].Flg == 1)
 	{
