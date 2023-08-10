@@ -11,7 +11,7 @@
 #include "Soundstorage.h"
 #include "Cloud.h"
 
-class GameMain :public AbstractScene
+class GameMain : public AbstractScene
 {
 private:
 	Player player;
@@ -35,9 +35,10 @@ private:
 	};
 
 public:
-	static int GameoverFlg;
+	static int GameOverFlg;
 	static int GameOverFont;
-	static int WaitTime;
+	static int PauseWTime;
+	static int GameOverWTime;
 	static int PauseFlg;
 	//コンストラクタ
 	GameMain() {
@@ -57,7 +58,8 @@ public:
 		gGameImg[13] = LoadGraph("images/ningen.png");               // プレイヤー画像
 		gStageState = 1;
 		GameOverFont = LoadGraph("images-20230711T024428Z-001/images/UI/UI_GameOver.png");
-		WaitTime = 0;
+		PauseWTime = 0;
+		GameOverWTime = 0;
 		PauseFlg = 0;
 	};
 

@@ -10,39 +10,63 @@
 #include "Stage.h"
 #include "InputKey.h"
 #include "Soundstorage.h"
+#include "UI.h"
 
 //#define DEBUG
 
 int GameMain::GameOverFont;
-int GameMain::GameoverFlg;
-int GameMain::WaitTime;
+int GameMain::GameOverFlg;
+int GameMain::PauseWTime;
+int GameMain::GameOverWTime;
 int GameMain::PauseFlg;
 
 AbstractScene* GameMain::Update()
 {
 	InputKey::Update();
-	++WaitTime;
-	if (PauseFlg == 0) {
+	++PauseWTime;
+	// ポーズ状態ではない間行う処理
+	if (PauseFlg == 0 && GameOverFlg == 0) {
 		player.Update(gStageState);
-		BUBBLE.Update();
+		BUBBLE.Update(GameOverFlg);
 		enemy.Update(gStageState);
 		fish.Update();
 		//雷
 		cloud.Update();
-		ui.Update();
+		ui.Update(GameOverFlg);
 		stage.Update();
 	}
-	if (InputKey::GetKey(PAD_INPUT_8) == TRUE && PauseFlg == 0 && WaitTime > 20) { // STARTが押された  // まだ一度もPause状態になってないなら
+	// ポーズ状態に遷移する処理(startボタン)
+	if (InputKey::GetKey(PAD_INPUT_8) == TRUE && PauseFlg == 0 && PauseWTime > 20) { // STARTが押された  // まだ一度もPause状態になってないなら
 		PauseFlg = 1; // Pause状態になるというフラグ
-		WaitTime = 0;
+		PauseWTime = 0;
 		}
-		else if(inputkey.GetKey(PAD_INPUT_8) == TRUE && PauseFlg == 1 && WaitTime > 20) {
-		WaitTime = 0;
+		else if(inputkey.GetKey(PAD_INPUT_8) == TRUE && PauseFlg == 1 && PauseWTime > 20) {
+		PauseWTime = 0;
 		PauseFlg = 0;
 		}
 	if (PauseFlg == 1) {
 		Pause();
 	}
+	if (InputKey::GetKey(PAD_INPUT_7) == TRUE && GameOverFlg == 0/* && GameOverWTime > 20*/) { // STARTが押された  // まだ一度もPause状態になってないなら
+		GameOverFlg = 1; // Pause状態になるというフラグ
+		PlaySoundMem(ss.GameOverSE, DX_PLAYTYPE_BACK, TRUE);
+	}
+	if (GameOverFlg == 1) {
+		if (GameOverWTime < 480) {
+			++GameOverWTime;
+		}
+		else {
+			ui.Update(GameOverFlg);
+			BUBBLE.Update(GameOverFlg);
+			GameOverFlg = 0;
+			GameOverWTime = 0;
+			return new Title();
+		}
+	}
+	//else if (inputkey.GetKey(PAD_INPUT_7) == TRUE && GameOverFlg == 1 && PauseWTime > 20) {
+	//	PauseWTime = 0;
+	//	PauseFlg = 0;
+	//}
 	//if (InputKey::GetKey(PAD_INPUT_8) == TRUE && PauseFlg == 0) { // STARTが押されたとき // まだ一度もPause状態になってないなら
 	//	PauseFlg = 1; // Pause状態になるというフラグ
 	//	Pause();
@@ -98,9 +122,10 @@ void GameMain::Draw()const
 	if (PauseFlg == 1) {
 		DrawString(200, 320, "--- ポーズ中 ---", C_WHITE);
 		DrawFormatString(200, 300, C_RED, "%d", PauseFlg);
-		DrawFormatString(200, 350, C_RED, "%d", WaitTime);
-
-		/*DrawGraph(200, 200, GameOverFont, TRUE);*/
+		DrawFormatString(200, 350, C_RED, "%d", PauseWTime);
+	}
+	if (GameOverFlg == 1) {
+		DrawGraph(200, 200, GameOverFont, TRUE);
 	}
 	DrawGraph(160, 455, gGameImg[12], TRUE);//海の表示
 	DrawGraph(0, 455, gGameImg[12], TRUE);
@@ -220,7 +245,7 @@ void GameMain::Draw()const
 // ゲームオーバー画面
 void GameMain::GameOver()
 {
-	WaitTime++;
+	/*WaitTime++;*/
 }
 // ポーズ画面
 void GameMain::Pause()
