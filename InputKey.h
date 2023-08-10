@@ -7,10 +7,11 @@ private:
 	/*static int key_flg;
 	static int now_key;
 	static int old_key;*/
-public:
 	static int key_flg;
 	static int now_key;
 	static int old_key;
+public:
+	
 	
 	static int Xbuf;
 	static int Ybuf;
@@ -49,9 +50,9 @@ public:
 	//‰Ÿ‚µ‚½uŠÔM†‚ğ‘—‚é
 	static int GetKeyDown(int key);
 
-	static int GetJoyStickX(int X);
-	static int GetJoyStickY(int Y);
+	static int GetJoyStickX();
+	static int GetJoyStickY();
 	
-	static int GetJoyStickXOnes(int X);
-	static int GetJoyStickYOnes(int Y);
+	static int GetJoyStickXOnes();
+	static int GetJoyStickYOnes();
 };
