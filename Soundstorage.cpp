@@ -1,7 +1,7 @@
 #include "Soundstorage.h"
 #include"Dxlib.h"
 
-int Soundstorage::gRestartSE;
+int Soundstorage::gRestartSE; // çœ
 int Soundstorage::gStartSE;
 int Soundstorage::gStageClearSE;
 int Soundstorage::gSplashSE;
@@ -15,7 +15,7 @@ int Soundstorage::EnemyMoveSE;
 int Soundstorage::EatableSE;
 int Soundstorage::DefeatTheEnemySE;
 int Soundstorage::CrackSE;
-int Soundstorage::BubbleSE;
+int Soundstorage::BubbleSE; // çœ
 int Soundstorage::TripBGM;
 Soundstorage::Soundstorage() 
 {
