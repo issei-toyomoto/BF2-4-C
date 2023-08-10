@@ -23,7 +23,7 @@ private:
 	int f_Count;		//カウント	
 	int FishAnim;		//フラグ
 
-	//ターゲット用変数 0:無し　1:プレイヤー
+	//ターゲット用変数 0:無し　1:プレイヤー　２～４:敵（色別）
 	int Target;			
 
 	//プレイヤー座標
@@ -31,6 +31,9 @@ private:
 	float P_X;			
 	float P_Y;		
 
+	//敵座標
+	float E_X;
+	float E_Y;
 public:
 
 	//魚に食べられたときプレイヤー用
@@ -46,10 +49,8 @@ public:
 	void Update();				//出現エリア判定
 	void CheckPlayer();			//プレイヤー判定
 	void CheckEnemy();			//エネミー判定
-	void P_MoveFish();			//魚移動(プレイヤー)
-	void E_MoveFish();			//魚移動(敵)
-	void TargetPlayer();		//プレイヤーを襲う処理
-	void TargetEnemy();			//敵を襲う処理
+	void P_MoveFish();			//プレイヤーを襲う処理
+	void E_MoveFish();			//敵を襲う処理
 	void InitFish();			//初期化
 	bool GetFishFlg();			//魚に食べられたとき用変数取得関数(プレイヤー)
 	bool E_GetFishFlg();		//魚に食べられたとき用変数取得関数(敵)
