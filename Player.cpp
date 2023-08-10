@@ -5,7 +5,7 @@
 #include "Fish.h"
 #include "Soundstorage.h"
 
-//#define DEBUG
+#define DEBUG
 
 float Player::PlayerX;
 float Player::PlayerY;
@@ -42,6 +42,8 @@ Player::Player()
 	ReStartSoundFlg = false;
 
 	Life = 2;
+
+	DeathVectorY = -3;
 
 	FishFlg = Fish::P_FishFlg;//Fish.cppから値を取得
 	BalloonCrack = Balloon_NotCrack;
@@ -145,7 +147,12 @@ void Player::Update(int Stage) /***描画以外***/
 		PlayerY += VectorY;//Y座標更新
 	}
 	else if (BalloonNum == 0) {//風船の数が０になった時の処理
-		PlayerDeathAnim();
+		PlayerState = P_State_Dead;
+
+		VectorY = -3;
+		VectorY = VectorY * -0.9;
+		PlayerY += VectorY;
+
 		if (Death == true) {
 			BalloonNum = 2;
 			Death = false;
@@ -402,8 +409,6 @@ void Player::UpdatePlayerY() //*プレイヤーのY座標処理*//
 	else {//A、Bボタンを押していない時
 		FlyBtnFlg = OFF_FlyBtn;
 	}
-
-	
 }
 
 //*プレイヤーとステージの当たり判定処理*//
@@ -1733,11 +1738,4 @@ float Player::GetPlayerX (){
 float Player::GetPlayerY() {
 	static float Y = PlayerY;
 	return Y;
-}
-
-void Player::PlayerDeathAnim() 
-{
-	PlayerState = P_State_Dead;
-	VectorY = 3;
-	PlayerY += VectorY;
 }

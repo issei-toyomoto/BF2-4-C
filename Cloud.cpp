@@ -1,7 +1,7 @@
 #include "Cloud.h"
 #include "Common.h"
 
-#define DEBUG
+//#define DEBUG
 
 Cloud::Cloud() 
 {
