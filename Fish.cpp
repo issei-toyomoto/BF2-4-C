@@ -41,30 +41,13 @@ void Fish::Draw() const {
 //出現エリア
 void Fish::Update() {
 	CheckPlayer();
-
+	if (SpawnFlg == FALSE) {
+		CheckEnemy();
+	}
 }
 
 //魚移動(プレイヤー)
 void Fish::P_MoveFish() {
-	P_X = Player::PlayerX;
-	P_Y = Player::PlayerY;
-	//攻撃対象がプレイヤー
-	if (P_Y >= 358 && P_Y <= 460 && P_X >= 135 && P_X <= 479 || FishAnim <= 3) {
-		TargetPlayer();
-	}
-}
-
-//魚移動(敵)
-void Fish::E_MoveFish() {
-	//攻撃対象が敵
-	/*if () {
-		TargetEnemy();
-	}
-	*/
-}
-
-//プレイヤーを襲う処理
-void Fish::TargetPlayer() {
 	Target = 1;
 	f_PosX = P_X;
 	FishAnim = f_Count / 17;
@@ -82,9 +65,24 @@ void Fish::TargetPlayer() {
 	}
 }
 
-//敵を襲う処理
-void Fish::TargetEnemy() {
-
+//魚移動(敵)
+void Fish::E_MoveFish() {
+	//攻撃対象が敵
+	//Target = 2;
+	//f_PosX = E_X;
+	//FishAnim = f_Count / 17;
+	////アニメーション計算
+	//f_Count = f_Count - 2;
+	//if (FishAnim == 3) {
+	//	E_FishFlg = TRUE;
+	//}
+	////プレイヤー接触後
+	//if (f_Count <= 0) {
+	//	WaitTime--;
+	//	if (WaitTime <= 0) {
+	//		InitFish();
+	//	}
+	//}
 }
 
 //初期化
@@ -94,7 +92,6 @@ void Fish::InitFish() {
 	TurnFlg = FALSE;
 	f_PosY = 400;
 	Target = 0;
-	Second = 0;
 	f_Count = 120;
 	WaitTime = 51;
 }
@@ -166,7 +163,53 @@ void Fish::CheckPlayer() {
 
 //エネミー判定
 void Fish::CheckEnemy() {
-
+	//出現エリア判定
+	//if (E_Y >= 358 && E_Y <= 460 && E_X >= 135 && E_X <= 479) {
+	//	Count++;
+	//	Second = Count / 60;
+	//	//三秒経過＆魚がいない
+	//	/*３秒後確率抽選。その後FALSEなら１秒ごとに抽選*/
+	//	if (Second >= 3 && SpawnFlg == FALSE) {
+	//		FishRand = GetRand(99);
+	//		Count = 0;
+	//		Second = 2;
+	//		//魚出現
+	//		if (FishRand <= 29) {
+	//			//魚の向きを設定（ランダム）
+	//			FishRand = GetRand(1);
+	//			if (FishRand == 1) {
+	//				TurnFlg = TRUE;
+	//			}
+	//			SpawnFlg = TRUE;
+	//			E_MoveFish();
+	//		}
+	//	}
+	//	//魚移動
+	//	else if (SpawnFlg == TRUE) {
+	//		E_MoveFish();
+	//	}
+	//}
+	////魚出現中に敵が範囲外に出たとき
+	//if (E_Y < 358 && SpawnFlg == TRUE) {
+	//	//接触後
+	//	if (FishAnim <= 3) {
+	//		E_MoveFish();
+	//	}
+	//	//接触前
+	//	else if (FishAnim >= 4) {
+	//		FishAnim = 5;
+	//		f_PosY = f_PosY + 2;
+	//		if (f_PosY >= 440) {
+	//			InitFish();
+	//		}
+	//	}
+	//}
+	////魚未出現時に敵が外に出たとき
+	//else if (E_Y < 358 && SpawnFlg == FALSE) {
+	//	//抽選用時間リセット
+	//	Count = 0;
+	//	Second = 0;
+	//}
 }
 
 //左向き描画
@@ -189,9 +232,15 @@ void Fish::DrawRight() const {
 		case 1:
 			DrawGraph((int)f_PosX, (int)f_PosY, FishImage[6], TRUE);
 			break;
-			//case Enemy:	//敵によって画像変更
-			//	DrawTurnGraph(f_PosX,f_PosY,FishImage[EnemyFlg],TRUE);
-			//	break;
+		//case 2:	//敵によって画像変更
+		//	DrawTurnGraph(f_PosX,f_PosY,FishImage[7],TRUE);
+		//	break;
+		//case 3:	
+		//	DrawTurnGraph(f_PosX,f_PosY,FishImage[8],TRUE);
+		//	break;
+		//case 4:	
+		//	DrawTurnGraph(f_PosX,f_PosY,FishImage[9],TRUE);
+		//	break;
 		}
 		break;
 	case 2:
@@ -225,9 +274,15 @@ void Fish::DrawLeft() const {
 		case 1:
 			DrawTurnGraph((int)f_PosX, (int)f_PosY, FishImage[6], TRUE);
 			break;
-			//case Enemy:	//敵によって画像変更
-			//	DrawGraph(f_PosX,f_PosY,FishImage[EnemyFlg],TRUE);
-			//	break;
+		//case 2:	//敵によって画像変更
+		//	DrawTurnGraph(f_PosX,f_PosY,FishImage[7],TRUE);
+		//	break;
+		//case 3:	
+		//	DrawTurnGraph(f_PosX,f_PosY,FishImage[8],TRUE);
+		//	break;
+		//case 4:	
+		//	DrawTurnGraph(f_PosX,f_PosY,FishImage[9],TRUE);
+		//	break;
 		}
 		break;
 	case 2:

@@ -1,5 +1,6 @@
 #pragma once
 #include"Soundstorage.h"
+#define DEBUG
 //#define BUBBLE_X 320
 //#define BUBBLE_Y 480
 class bubble  {
@@ -18,6 +19,8 @@ private:
 		int Y_Old;
 		int Img[4];
 		int AnimCount;
+		int Event;
+
 	};
 	struct BubbleSet Bubble[6];
 	//float bubbleX;// ƒVƒƒƒ{ƒ“‹Ê‚ÌX²
@@ -33,6 +36,11 @@ private:
 	int BubbleY_Old;*/
 	float px, py;
 	int BubbleNumber;
+
+	int BubbleVEnemy[10];     // “GŠ®¬‚Ü‚Å‚Ì‰¼‘z“G
+	float BEnemyX;
+	float BEnemyY;
+
 public:
 
 	bubble();
