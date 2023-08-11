@@ -5,7 +5,7 @@
 #include "Fish.h"
 #include "Soundstorage.h"
 
-#define DEBUG
+//#define DEBUG
 
 float Player::PlayerX;
 float Player::PlayerY;

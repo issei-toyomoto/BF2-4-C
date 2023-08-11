@@ -1,7 +1,7 @@
 #include "Cloud.h"
 #include "Common.h"
 
-//#define DEBUG
+#define DEBUG
 
 Cloud::Cloud() 
 {
@@ -11,6 +11,7 @@ Cloud::Cloud()
 	for (int i = 0; i < 2; i++) {
 		NowImg[i] = Img[0];
 		WaitTimeCnt[i] = 0;
+		AnimCnt[i] = 0;
 	}
 
 	//アニメーションまでの時間決め
@@ -27,6 +28,7 @@ Cloud::Cloud()
 		else if (WaitTimeFlg[i] == 2) {
 			WaitTime[i] = 30 * Frame;
 		}
+		
 		else if (WaitTimeFlg[i] == 3) {
 			WaitTime[i] = 35 * Frame;
 		}
@@ -35,32 +37,34 @@ Cloud::Cloud()
 
 void Cloud::Update() 
 {
-	if (Num > 2) {
-		Num = 0;
+	for (Num = 0; Num < 2; Num++) {
+		WaitTimeCnt[Num]++;
+		if (CloudState[Num] == Anim) {//雲のステートがAnimならAnimCntをCntする
+			AnimCnt[Num]++;
+		}
+
+		if (AnimCnt[Num] > 8) {//AnimCntが８より大きいならAnimCntを０に
+			AnimCnt[Num] = 0;
+		}
+
+		if (WaitTime[Num] == WaitTimeCnt[Num]) {//設定した時間とCntが同じ時間なら雲のステートをAnimに
+			CloudState[Num] = Anim;
+		}
+
+		if (WaitTimeCnt[Num] == WaitTime[Num] + StopTime) {
+			WaitTimeCnt[Num] = 0;
+			WaitTime[Num] = 5 * Frame;
+			CloudState[Num] = No_Anim;
+		}
+
+		//画像処理
+		if (CloudState[Num] == No_Anim) {
+			NowImg[Num] = Img[0];
+		}
+		else if (CloudState[Num] == Anim) {
+			AnimCloud(Num);
+		}
 	}
-
-
-	AnimCnt[Num]++;
-	WaitTimeCnt[Num]++;
-
-
-	if (AnimCnt[Num] > 8) {
-		AnimCnt[Num] = 0;
-	}
-
-	if (WaitTime[Num] == WaitTimeCnt[Num]) {
-		CloudState[Num] = Anim;
-	}
-
-	//画像処理
-	if (CloudState[Num] == No_Anim) {
-		NowImg[Num] = Img[0];
-	}
-	else if (CloudState[Num] == Anim) {
-		AnimCloud(Num);
-	}
-
-	Num++;
 #ifdef DEBUG
 	
 #endif // DEBUG
