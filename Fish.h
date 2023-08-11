@@ -1,5 +1,7 @@
 #pragma once
 #include"Player.h"
+#include"Enemy.h"
+
 class Fish
 {
 private:
@@ -13,7 +15,8 @@ private:
 	float f_PosY;		
 
 	//出現判定　TRUE：出現　FALSE：未出現
-	bool SpawnFlg;
+	bool P_SpawnFlg;
+	bool E_SpawnFlg;
 
 	//画像用変数
 	int FishImage[10];	
@@ -31,9 +34,11 @@ private:
 	float P_X;			
 	float P_Y;		
 
-	//敵座標
+	//敵情報
 	float E_X;
 	float E_Y;
+	int E_Color;
+	bool E_Flg;
 public:
 
 	//魚に食べられたときプレイヤー用
