@@ -51,10 +51,10 @@ void Cloud::Update()
 			CloudState[Num] = Anim;
 		}
 
-		if (WaitTimeCnt[Num] == WaitTime[Num] + StopTime) {
+		if (WaitTimeCnt[Num] == WaitTime[Num] + StopTime) {//アニメーションを止める
 			WaitTimeCnt[Num] = 0;
-			WaitTime[Num] = 5 * Frame;
 			CloudState[Num] = No_Anim;
+			WaitTime[Num] = 5 * Frame;//次のアニメーションまでの時間設定
 		}
 
 		//画像処理
