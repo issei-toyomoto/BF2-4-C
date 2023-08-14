@@ -31,6 +31,7 @@ AbstractScene* GameMain::Update()
 		fish.Update();
 		thunderbolt.Update(gStageState);
 		cloud.Update();
+		thunder.Update();
 		ui.Update(GameOverFlg);
 		stage.Update();
 	}
@@ -92,6 +93,7 @@ void GameMain::Draw()const
 	if (PauseFlg == 0) {
 		thunderbolt.Draw(gStageState);
 		cloud.Draw(gStageState);
+		thunder.Draw();
 		BUBBLE.Draw();
 		enemy.Draw();
 		fish.Draw();
