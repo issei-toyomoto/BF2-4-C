@@ -1,10 +1,13 @@
+#define _USE_MATH_DEFINES
 #include"bubble.h"
 #include"Dxlib.h"
 #include"Common.h"
 #include"Player.h"
 #include"Soundstorage.h"
+#include"GameMain.h"
 #include<math.h>
 #define DEBUG
+
 
 int bubble::BubleScore;
 
@@ -21,6 +24,7 @@ bubble::bubble()
 		Bubble[i].Y_Old = 0;
 		Bubble[i].AnimCount = 0;
 		Bubble[i].Event = 0;
+		Bubble[i].Count = 0;
 	}
 	BubbleNumber = 0;
 	/*bubbleX = 320;
@@ -30,6 +34,8 @@ bubble::bubble()
 	FPSCount = 0;
 	px = 0;
 	py = 0;
+	Bubble_X = 0;
+	Bubble_X_Old = 0;
 	/*BubbleFlg = 0;
 	BubleScore = 0;
 	Bubbledetection = 0;*/
@@ -50,31 +56,42 @@ bubble::bubble()
 
 void bubble::Update(int flg)
 {
+	float amplitude = 50.0f;
+	float frequency = 0.02;
+
 	FPSCount++;
 	// プレイヤーのX座標、Y座標
 	px = Player::PlayerX;
 	py = Player::PlayerY;
 
 	BEnemyY += 1;
-	if (BEnemyY > 470 && Bubble[BubbleNumber].Event == 0) {
-		Bubble[BubbleNumber].Event = 1;
+	if (BEnemyY > 430 && Bubble[BubbleNumber].Event == 0) {
+			Bubble[BubbleNumber].X = BEnemyX;
+			Bubble_X_Old = Bubble[BubbleNumber].X;
+			Bubble[BubbleNumber].Event = 1;
+			/*BubbleNumber++;*/
 	}
-	/*else
-	{
-		BubbleNumber += 1;
-	}*/
+	else if (py > 430 && Bubble[BubbleNumber].Event == 0) {
+			Bubble[BubbleNumber].X = px;
+			Bubble[BubbleNumber].Event = 1;
+			/*BubbleNumber++;*/
+	}
 
 	if (Bubble[BubbleNumber].Event == 1) {
 		bubble::BubleCollision();
 
-		Bubble[BubbleNumber].Y -= 10 * 0.25f;
-		if (FPSCount <= 29) {
-			Bubble[BubbleNumber].X -= FPSCount % 10 * 0.25f;// 1.5f
-		}
-		if (FPSCount >= 30 && FPSCount <= 60) {
-			Bubble[BubbleNumber].X += FPSCount % 10 * 0.25f; // 1.5f
-			Bubble[BubbleNumber].X -= FPSCount % 10 * 0.05f;// 1.5f
-		}
+		Bubble[BubbleNumber].Y -= 1.0f;
+		/*if (FPSCount <= 29) {*/
+			Bubble_X = Bubble_X_Old;
+			Bubble_X += amplitude * sin(frequency * Bubble[BubbleNumber].Count);
+			Bubble[BubbleNumber].X = Bubble_X;
+			Bubble[BubbleNumber].Count += 1;
+			//Bubble[BubbleNumber].X -= FPSCount % 10 * 0.25f;// 1.5f
+		/*}*/
+		//if (FPSCount >= 30 && FPSCount <= 60) {
+		//	Bubble[BubbleNumber].X += FPSCount % 10 * 0.25f; // 1.5f
+		//	Bubble[BubbleNumber].X -= FPSCount % 10 * 0.05f;// 1.5f
+		//}
 
 		if (FPSCount == 60) {
 			FPSCount = 0;
@@ -87,7 +104,7 @@ void bubble::Update(int flg)
 			PlaySoundMem(soundstorage.BubbleSE, DX_PLAYTYPE_BACK, TRUE);
 		}
 #ifdef DEBUG
-		if (Bubble[BubbleNumber].AnimCount == 30)
+		if (Bubble[BubbleNumber].AnimCount == 30 || Bubble[BubbleNumber].Y == 0)
 		{
 			Bubble[BubbleNumber].X = BEnemyX;
 			Bubble[BubbleNumber].Y = 480;
@@ -146,7 +163,7 @@ void bubble::Draw() const
 		}
 	}
 #ifdef DEBUG
-	DrawGraph(BEnemyX, BEnemyY, BubbleVEnemy[9],TRUE);
+	DrawGraph((int)BEnemyX, (int)BEnemyY, BubbleVEnemy[9],TRUE);
 #endif // DEBUG
 
 }
@@ -163,7 +180,7 @@ void bubble::BubleCollision()
 
 	// シャボン玉とプレイヤーの当たり判定
 	if (((BubleX1 > px + 18 && BubleX1 < px + 40) || (BubleX1 < px + 18 && BubleX2 > px + 18)) && ((BubleY1 > py + 14 && BubleY1 < py + 64) || (py + 14 > BubleY1 && py + 14 < BubleY2)) && Bubble[0].detection == 0) {
-		BubleScore += 4500;
+		BubleScore += 500;
 		Bubble[BubbleNumber].X_Old = BubleX1;
 		Bubble[BubbleNumber].Y_Old = BubleY1;
 		Bubble[BubbleNumber].Flg = 1;
