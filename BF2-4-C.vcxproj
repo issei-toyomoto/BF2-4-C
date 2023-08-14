@@ -149,6 +149,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Soundstorage.cpp" />
+    <ClCompile Include="Thunder.cpp" />
     <ClCompile Include="Thunderbolt.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="TitleScene.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="InputKey.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="Thunder.h" />
     <ClInclude Include="Thunderbolt.h" />
     <ClInclude Include="StageImg.h" />
     <ClInclude Include="TitleScene.h" />

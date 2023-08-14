@@ -1,59 +1,223 @@
 #include "DxLib.h"
 #include "Thunderbolt.h"
+#include "Cloud.h"
 #include "Common.h"
-#include "InputKey.h"
-#include "Player.h"
 
-//#define DEBUG
+#define PI    3.1415926535897932384626433832795f
 
-Thunder::Thunder()
+#define DEBUG
+
+bool Thunderbolt::FinAnimFlg[2];
+
+Thunderbolt::Thunderbolt()
 {
+	LoadDivGraph("images/Stage_ThunderAnimation.png", 6, 6, 1, 64, 64, Img);
+	for (int i = 0; i < 2; i++) {
+		FinCloudAnimFlg[i] = false;
+		AnimCnt[i] = 0;
+		FinAnimFlg[i] = false;
+	}
+
+	Position[0] = GetRand(3);
+	Position[1] = GetRand(3);
+}
+
+void Thunderbolt::Update(int Stage)
+{
+	for (Num = 0; Num < 2; Num++) {
+		ThunderboltPosition(Num, Stage);//雷の位置決め
+		FinCloudAnimFlg[Num] = Cloud::FinAnimFlg[Num];//Cloudからの変数を受け取る
+		if (FinCloudAnimFlg[Num] == true && FinAnimFlg[Num] == false) {
+			ThunderboltAnim(Num);
+			AnimCnt[Num]++;
+		}
+
+		if (FinCloudAnimFlg[Num] == false) {
+			FinAnimFlg[Num] = false;
+		}
+
+
+		if (AnimCnt[Num] > 48) {
+			AnimCnt[Num] = 0;
+			FinAnimFlg[Num] = true;
+		}
+	}
 	
 }
 
-void Thunder::Update(int Stage)
+void Thunderbolt::Draw(int Stage) const
 {
-	
-}
+	if (Stage == 1) {
+		if (FinCloudAnimFlg[0] == true && FinAnimFlg[0] == false) {
+			if (Position[0] == 0 || Position[0] == 1) {
+				DrawRotaGraph(X[0], Y[0], 1.0f, PI, NowImg[0], TRUE);
+			}
+			else if (Position[0] == 2 || Position[0] == 3) {
+				DrawGraph(X[0], Y[0], NowImg[0], TRUE);
+			}
+		}
+		
+	}
 
-void Thunder::Draw() const 
-{
-	
-}
+#ifdef DEBUG
+	DrawFormatString(100, 40, C_WHITE, "FinFlg %d", FinCloudAnimFlg[0]);
+	DrawFormatString(100, 60, C_WHITE, "X %d", X[0]);
+	DrawFormatString(100, 80, C_WHITE, "Y %d", Y[0]);
+	DrawFormatString(100, 100, C_WHITE, "Posi %d", Position[0]);
+	DrawFormatString(100, 120, C_WHITE, "AnimCnt %d", AnimCnt[0]);
+#endif // DEBUG
 
-//雷のチカチカアニメーション
-void Thunder::ThunderAnim(int i)
-{
-	if (thunder[i].AnimCnt >= 0 && thunder[i].AnimCnt <= 2) {
-		thunder[i].T_NowImg = thunder[i].Img[0];
-	}
-	else if (thunder[i].AnimCnt >= 3 && thunder[i].AnimCnt <= 5) {
-		thunder[i].T_NowImg = thunder[i].Img[1];
-	}
-	else if (thunder[i].AnimCnt <= 6 && thunder[i].AnimCnt <= 8) {
-		thunder[i].T_NowImg = thunder[i].Img[2];
-	}
 }
 
 //雷が出るときのアニメーション
-void Thunder::OutThunderAnim(int i) 
+void Thunderbolt::ThunderboltAnim(int i)
 {
-	if (OutThunder[i].OTAnimCnt >= 0 && OutThunder[i].OTAnimCnt <= 7) {
-		OutThunder[i].Now_Img = OutThunder[i].Img[0];
+	if (AnimCnt[i] >= 0 && AnimCnt[i] <= 7) {
+		NowImg[i] = Img[0];
 	}
-	else if (OutThunder[i].OTAnimCnt >= 8 && OutThunder[i].OTAnimCnt <= 15) {
-		OutThunder[i].Now_Img = OutThunder[i].Img[1];
+	else if (AnimCnt[i] >= 8 && AnimCnt[i] <= 15) {
+		NowImg[i] = Img[1];
 	}
-	else if (OutThunder[i].OTAnimCnt >= 16 && OutThunder[i].OTAnimCnt <= 23) {
-		OutThunder[i].Now_Img = OutThunder[i].Img[2];
+	else if (AnimCnt[i] >= 16 && AnimCnt[i] <= 23) {
+		NowImg[i] = Img[2];
 	}
-	else if (OutThunder[i].OTAnimCnt >= 24 && OutThunder[i].OTAnimCnt <= 31) {
-		OutThunder[i].Now_Img = OutThunder[i].Img[3];
+	else if (AnimCnt[i] >= 24 && AnimCnt[i] <= 31) {
+		NowImg[i] = Img[3];
 	}
-	else if (OutThunder[i].OTAnimCnt >= 32 && OutThunder[i].OTAnimCnt <= 39) {
-		OutThunder[i].Now_Img = OutThunder[i].Img[4];
+	else if (AnimCnt[i] >= 32 && AnimCnt[i] <= 39) {
+		NowImg[i] = Img[4];
 	}
-	else if (OutThunder[i].OTAnimCnt >= 40 && OutThunder[i].OTAnimCnt <= 47) {
-		OutThunder[i].Now_Img = OutThunder[i].Img[5];
+	else if (AnimCnt[i] >= 40 && AnimCnt[i] <= 47) {
+		NowImg[i] = Img[5];
+	}
+}
+
+void Thunderbolt::ThunderboltPosition(int i, int Stage)
+{
+	if (Stage == 1) {
+		if (Position[0] == 0) {//左上
+			X[0] = Stage_1_X + 40;
+			Y[0] = Stage_1_Y - 25;
+		}
+		else if (Position[0] == 1) {//右上
+			X[0] = Stage_1_X + 100;
+			Y[0] = Stage_1_Y - 20;
+		}
+		else if (Position[0] == 2) {//左下
+			X[0] = Stage_1_X;
+			Y[0] = Stage_1_Y + 55;
+		}
+		else if (Position[0] == 3) {//右上
+			X[0] = Stage_1_X + 64;
+			Y[0] = Stage_1_Y + 45;
+		}
+	}
+	else if (Stage == 2) {
+		if (Position[0] == 0) {//左上
+
+		}
+		else if (Position[0] == 1) {//右上
+
+		}
+		else if (Position[0] == 2) {//左下
+
+		}
+		else if (Position[0] == 3) {//右上
+
+		}
+
+		if (Position[1] == 0) {//左上
+
+		}
+		else if (Position[1] == 1) {//右上
+
+		}
+		else if (Position[1] == 2) {//左下
+
+		}
+		else if (Position[1] == 3) {//右上
+
+		}
+	}
+	else if (Stage == 3) {
+		if (Position[0] == 0) {//左上
+
+		}
+		else if (Position[0] == 1) {//右上
+
+		}
+		else if (Position[0] == 2) {//左下
+
+		}
+		else if (Position[0] == 3) {//右上
+
+		}
+
+		if (Position[1] == 0) {//左上
+
+		}
+		else if (Position[1] == 1) {//右上
+
+		}
+		else if (Position[1] == 2) {//左下
+
+		}
+		else if (Position[1] == 3) {//右上
+
+		}
+	}
+	else if (Stage == 4) {
+		if (Position[0] == 0) {//左上
+
+		}
+		else if (Position[0] == 1) {//右上
+
+		}
+		else if (Position[0] == 2) {//左下
+
+		}
+		else if (Position[0] == 3) {//右上
+
+		}
+
+		if (Position[1] == 0) {//左上
+
+		}
+		else if (Position[1] == 1) {//右上
+
+		}
+		else if (Position[1] == 2) {//左下
+
+		}
+		else if (Position[1] == 3) {//右上
+
+		}
+	}
+	else if (Stage == 5) {
+		if (Position[0] == 0) {//左上
+
+		}
+		else if (Position[0] == 1) {//右上
+
+		}
+		else if (Position[0] == 2) {//左下
+
+		}
+		else if (Position[0] == 3) {//右上
+
+		}
+
+		if (Position[1] == 0) {//左上
+
+		}
+		else if (Position[1] == 1) {//右上
+
+		}
+		else if (Position[1] == 2) {//左下
+
+		}
+		else if (Position[1] == 3) {//右上
+
+		}
 	}
 }

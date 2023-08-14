@@ -29,7 +29,7 @@ AbstractScene* GameMain::Update()
 		BUBBLE.Update(GameOverFlg);
 		enemy.Update(gStageState);
 		fish.Update();
-		//雷
+		thunderbolt.Update(gStageState);
 		cloud.Update();
 		ui.Update(GameOverFlg);
 		stage.Update();
@@ -90,7 +90,7 @@ void GameMain::Draw()const
 	stage.Draw(gStageState);
 	ui.Draw();
 	if (PauseFlg == 0) {
-		//雷
+		thunderbolt.Draw(gStageState);
 		cloud.Draw(gStageState);
 		BUBBLE.Draw();
 		enemy.Draw();

@@ -3,6 +3,8 @@
 
 #define DEBUG
 
+bool Cloud::FinAnimFlg[2];
+
 Cloud::Cloud() 
 {
 	Num = 0;
@@ -12,6 +14,8 @@ Cloud::Cloud()
 		NowImg[i] = Img[0];
 		WaitTimeCnt[i] = 0;
 		AnimCnt[i] = 0;
+
+		FinAnimFlg[i] = false;
 	}
 
 	//アニメーションまでの時間決め
@@ -41,6 +45,7 @@ void Cloud::Update()
 		WaitTimeCnt[Num]++;
 		if (CloudState[Num] == Anim) {//雲のステートがAnimならAnimCntをCntする
 			AnimCnt[Num]++;
+			FinAnimFlg[Num] = false;
 		}
 
 		if (AnimCnt[Num] > 8) {//AnimCntが８より大きいならAnimCntを０に
@@ -55,6 +60,7 @@ void Cloud::Update()
 			WaitTimeCnt[Num] = 0;
 			CloudState[Num] = No_Anim;
 			WaitTime[Num] = 5 * Frame;//次のアニメーションまでの時間設定
+			FinAnimFlg[Num] = true;
 		}
 
 		//画像処理
@@ -80,6 +86,7 @@ void Cloud::Draw(int Stage) const
 	DrawFormatString(200, 60, C_WHITE, "Time %d", WaitTime[0]);
 	DrawFormatString(200, 80, C_WHITE, "TimeC %d", WaitTimeCnt[0]);
 	DrawFormatString(200, 100, C_WHITE, "AnimC %d", AnimCnt[0]);
+	DrawFormatString(200, 120, C_WHITE, "FinFlg %d", FinAnimFlg[0]);
 
 	DrawFormatString(300, 40, C_WHITE, "TimeF 1 %d", WaitTimeFlg[1]);
 	

@@ -17,8 +17,7 @@ private:
 	Player player;
 	bubble BUBBLE;
 	Enemy enemy;
-	Thunder thunder;
-	Thunder MoveThunderX;
+	Thunderbolt thunderbolt;
 	Fish fish;
 	UI ui;
 	gStage stage;
