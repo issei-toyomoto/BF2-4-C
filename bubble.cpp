@@ -3,6 +3,7 @@
 #include"Common.h"
 #include"Player.h"
 #include"Soundstorage.h"
+#include<math.h>
 #define DEBUG
 
 int bubble::BubleScore;
@@ -66,10 +67,9 @@ void bubble::Update(int flg)
 	if (Bubble[BubbleNumber].Event == 1) {
 		bubble::BubleCollision();
 
-		Bubble[BubbleNumber].Y -= FPSCount % 10 * 0.25f;
+		Bubble[BubbleNumber].Y -= 10 * 0.25f;
 		if (FPSCount <= 29) {
 			Bubble[BubbleNumber].X -= FPSCount % 10 * 0.25f;// 1.5f
-			Bubble[BubbleNumber].X += FPSCount % 10 * 0.05f;// 1.5f
 		}
 		if (FPSCount >= 30 && FPSCount <= 60) {
 			Bubble[BubbleNumber].X += FPSCount % 10 * 0.25f; // 1.5f
