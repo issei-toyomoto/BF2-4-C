@@ -64,8 +64,6 @@
 #define Touch      true	//地面以外に触れている
 #define Not_Touch  false//地面以外に触れてない
 
-#define PlusPx 3			//px太くする（当たり判定）
-
 #define AbtnIntervalFream 8 //Aボタンのインターバルフレーム数
 
 #define COR 0.8f			//反発係数(coefficient of repulsion)

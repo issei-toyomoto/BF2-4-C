@@ -1,4 +1,4 @@
-#include "Thunder.h"
+ï»¿#include "Thunder.h"
 #include "Thunderbolt.h"
 #include "Common.h"
 
@@ -22,7 +22,7 @@ Thunder::Thunder()
 	}
 }
 
-//•`‰æˆÈŠO‚ÌXV‚ğÀ‘•‚·‚é
+//æç”»ä»¥å¤–ã®æ›´æ–°ã‚’å®Ÿè£…ã™ã‚‹
 void Thunder::Update(int Stage) 
 {
 	for (Num = 0; Num < 2; Num++) {
@@ -36,9 +36,13 @@ void Thunder::Update(int Stage)
 		if (FinThunderboltAnimFlg[Num] == true) {
 			ThunderAnim(Num);
 			AnimCnt[Num]++;
+			State[Num] = USE;
+		}
+
+		if (State[Num] == USE) {
 			X[Num] += VectorX[Num];
 			Y[Num] += VectorY[Num];
-			State[Num] = USE;
+			ThunderCollision(Num, Stage);
 		}
 
 		
@@ -49,7 +53,7 @@ void Thunder::Update(int Stage)
 	}
 }
 
-//•`‰æ‚ÌXV‚ğÀ‘•‚·‚é
+//æç”»ã®æ›´æ–°ã‚’å®Ÿè£…ã™ã‚‹
 void Thunder::Draw() const 
 {
 	if (State[0] == USE) {
@@ -84,42 +88,102 @@ void Thunder::ThunderAnim(int i)
 void Thunder::ThunderPosition(int i, int Stage) 
 {
 	if (Stage == 1) {
-		if (Position[0] == 0) {//¶ã
-			X[0] = Stage_1_X + 40;
-			Y[0] = Stage_1_Y - 25;
-			VectorX[0] = -1;
-			VectorY[0] = -1;
+		if (Position[i] == 0) {//å·¦ä¸Š
+			X[i] = Stage_1_X + 30;
+			Y[i] = Stage_1_Y - 60;
+			VectorX[i] = -1;
+			VectorY[i] = -1;
 
-			InitFlg[0] = true;
+			InitFlg[i] = true;
 		}
-		else if (Position[0] == 1) {//‰Eã
-			X[0] = Stage_1_X + 100;
-			Y[0] = Stage_1_Y - 20;
-			VectorX[0] = 1;
-			VectorY[0] = -1;
+		else if (Position[i] == 1) {//å³ä¸Š
+			X[i] = Stage_1_X + 90;
+			Y[i] = Stage_1_Y - 70;
+			VectorX[i] = 1;
+			VectorY[i] = -1;
 
-			InitFlg[0] = true;
+			InitFlg[i] = true;
 		}
-		else if (Position[0] == 2) {//¶‰º
-			X[0] = Stage_1_X;
-			Y[0] = Stage_1_Y + 55;
-			VectorX[0] = -1;
-			VectorY[0] = 1;
+		else if (Position[i] == 2) {//å·¦ä¸‹
+			X[i] = Stage_1_X;
+			Y[i] = Stage_1_Y + 85;
+			VectorX[i] = -1;
+			VectorY[i] = 1;
 
-			InitFlg[0] = true;
+			InitFlg[i] = true;
 		}
-		else if (Position[0] == 3) {//‰E‰º
-			X[0] = Stage_1_X + 64;
-			Y[0] = Stage_1_Y + 45;
-			VectorX[0] = 1;
-			VectorY[0] = 1;
+		else if (Position[0] == 3) {//å³ä¸‹
+			X[i] = Stage_1_X + 64;
+			Y[i] = Stage_1_Y + 75;
+			VectorX[i] = 1;
+			VectorY[i] = 1;
 
-			InitFlg[0] = true;
+			InitFlg[i] = true;
 		}
 	}
 }
 
 void Thunder::ThunderCollision(int i, int Stage) 
 {
+	int XU = X[i] + 4;
+	int YU = Y[i] + 4;
+	int XL = X[i] + 28;
+	int YL = Y[i] + 28;
 
+	if (Stage == 1) {
+		//
+		if (XU <= S_Ground_Left_XL && YL >= S_Ground_Left_YU + PlusPx) {//
+			VectorX[i] *= -1;
+		}
+		if (YL >= S_Ground_Left_YU && YL <= S_Ground_Left_YU + PlusPx && XU <= S_Ground_Left_XL) {//
+			VectorY[i] *= -1;
+		}
+
+		//
+		if (XL >= S_Ground_Right_XU && YL >= S_Ground_Right_YU + PlusPx) {//
+			VectorX[i] *= -1;
+		}
+		if (YL >= S_Ground_Right_YU && YL <= S_Ground_Right_YU + PlusPx && XL >= S_Ground_Right_XU) {//
+			VectorY[i] *= -1;
+		}
+
+		//
+		if (YL >= S_Sky_Ground_0_YU + PlusPx && YU <= S_Sky_Ground_0_YL - PlusPx) {//
+			if (XU <= S_Sky_Ground_0_XL + PlusPx && XL >= S_Sky_Ground_0_XL) {//
+				VectorX[i] *= -1;
+			}
+			else if (XL >= S_Sky_Ground_0_XU - PlusPx && XL <= S_Sky_Ground_0_XU) {//
+				VectorX[i] *= -1;
+			}
+		}
+		if (YL >= S_Sky_Ground_0_YU && YL <= S_Sky_Ground_0_YU + PlusPx && XU <= S_Sky_Ground_0_XL && XL >= S_Sky_Ground_0_XU) {//ï¿½ï¿½ï¿½
+			VectorY[i] *= -1;
+		}
+		if (YU <= S_Sky_Ground_0_YL - PlusPx && YL >= S_Sky_Ground_0_YL) {//
+			if (XU <= S_Sky_Ground_0_XL && XL >= S_Sky_Ground_0_XU) {
+				VectorY[i] *= -1;
+			}
+		}
+
+		//
+		if (YU <= 0) {
+			VectorY[i] *= -1;
+		}
+
+		//
+		if (YL >= _SCREEN_HEIGHT_ + 50) {
+			State[i] = NO_USE;
+			InitFlg[i] = false;
+		}
+
+		//
+		if (XL >= _SCREEN_WIDHT_) {
+			VectorX[i] *= -1;
+		}
+
+		//
+		if (XU <= 0) {
+			VectorX[i] *= -1;
+		}
+	}
 }
