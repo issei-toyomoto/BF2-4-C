@@ -20,6 +20,7 @@ private:
 		int Img[4];
 		int AnimCount;
 		int Event;
+		int Count;
 
 	};
 	struct BubbleSet Bubble[6];
@@ -36,7 +37,8 @@ private:
 	int BubbleY_Old;*/
 	float px, py;
 	int BubbleNumber;
-
+	float Bubble_X;
+	float Bubble_X_Old;
 	int BubbleVEnemy[10];     // “GŠ®¬‚Ü‚Å‚Ì‰¼‘z“G
 	float BEnemyX;
 	float BEnemyY;
