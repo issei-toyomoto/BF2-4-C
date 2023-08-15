@@ -42,6 +42,7 @@ private:
 	int BubbleVEnemy[10];     // “GŠ®¬‚Ü‚Å‚Ì‰¼‘z“G
 	float BEnemyX;
 	float BEnemyY;
+	/*float px_old;*/
 
 public:
 
@@ -51,7 +52,8 @@ public:
    
     void Update(int flg);
 	void Draw() const;
-	void BubleCollision();
+	void BubbleSpawn(int n);
+	void BubleCollision(int n);
 
 	static int BubleScore;
 };

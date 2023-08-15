@@ -56,36 +56,38 @@ bubble::bubble()
 
 void bubble::Update(int flg)
 {
-	float amplitude = 50.0f;
-	float frequency = 0.02;
+	
 
 	FPSCount++;
 	// プレイヤーのX座標、Y座標
 	px = Player::PlayerX;
 	py = Player::PlayerY;
 
-	BEnemyY += 1;
+	BEnemyY += 1.0f;
 	if (BEnemyY > 430 && Bubble[BubbleNumber].Event == 0) {
-			Bubble[BubbleNumber].X = BEnemyX;
-			Bubble_X_Old = Bubble[BubbleNumber].X;
-			Bubble[BubbleNumber].Event = 1;
-			/*BubbleNumber++;*/
+		Bubble[BubbleNumber].X = BEnemyX;
+		Bubble[BubbleNumber].Y = BEnemyY;
+		Bubble[BubbleNumber].Event = 1;
+		bubble::BubbleSpawn(BubbleNumber);
+		bubble::BubleCollision(BubbleNumber);
+		BubbleNumber++;
 	}
-	else if (py > 430 && Bubble[BubbleNumber].Event == 0) {
-			Bubble[BubbleNumber].X = px;
-			Bubble[BubbleNumber].Event = 1;
-			/*BubbleNumber++;*/
+	if (py > 430 && Bubble[BubbleNumber].Event == 0) {
+		Bubble[BubbleNumber].X = px;
+		Bubble[BubbleNumber].Y = py;
+		Bubble[BubbleNumber].Event = 1;
+		bubble::BubbleSpawn(BubbleNumber);
+		bubble::BubleCollision(BubbleNumber);
+		BubbleNumber++;
 	}
+			/*Bubble[BubbleNumber].X = px;*/
+			
+			/*BubbleNumber++;*/
 
 	if (Bubble[BubbleNumber].Event == 1) {
-		bubble::BubleCollision();
-
-		Bubble[BubbleNumber].Y -= 1.0f;
-		/*if (FPSCount <= 29) {*/
-			Bubble_X = Bubble_X_Old;
-			Bubble_X += amplitude * sin(frequency * Bubble[BubbleNumber].Count);
-			Bubble[BubbleNumber].X = Bubble_X;
-			Bubble[BubbleNumber].Count += 1;
+		/*bubble::BubleCollision();*/
+;
+		
 			//Bubble[BubbleNumber].X -= FPSCount % 10 * 0.25f;// 1.5f
 		/*}*/
 		//if (FPSCount >= 30 && FPSCount <= 60) {
@@ -167,24 +169,35 @@ void bubble::Draw() const
 #endif // DEBUG
 
 }
-// シャボン玉の当たり判定
-void bubble::BubleCollision()
+void bubble::BubbleSpawn(int n)
+{
+	float amplitude = 25.0f;
+	float frequency = 0.05f;
 
+	Bubble_X_Old = Bubble[n].X;
+	Bubble[n].Y -= 0.5f;
+	Bubble_X = Bubble_X_Old;
+	Bubble[n].X += amplitude * (float)sin(frequency * Bubble[n].Count);
+	/*Bubble[n].X = Bubble_X;*/
+	Bubble[n].Count += 1;
+}
+// シャボン玉の当たり判定
+void bubble::BubleCollision(int n)
 {
 	//シャボン玉の矩形の座標
 	int BubleX1, BubleY1, BubleX2, BubleY2; // 左上座標(x1,x2) 右上座標(x2,y2)
-	BubleX1 = (int)Bubble[BubbleNumber].X + 15;
-	BubleY1 = (int)Bubble[BubbleNumber].Y + 15;
-	BubleX2 = (int)Bubble[BubbleNumber].X + 50;
-	BubleY2 = (int)Bubble[BubbleNumber].Y + 50;
+	BubleX1 = (int)Bubble[n].X + 15;
+	BubleY1 = (int)Bubble[n].Y + 15;
+	BubleX2 = (int)Bubble[n].X + 50;
+	BubleY2 = (int)Bubble[n].Y + 50;
 
 	// シャボン玉とプレイヤーの当たり判定
 	if (((BubleX1 > px + 18 && BubleX1 < px + 40) || (BubleX1 < px + 18 && BubleX2 > px + 18)) && ((BubleY1 > py + 14 && BubleY1 < py + 64) || (py + 14 > BubleY1 && py + 14 < BubleY2)) && Bubble[0].detection == 0) {
 		BubleScore += 500;
-		Bubble[BubbleNumber].X_Old = BubleX1;
-		Bubble[BubbleNumber].Y_Old = BubleY1;
-		Bubble[BubbleNumber].Flg = 1;
-		Bubble[BubbleNumber].detection = 1;
+		Bubble[n].X_Old = BubleX1;
+		Bubble[n].Y_Old = BubleY1;
+		Bubble[n].Flg = 1;
+		Bubble[n].detection = 1;
 	}
 }
 
