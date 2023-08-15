@@ -151,3 +151,6 @@
 //ステージ３
 
 //**************************//
+
+#define NO_USE false
+#define USE true

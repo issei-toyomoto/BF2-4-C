@@ -8,6 +8,7 @@
 #define DEBUG
 
 bool Thunderbolt::FinAnimFlg[2];
+int Thunderbolt::Position[2];
 
 Thunderbolt::Thunderbolt()
 {

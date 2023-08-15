@@ -1,6 +1,4 @@
 #pragma once
-#define NO_USE 0
-#define USE 1
 
 class Thunder
 {
@@ -14,22 +12,33 @@ private:
 	int Y[2];
 	int VectorX[2];
 	int VectorY[2];
-	int State[2];//(0:未使用 1:使用)
+	
 	int AnimCnt[2];
 
 	bool FinThunderboltAnimFlg[2];
 
+	int Position[2];
+
+	bool InitFlg[2];
+
 public:
+	static bool State[2];//(false:未使用 true:使用)
+
 	//コンストラクタ
 	Thunder();
 	//デストラクタ
 	~Thunder() {};
 
 	//描画以外の更新を実装する
-	void Update();
+	void Update(int Stage);
 	//描画の更新を実装する
 	void Draw()const;
 
+	void ThunderPosition(int i, int Stage);
+	void ThunderCollision(int i, int Stage);
+
 	void ThunderAnim(int i);	//雷のアニメーション
+
+	void ThunderMove(int i);
 };
 

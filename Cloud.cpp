@@ -1,4 +1,5 @@
 #include "Cloud.h"
+#include "Thunder.h"
 #include "Common.h"
 
 #define DEBUG
@@ -42,8 +43,9 @@ Cloud::Cloud()
 void Cloud::Update() 
 {
 	for (Num = 0; Num < 2; Num++) {
+		ThunderState[Num] = Thunder::State[Num];
 		WaitTimeCnt[Num]++;
-		if (CloudState[Num] == Anim) {//雲のステートがAnimならAnimCntをCntする
+		if (CloudState[Num] == Anim && ThunderState[Num] == NO_USE) {//雲のステートがAnimならAnimCntをCntする
 			AnimCnt[Num]++;
 			FinAnimFlg[Num] = false;
 		}
