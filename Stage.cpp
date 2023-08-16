@@ -30,7 +30,7 @@ gStage::gStage()
 	SeaAnimCount = 0;
 	DeathFlg = 0;
 	Seax = 0;
-	Seay = 430;
+	Seay = 455;
 	SeaAnimFlg = 0;
 }
 
@@ -118,22 +118,16 @@ void gStage::Draw(int gStageState) const
 	default:
 		break;
 	}
-
-	/*DrawFormatString(20, 300, C_RED, "%d", DeathFlg);*/
-	DrawFormatString(80, 300, C_RED, "%d", SeaAnimCount);
-	/*DrawFormatString(60, 300, C_RED, "%d", Seay);
-	DrawFormatString(80, 300, C_RED, "%d", Seax);*/
-	DrawFormatString(0, 200, C_RED, "%d", px);
-	DrawFormatString(20, 300, C_RED, "%d", py);
-	if (SeaAnimCount < 15 && SeaAnimCount > 0 && SeaAnimFlg == 1)
+	// 波のアニメーション
+	if (SeaAnimCount < 10 && SeaAnimCount > 0 && SeaAnimFlg == 1)
 	{
 		DrawGraph(Seax, Seay, SeaAnim[0], TRUE);
 	}
-	else if (SeaAnimCount < 30 && SeaAnimCount > 15 &&  SeaAnimFlg  == 1)
+	else if (SeaAnimCount < 20 && SeaAnimCount > 10 &&  SeaAnimFlg  == 1)
 	{
 		DrawGraph(Seax, Seay, SeaAnim[1], TRUE);
 	}
-	else if (SeaAnimCount < 45 && SeaAnimCount > 30 &&  SeaAnimFlg == 1)
+	else if (SeaAnimCount < 30 && SeaAnimCount > 20 &&  SeaAnimFlg == 1)
 	{
 		DrawGraph(Seax, Seay, SeaAnim[2], TRUE);
 	}
@@ -154,11 +148,12 @@ void gStage::Update()
 	{
 		++SeaAnimCount;
 	}
-	if (SeaAnimCount > 60)
+	if (SeaAnimCount > 30)
 	{
 		SeaAnimCount = 0;
 		DeathFlg = 0;
 		SeaAnimFlg = 0;
+		Seay = 455;
 	}
 
 }
@@ -167,11 +162,12 @@ void gStage::SeaBottom()
 	int pxL, pyL;
 	pxL = (int)px;
 	pyL = (int)py;
+	// プレイヤーのY座標が海のY座標を下回った時に波を立たせる処理
 	if (pyL > Seay && DeathFlg == 0)
 	{
 		DeathFlg = 1;
 		Seax = pxL;
-		Seay = 400;
+		Seay = 420;
 		/*Seay = pyL;*/
 	}
 }
