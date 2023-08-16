@@ -162,6 +162,7 @@ void GameMain::Draw()const
 	DrawGraph(480, 455, SeaImg, TRUE);
 
 #ifdef DEBUG
+	DrawString(250, 280, "BACKボタンでステージ遷移", C_RED);
 	//ステージの当たり判定(ステージ１)
 	if (gStageState == 1) {
 		//左下
