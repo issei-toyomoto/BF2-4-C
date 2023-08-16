@@ -15,8 +15,8 @@ private:
 		float detection;
 		bool Flg;
 		int Score;
-		int X_Old;
-		int Y_Old;
+		float X_Old;
+		float Y_Old;
 		int Img[4];
 		int AnimCount;
 		int Event;
