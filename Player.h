@@ -116,6 +116,11 @@ private:
 	bool ReStartSoundFlg;
 
 	int DeathVectorY;
+
+	int ThunderHit;
+	int MoveStopThunderCnt;
+	int MoveDeathCnt;
+
 public:
 	static float PlayerX;	//プレイヤーX座標(画像の左上X座標)
 	static float PlayerY;	//プレイヤーY座標(画像の左上Y座標)
@@ -163,5 +168,8 @@ public:
 	float GetPlayerX();
 	float GetPlayerY();
 
-	void PlayerDeathAnim();
+	void PlayerDeathMove();
+	void PlayerThunderMove();
+
+	void SeaInit();
 };

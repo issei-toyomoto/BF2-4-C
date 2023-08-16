@@ -3,7 +3,7 @@
 #include "Player.h"
 #include "Common.h"
 
-#define DEBUG
+//#define DEBUG
 
 bool Thunder::State[2];
 bool Thunder::HitFlg[2];

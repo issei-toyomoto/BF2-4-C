@@ -2,7 +2,7 @@
 #include "Thunder.h"
 #include "Common.h"
 
-#define DEBUG
+//#define DEBUG
 
 bool Cloud::FinAnimFlg[2];
 
