@@ -18,6 +18,7 @@ class Enemy
 private:
 	int StartFlg;      // スタート状態か判定する用
 	int EnemyImg[3][24];  // 敵の画像格納用
+	int ScoreImg[3];
 	int Fcnt;        // FPSカウント
 	int StartMotion;   // スタート時、敵のモーション管理用
 	float Px, Py;      // プレイヤーのX座標、Y座標
@@ -28,11 +29,8 @@ private:
 	float MaxSpeed;      // 最大速度
 	float acceleration;  // 加速度
 	float friction;      // 摩擦係数
-
-
 	int NowStage;
 	
-
 	const float MinY = -19.0f;
 	
 	// 敵のデータ(構造体)
@@ -40,6 +38,8 @@ private:
 	{
 		float x = 0.0f;     // 敵のX座標
 		float y = 0.0f;     // 敵のY座標
+		float oldx = 0.0f;
+		float oldy = 0.0f;
 		float vecx = 0.0f;  // 敵の移動量X
 		float vecy = 0.0f;  // 敵の移動量Y
 		int state = 0;      // 敵の状態(0:ピンク 1:緑 2:黄色)
@@ -54,6 +54,10 @@ private:
 		int sm = 0;
 		int waittime = 0;
 		int okballoon = 0;
+		int hitflg = 0;
+		int hitpflg = 0;
+		int score = -1;
+
 	};
 
 	struct ENEMY enemy[ENEMY_MAX];   // 敵のデータ(変数宣言)
@@ -62,6 +66,8 @@ public:
 	 static int HitPFlg;       // プレイヤーと敵の当たり判定(プレイヤーに値を渡す)
 
 	 static ENEMY2 EnemyData[ENEMY_MAX]; // 敵の座標、状態（色）渡す用
+
+	 static int EnemyScore;
 
 	Enemy();   // コンストラクタ
 	~Enemy();  // デストラクタ
