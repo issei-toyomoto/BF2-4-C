@@ -17,7 +17,7 @@ private:
 	int WaitTimeFlg[2];		//アニメーションの時間を決める用
 	int CloudState[2];		//雲の状態(0: 通常　1:アニメーション)
 
-	int ThunderNum;			//雷の数
+	bool ThunderState[2];
 
 public:
 	static bool FinAnimFlg[2];//アニメーションが終わったことをThunderboltに受け渡す用

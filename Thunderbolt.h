@@ -9,13 +9,15 @@ private:
 	int NowImg[2];
 	int X[2];
 	int Y[2];
-	int Position[2];//雷のポジション決め用の変数(雲から　0:左上　1:右上 2:左下 3:右下)
+	
 	int AnimCnt[2];
 	bool FinCloudAnimFlg[2];
 	
 		
 public:
 	static bool FinAnimFlg[2];
+	static int Position[2];//雷のポジション決め用の変数(雲から　0:左上　1:右上 2:左下 3:右下)
+
 	//コンストラクタ
 	Thunderbolt();
 

@@ -31,7 +31,7 @@ AbstractScene* GameMain::Update()
 		fish.Update();
 		thunderbolt.Update(gStageState);
 		cloud.Update();
-		thunder.Update();
+		thunder.Update(gStageState);
 		ui.Update(GameOverFlg);
 		stage.Update();
 	}

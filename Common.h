@@ -139,6 +139,8 @@
 #define S5_Sky_Ground_2_XL 410
 #define S5_Sky_Ground_2_YL 395
 
+#define PlusPx 3			//px太くする（当たり判定）
+
 //**ステージごとの雲の位置**//
 //ステージ１
 #define Stage_1_X 300
@@ -151,3 +153,6 @@
 //ステージ３
 
 //**************************//
+
+#define NO_USE false
+#define USE true
