@@ -4,6 +4,7 @@
 #include "Common.h"
 #include "Fish.h"
 #include "Soundstorage.h"
+#include "Thunder.h"
 
 //#define DEBUG
 
@@ -156,6 +157,13 @@ void Player::Update(int Stage) /***•`‰æˆÈŠO***/
 		if (Death == true) {
 			BalloonNum = 2;
 			Death = false;
+		}
+	}
+
+	//—‹‚Æ“–‚½‚Á‚½‚©H
+	for (int i = 0; i < 2; i++) {
+		if (Thunder::HitFlg[i] == true) {
+			PlayerState = P_State_Thunder;
 		}
 	}
 

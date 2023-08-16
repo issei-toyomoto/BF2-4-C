@@ -2,6 +2,7 @@
 #include "Thunderbolt.h"
 #include "Cloud.h"
 #include "Common.h"
+#include "Thunder.h"
 
 #define PI    3.1415926535897932384626433832795f
 
@@ -26,17 +27,25 @@ Thunderbolt::Thunderbolt()
 void Thunderbolt::Update(int Stage)
 {
 	for (Num = 0; Num < 2; Num++) {
+		if (Thunder::ThunderUnderSea[Num] == true) {
+			Position[Num] = GetRand(3);
+			Thunder::ThunderUnderSea[Num] = false;
+		}
+
 		ThunderboltPosition(Num, Stage);//—‹‚ÌˆÊ’uŒˆ‚ß
 		FinCloudAnimFlg[Num] = Cloud::FinAnimFlg[Num];//Cloud‚©‚ç‚Ì•Ï”‚ðŽó‚¯Žæ‚é
-		if (FinCloudAnimFlg[Num] == true && FinAnimFlg[Num] == false) {
+		if (FinCloudAnimFlg[Num] == true && FinAnimFlg[Num] == false && Thunder::State[Num] == NO_USE) {
 			ThunderboltAnim(Num);
 			AnimCnt[Num]++;
 		}
 
-		if (FinCloudAnimFlg[Num] == false) {
+		/*if (FinCloudAnimFlg[Num] == false) {
 			FinAnimFlg[Num] = false;
-		}
+		}*/
 
+		if (FinAnimFlg[Num] == true) {
+			Cloud::FinAnimFlg[Num] = false;
+		}
 
 		if (AnimCnt[Num] > 48) {
 			AnimCnt[Num] = 0;
@@ -49,15 +58,27 @@ void Thunderbolt::Update(int Stage)
 void Thunderbolt::Draw(int Stage) const
 {
 	if (Stage == 1) {
-		if (FinCloudAnimFlg[0] == true && FinAnimFlg[0] == false) {
-			if (Position[0] == 0 || Position[0] == 1) {
-				DrawRotaGraph(X[0], Y[0], 1.0f, PI, NowImg[0], TRUE);
-			}
-			else if (Position[0] == 2 || Position[0] == 3) {
-				DrawGraph(X[0], Y[0], NowImg[0], TRUE);
+		if (Thunder::State[0] == NO_USE) {
+			if (FinCloudAnimFlg[0] == true && FinAnimFlg[0] == false) {
+				if (Position[0] == 0 || Position[0] == 1) {
+					DrawRotaGraph(X[0], Y[0], 1.0f, PI, NowImg[0], TRUE);
+				}
+				else if (Position[0] == 2 || Position[0] == 3) {
+					DrawGraph(X[0], Y[0], NowImg[0], TRUE);
+				}
 			}
 		}
 		
+		/*if (Thunder::State[1] == NO_USE) {
+			if (FinCloudAnimFlg[1] == true && FinAnimFlg[1] == false) {
+				if (Position[1] == 0 || Position[1] == 1) {
+					DrawRotaGraph(X[1], Y[1], 1.0f, PI, NowImg[1], TRUE);
+				}
+				else if (Position[1] == 2 || Position[1] == 3) {
+					DrawGraph(X[1], Y[1], NowImg[1], TRUE);
+				}
+			}
+		}*/
 	}
 
 #ifdef DEBUG
