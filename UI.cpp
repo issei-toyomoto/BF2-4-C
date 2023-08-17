@@ -1,10 +1,12 @@
 #include "UI.h"
 #include "bubble.h"
 #include "Common.h"
+#include "Enemy.h"
 #include <math.h>
 
 //#define DEBUG
 int UI::HighScore;
+//int UI::PhaseCount;
 
 UI::UI()
 {
@@ -27,7 +29,6 @@ UI::UI()
 	TScore100000 = 0;
 	HScore100000 = 0;
 	LifeCnt = 0;
-
 	UIflg = 0;
 };
 UI::~UI()
@@ -37,7 +38,8 @@ void UI::Update(int flg)
 {
 	LifeCnt = player.Life;
 	bubleScore = Bubble.BubleScore;
-	TotalScore = bubleScore;
+	EnemyScore = enemy.EnemyScore;
+	TotalScore = bubleScore + EnemyScore;
 	if (TotalScore > HighScore) {
 		HighScore = TotalScore;
 	}
@@ -55,11 +57,8 @@ void UI::Update(int flg)
 	HScore100000 = HighScore / 100000;
 	if (flg == 1) {
 		if (TotalScore > HighScore) {
-			/*UIflg = flg;*/
 			HighScore = TotalScore;
-			/*TotalScore = 0;*/
 		}
-		/*UIflg = flg;*/
 		bubleScore = 0;
 		TotalScore = 0;
 	}
