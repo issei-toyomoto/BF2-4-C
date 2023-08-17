@@ -88,7 +88,9 @@ void bubble::Update(int flg)
 				Bubble[i].AnimCount++;
 			}
 			if (Bubble[i].AnimCount == 1) {
-				PlaySoundMem(soundstorage.BubbleSE, DX_PLAYTYPE_BACK, TRUE);
+				GameMain::SoundFlg = 1;
+				StopSoundMem(ss.gStartSE);
+				PlaySoundMem(ss.BubbleSE, DX_PLAYTYPE_BACK, TRUE);
 			}
 			if (Bubble[i].AnimCount == 30 || Bubble[i].Y == 0)
 			{
@@ -106,11 +108,8 @@ void bubble::Update(int flg)
 }
 void bubble::Draw() const
 {
-	DrawFormatString(20, 300, C_WHITE, "%d", Bubble[0].Y);
-	DrawFormatString(20, 350, C_WHITE, "%d", Bubble[0].Event);
 	for (int i = 0; i < 10; i++) {
 		if (Bubble[i].Event == 1) {
-			DrawFormatString(80, 300, C_RED, "%d", Bubble[i].AnimCount);
 			if (Bubble[i].Flg == 0 && Bubble[i].detection == 0) {
 				DrawGraph((int)Bubble[i].X, (int)Bubble[i].Y, Bubble[i].Img[0], TRUE);
 				DrawBox((int)Bubble[i].X + 15, (int)Bubble[i].Y + 15, (int)Bubble[i].X + 50, (int)Bubble[i].Y + 50, C_RED, FALSE);
@@ -120,7 +119,7 @@ void bubble::Draw() const
 					DrawGraphF(Bubble[i].X_Old, Bubble[i].Y_Old - 35.0f, BubbleScoreImg, TRUE);
 				}
 				if (Bubble[i].AnimCount < 2 && Bubble[i].AnimCount > 0) {
-					DrawGraph((int)Bubble[i].X, (int)Bubble[BubbleNumber].Y, Bubble[i].Img[1], TRUE);
+					DrawGraph((int)Bubble[i].X, (int)Bubble[i].Y, Bubble[i].Img[1], TRUE);
 				}
 				else if (Bubble[i].AnimCount < 4 && Bubble[i].AnimCount > 2) {
 					DrawGraph((int)Bubble[i].X, (int)Bubble[i].Y, Bubble[i].Img[2], TRUE);

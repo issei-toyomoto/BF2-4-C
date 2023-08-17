@@ -22,7 +22,6 @@ Title::~Title() {
 
 AbstractScene* Title::Update()
 {
-	/*PlaySoundMem(soundstorage.TripBGM, DX_PLAYTYPE_LOOP, TRUE);*/
 	FPSCount++;
 	InputKey::Update();
 	gMenuY = MenuNumber * 30;
@@ -34,8 +33,8 @@ AbstractScene* Title::Update()
 	}
 	if (InputKey::GetJoyStickYOnes() < 0)
 		if (--MenuNumber < 0)MenuNumber = 2;
-	if (inputkey.GetKey(PAD_INPUT_1) == TRUE && MenuNumber == 0 || inputkey.GetKey(PAD_INPUT_8)) {
-		PlaySoundMem(ss.gStartSE, DX_PLAYTYPE_BACK, TRUE);
+	if (inputkey.GetKey(PAD_INPUT_1) == TRUE && MenuNumber == 0 || inputkey.GetKey(PAD_INPUT_8) && GameMain::SoundFlg == 0) {
+	/*	PlaySoundMem(ss.gStartSE, DX_PLAYTYPE_BACK, TRUE);*/
 		return new GameMain();
 	}
 	else if (CheckHitKey(KEY_INPUT_6)) {

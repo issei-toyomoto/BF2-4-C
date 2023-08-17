@@ -4,7 +4,8 @@
 #include "Enemy.h"
 #include <math.h>
 
-#define DEBUG
+//#define DEBUG
+int UI::HighScore;
 
 UI::UI()
 {
@@ -26,7 +27,6 @@ UI::UI()
 	HScore10000 = 0;
 	TScore100000 = 0;
 	HScore100000 = 0;
-	HighScore = 10000;
 	LifeCnt = 0;
 
 	UIflg = 0;
@@ -56,10 +56,11 @@ void UI::Update(int flg)
 	HScore100000 = HighScore / 100000;
 	if (flg == 1) {
 		if (TotalScore > HighScore) {
-			UIflg = flg;
-			TotalScore = 0;
+			/*UIflg = flg;*/
+			HighScore = TotalScore;
+			/*TotalScore = 0;*/
 		}
-		UIflg = flg;
+		/*UIflg = flg;*/
 		bubleScore = 0;
 		TotalScore = 0;
 	}
@@ -86,10 +87,5 @@ void UI::Draw() const
 	DrawGraph(335, 0, UINumber[HScore1], TRUE);
 	DrawGraph(35, 7, UIScore, TRUE);
 	DrawGraph(200, 8, UITop, TRUE);
-
-#ifdef DEBUG
-	DrawFormatString(200, 0, C_RED, "%d", HighScore);
-	DrawFormatString(300, 0, C_RED, "%d",UIflg);
-#endif // DEBUG
 
 }
