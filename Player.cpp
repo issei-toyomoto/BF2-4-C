@@ -5,8 +5,9 @@
 #include "Fish.h"
 #include "Soundstorage.h"
 #include "Thunder.h"
+#include "Enemy.h"
 
-#define DEBUG
+//#define DEBUG
 
 float Player::PlayerX;
 float Player::PlayerY;
@@ -14,6 +15,8 @@ float Player::PlayerY;
 bool Player::Death;
 
 int Player::Life;
+
+bool Player::HitThunder;
 
 Player::Player() 
 {
@@ -52,6 +55,8 @@ Player::Player()
 
 	FishFlg = Fish::P_FishFlg;//Fish.cppから値を取得
 	BalloonCrack = Balloon_NotCrack;
+
+	HitThunder = false;
 }
 
 void Player::Update(int Stage) /***描画以外***/
@@ -126,6 +131,7 @@ void Player::Update(int Stage) /***描画以外***/
 	for (int i = 0; i < 2; i++) {
 		if (Thunder::HitFlg[i] == true) {
 			ThunderHit++;
+			HitThunder = true;
 		}
 	}
 
@@ -157,13 +163,21 @@ void Player::Update(int Stage) /***描画以外***/
 		//Y方向
 		UpdatePlayerY();
 		PlayerY += VectorY;//Y座標更新
+
+		if (Enemy::HitPFlg == 2) {//敵と接触したら風船の数を１つ減らす
+			//EnemyCollison();
+			//BalloonCrack = Balloon_Crack;
+		}
 	}
-	else if (BalloonNum == 0) {//風船の数が０になった時の処理
+	else if (BalloonNum <= 0) {//風船の数が０になった時の処理
 		PlayerState = P_State_Dead;
 		PlayerDeathMove();
 	}
-	else if (ThunderHit != 0) {//雷に当たった時
-		PlayerState = P_State_Thunder;
+	else if (ThunderHit != 0 && Respawn == false) {//雷に当たった時
+		PlayerState = P_State_Thunder; 
+		for (int i = 0; i < 2; i++) {
+			Thunder::HitFlg[i] = false;
+		}
 		PlayerThunderMove();
 	}
 
@@ -286,7 +300,7 @@ void Player::Draw() const /***描画***/
 	DrawFormatString(400, 150, C_WHITE, "Death:%d RespawnCnt:%d", Death, RespawnCnt);
 	DrawFormatString(400, 170, C_WHITE, "Hide:%d", Hide);
 	DrawFormatString(400, 190, C_WHITE, "Life:%d", Life);
-	DrawFormatString(400, 210, C_WHITE, "MoveDeathCnt %d",MoveDeathCnt);
+	DrawFormatString(400, 210, C_WHITE, "ThunderHit %d",ThunderHit);
 
 	//プレイヤー画像サイズ
 	DrawBox((int)PlayerX, (int)PlayerY, (int)PlayerX + 64, (int)PlayerY + 64, C_RED,FALSE);
@@ -1744,13 +1758,13 @@ void Player::UpdatePlayerImgThunder()
 //*死亡時アニメーション処理*//
 void Player::UpdatePlayerImgDead() 
 {
-	if (FPSCnt % 9 == 0 || FPSCnt % 9 == 1 || FPSCnt % 9 == 2) {//２フレームで画像変更
+	if (FPSCnt % 12 == 0 || FPSCnt % 12 == 1 || FPSCnt % 12 == 2 || FPSCnt % 12 == 3) {//4フレームで画像変更
 		NowPlayerImg = P_Img_Dead_0;
 	}
-	else if (FPSCnt % 9 == 3 || FPSCnt % 9 == 4 || FPSCnt % 9 == 5) {
+	else if (FPSCnt % 12 == 4 || FPSCnt % 12 == 5 || FPSCnt % 12 == 6 || FPSCnt % 12 == 7) {
 		NowPlayerImg = P_Img_Dead_1;
 	}
-	else if (FPSCnt % 9 == 6 || FPSCnt % 9 == 7 || FPSCnt % 9 == 8) {
+	else if (FPSCnt % 12 == 8 || FPSCnt % 12 == 9 || FPSCnt % 12 == 10 || FPSCnt % 12 == 11) {
 		NowPlayerImg = P_Img_Dead_2;
 	}
 }
@@ -1778,14 +1792,14 @@ float Player::GetPlayerY() {
 void Player::PlayerDeathMove() 
 {
 	MoveDeathCnt++;
-	if (MoveDeathCnt > 9) {
-		VectorY = VectorY + 0.9;
-		if (VectorY >= 3) {
-			VectorY = 3;
+	if (MoveDeathCnt > 15) {
+		VectorY = VectorY + 0.7;
+		if (VectorY >= 2.4) {
+			VectorY = 2.4;
 		}
 	}
 	else {
-		VectorY = -3;
+		VectorY = -2.4;
 	}
 	PlayerY += VectorY;
 }
@@ -1802,8 +1816,15 @@ void Player::PlayerThunderMove()
 void Player::SeaInit() 
 {
 	Death = true;
+	HitThunder = false;
 	BalloonNum = 2;
 	ThunderHit = 0;
 	MoveStopThunderCnt = 0;
 	MoveDeathCnt = 0;
+	PlayerState = P_State_Wait;
+}
+
+void Player::EnemyCollison()
+{
+
 }
