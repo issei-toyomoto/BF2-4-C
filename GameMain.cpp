@@ -23,8 +23,8 @@ int GameMain::PauseFlg;
 AbstractScene* GameMain::Update()
 {
 	++PauseWTime;
-	// ポーズ状態ではない間行う処理
-	if (PauseFlg == 0 && GameOverFlg == 0) {
+	// ポーズ状態、ゲームオーバー状態ではない間行う処理
+	if (PauseFlg == 0 && GameOverFlg == 0 && ClearFlg == 0) {
 		player.Update(gStageState);
 		BUBBLE.Update(GameOverFlg);
 		enemy.Update(gStageState);
@@ -55,7 +55,7 @@ AbstractScene* GameMain::Update()
 		if (GameOverWTime < 480) {
 			++GameOverWTime;
 		}
-		else {
+		else { // 480カウントを超えた時行う処理
 			ui.Update(GameOverFlg);
 			BUBBLE.Update(GameOverFlg);
 			GameOverFlg = 0;
@@ -63,33 +63,80 @@ AbstractScene* GameMain::Update()
 			return new Title();
 		}
 	}
-	
-	if (CheckHitKey(KEY_INPUT_1)) {
-		gStageState = 1;
+#ifdef DEBUG
+	if (ClearWTime < 150 && ClearFlg == 1) {
+		++ClearWTime;
 	}
-	else if (CheckHitKey(KEY_INPUT_2)) {
-		gStageState = 2;
+	else  if(ClearWTime >=  150 && ClearFlg == 1) {
+		ClearWTime = 0;
+		gStageState++;
+		ClearFlg = 0;
 	}
-	else if (CheckHitKey(KEY_INPUT_3)) {
-		gStageState = 3;
+	if (inputkey.GetKeyDown(PAD_INPUT_7) && ClearFlg == 0 && gStageState == 1) {
+		PlaySoundMem(ss.gStageClearSE, DX_PLAYTYPE_BACK, TRUE);
+		ClearFlg = 1;
+		/*if (ClearWTime < 300){
+			++ClearWTime;
+		}
+		else {
+			ClearWTime = 0;
+			gStageState++;
+			ClearFlg = 0;
+		}*/
 	}
-	else if (CheckHitKey(KEY_INPUT_4)) {
-		gStageState = 4;
+	if (inputkey.GetKeyDown(PAD_INPUT_7) && ClearFlg == 0 && gStageState == 2){
+		PlaySoundMem(ss.gStageClearSE, DX_PLAYTYPE_BACK, TRUE);
+		ClearFlg = 1;
 	}
-	else if (CheckHitKey(KEY_INPUT_5)) {
-		gStageState = 5;
+	if (inputkey.GetKeyDown(PAD_INPUT_7) && ClearFlg == 0 && gStageState == 3) {
+		PlaySoundMem(ss.gStageClearSE, DX_PLAYTYPE_BACK, TRUE);
+		ClearFlg = 1;
+		/*if (ClearWTime < 300) {
+			++ClearWTime;
+		}
+		else {
+			ClearWTime = 0;
+			gStageState++;
+			ClearFlg = 0;
+		}*/
 	}
+	if (inputkey.GetKeyDown(PAD_INPUT_7) && ClearFlg == 0 && gStageState == 4) {
+		PlaySoundMem(ss.gStageClearSE, DX_PLAYTYPE_BACK, TRUE);
+		ClearFlg = 1;
+		/*if (ClearWTime < 300) {
+			++ClearWTime;
+		}
+		else {
+			ClearWTime = 0;
+			gStageState++;
+			ClearFlg = 0;
+		}*/
+	}
+	/*if (inputkey.GetKeyDown(PAD_INPUT_7) || ClearFlg == 1 && gStageState == 4){
+		PlaySoundMem(ss.gStageClearSE, DX_PLAYTYPE_BACK, TRUE);
+		ClearFlg = 1;
+		if (ClearWTime < 300) {
+			++ClearWTime;
+		}
+		else {
+			ClearWTime = 0;
+			gStageState = 5;
+			ClearFlg = 0;
+		}
+	}*/
 	else if (CheckHitKey(KEY_INPUT_6)) {
 		return nullptr;
 	}
 	return this;
-
+#endif // DEBUG
 }
 
 void GameMain::Draw()const
 {
+	DrawFormatString(300, 300, C_GREEN, "%d", ClearWTime);
 	stage.Draw(gStageState);
 	ui.Draw();
+	// ポーズ状態でなければ描画する
 	if (PauseFlg == 0) {
 		thunderbolt.Draw(gStageState);
 		cloud.Draw(gStageState);
@@ -100,19 +147,22 @@ void GameMain::Draw()const
 		player.Draw();
 		DrawFormatString(200, 300, C_RED, "%d", PauseFlg);
 	}
+	// ポーズフラグが立った時描画する
 	if (PauseFlg == 1) {
-		DrawString(200, 320, "--- ポーズ中 ---", C_WHITE);
+		DrawString(210, 320, "--- ポーズ中 ---", C_WHITE);
 		DrawFormatString(200, 300, C_RED, "%d", PauseFlg);
 		DrawFormatString(200, 350, C_RED, "%d", PauseWTime);
 	}
+	// ゲームオーバーフラグが立った時描画する
 	if (GameOverFlg == 1) {
-		DrawGraph(250, 200, GameOverFont, TRUE);
+		DrawGraph(210, 200, GameOverFont, TRUE);
 	}
-	DrawGraph(160, 455, gGameImg[12], TRUE);//海の表示
-	DrawGraph(0, 455, gGameImg[12], TRUE);
-	DrawGraph(480, 455, gGameImg[12], TRUE);
+	DrawGraph(160, 455, SeaImg, TRUE);//海の表示
+	DrawGraph(0, 455, SeaImg, TRUE);
+	DrawGraph(480, 455, SeaImg, TRUE);
 
 #ifdef DEBUG
+	DrawString(250, 280, "BACKボタンでステージ遷移", C_RED);
 	//ステージの当たり判定(ステージ１)
 	if (gStageState == 1) {
 		//左下

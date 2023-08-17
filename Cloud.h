@@ -2,7 +2,7 @@
 #define No_Anim 0
 #define Anim     1
 
-#define StopTime 3 * Frame
+#define StopTime 1 * Frame
 
 class Cloud
 {

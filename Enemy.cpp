@@ -9,6 +9,9 @@
 #include "InputKey.h"
 
 int Enemy::HitPFlg = 0;
+
+int Enemy::EnemyScore;
+
 ENEMY2 Enemy::EnemyData[ENEMY_MAX];
 
 // コンストラクタ
@@ -31,6 +34,11 @@ Enemy::Enemy()
 	LoadDivGraph("image/Enemy/Enemy_P_Animation.png", 18, 6, 3, 64, 64, EnemyImg[0]);  //画像読み込み(ピンク)
 	LoadDivGraph("image/Enemy/Enemy_G_Animation.png", 18, 6, 3, 64, 64, EnemyImg[1]);  //画像読み込み(みどり)
 	LoadDivGraph("image/Enemy/Enemy_R_Animation.png", 18, 6, 3, 64, 64, EnemyImg[2]);  //画像読み込み(きいろ)
+
+	ScoreImg[0] = LoadGraph("images-20230711T024428Z-001/images/Score/GetScore_500.png");
+	ScoreImg[1] = LoadGraph("images-20230711T024428Z-001/images/Score/GetScore_750.png");
+	ScoreImg[2] = LoadGraph("images-20230711T024428Z-001/images/Score/GetScore_1000.png");
+
 }
 
 // デストラクタ
@@ -47,11 +55,11 @@ void Enemy::Update(int nowstage)
 
 	NowStage = nowstage;
 
+	srand(time(NULL));
+
 	// プレイヤーの座標取得
 	Px = Player::PlayerX;
 	Py = Player::PlayerY;
-
-	srand(time(NULL));
 
 	if (StartFlg == 0 && StartMotion < 4)
 	{
@@ -71,42 +79,23 @@ void Enemy::Update(int nowstage)
 				{
 					enemy[i].ran = rand() % 2 + 1;
 
+					EnMove(i);
+
 					HitStage(i);
 
-					for (int j = i + 1; j < ENEMY_MAX; j++)
+					if (i < ENEMY_MAX - 1)
 					{
-						if (i != 2)
+						for (int j = i + 1; j < ENEMY_MAX; j++)
 						{
 							HitFlg = HitEnemy(i, j);
 						}
-						
-						if (HitFlg == 1)
-						{
-							enemy[i].vecx = -enemy[i].vecx;
-							enemy[j].vecx = -enemy[j].vecx;
-						}
-						else if (HitFlg == 2)
-						{
-							enemy[i].vecx = -enemy[i].vecx;
-							enemy[j].vecx = -enemy[j].vecx;
-						}
-						else if(HitFlg == 3)
-						{
-							enemy[i].vecy = -enemy[i].vecy;
-							enemy[j].vecy = -enemy[j].vecy;
-						}
-						else if (HitFlg == 4)
-						{
-							enemy[i].vecy = -enemy[i].vecy;
-							enemy[j].vecy = -enemy[j].vecy;
-						}
-
 					}
-					
-					HitPeFlg = HitPlayer(i);
-					/*EnemyMove(i);*/
 
-					EnMove(i);
+					HitPeFlg = HitPlayer(i);
+
+					enemy[i].x += enemy[i].vecx;
+					enemy[i].y += enemy[i].vecy;
+
 					SetEnemyData(i);
 
 					// 敵のX座標範囲
@@ -131,43 +120,25 @@ void Enemy::Update(int nowstage)
 				}
 				else if (enemy[i].life == 1)
 				{
-					EnemyPara(i);
-					SetEnemyData(i);
-					for (int j = i + 1; j < ENEMY_MAX; j++)
+					if (enemy[i].ground == 0)
 					{
-						if (i != 2)
-						{
-							HitFlg = HitEnemy(i, j);
-						}
-
-						if (HitFlg == 1)
-						{
-							float v0 = sqrt(2.0f * 9.807f * 2.0f);
-
-							for (i = 0; i < j; i++)
-							{
-								v0 *= 0.8f;
-							}
-
-							enemy[i].vecx *= 1.1f;
-							enemy[j].vecx *= -1.1f;
-						}
-						else if (HitFlg == 2)
-						{
-							enemy[i].vecx *= -1.1f;
-							enemy[j].vecx *= 1.1f;
-						}
-						else if (HitFlg == 3)
-						{
-							enemy[i].vecy *= -1.1f;
-							enemy[j].vecy *= 1.1f;
-						}
-						else if (HitFlg == 4)
-						{
-							enemy[i].vecy *= 1.1f;
-							enemy[j].vecy *= -1.1f;
-						}
+						EnemyPara(i);
+						SetEnemyData(i);
 					}
+					else if (enemy[i].ground == 1)
+					{
+						enemy[i].flg = 0;
+						enemy[i].waittime++;
+						HitPeFlg = HitStart(i);
+					}
+
+					if (enemy[i].ground == 1 && enemy[i].waittime >= 180)
+					{
+						enemy[i].life = 2;
+						enemy[i].start = 1;
+						
+					}
+					
 				}
 				else
 				{
@@ -176,7 +147,9 @@ void Enemy::Update(int nowstage)
 
 			}
 		}
+		
 	}
+	
 	
 
 	//１秒たったらフレームカウント
@@ -194,8 +167,14 @@ void Enemy::Update(int nowstage)
 			if (enemy[i].start == 1)
 			{
 				enemy[i].sm++;
+				enemy[i].waittime = 0;
+				enemy[i].ground = 0;
 			}
+
+			enemy[i].score = -1;
 		}
+
+
 	}
 }
 
@@ -203,58 +182,58 @@ void Enemy::Update(int nowstage)
 void Enemy::Draw() const 
 {
 #ifdef _DEBUG
-	DrawFormatString(50, 50, 0xffffff, "EnX:%f EnY:%f", enemy[2].x, enemy[2].y);
-	DrawFormatString(50, 130, 0xffffff, "EnX:%f EnY:%f", EnemyData[2].x, EnemyData[2].y);
-	DrawFormatString(50, 150, 0xffffff, "EnSt:%d", enemy[0].state);
-	DrawFormatString(50, 170, 0xffffff, "EnSt:%d", EnemyData[0].state);
+	//DrawFormatString(400, 50, 0xffffff, "EnX:%f EnY:%f", enemy[2].x, enemy[2].y);
+	//DrawFormatString(400, 130, 0xffffff, "EnX:%f EnY:%f", EnemyData[2].x, EnemyData[2].y);
+	//DrawFormatString(400, 150, 0xffffff, "EnSt:%d", enemy[0].state);
+	//DrawFormatString(400, 170, 0xffffff, "EnSt:%d", EnemyData[0].state);
 
-	DrawFormatString(50, 70, 0xffffff, "Enflg:%d", enemy[0].life);
-	DrawFormatString(50, 90, 0xffffff, "Enflg:%d", enemy[1].life);
-	DrawFormatString(50, 110, 0xffffff, "Enflg:%d", enemy[2].life);
-	DrawFormatString(130, 70, 0xffffff, "Hit:%d", HitPFlg);
-	DrawFormatString(130, 90, 0xffffff, "Vx:%f", enemy[0].vecx);
-	DrawFormatString(130, 110, 0xffffff, "Vy:%f", enemy[0].vecy);
+	//DrawFormatString(400, 70, 0xffffff, "Enflg:%d", enemy[0].life);
+	//DrawFormatString(400, 90, 0xffffff, "Enflg:%d", enemy[1].life);
+	//DrawFormatString(400, 110, 0xffffff, "Enflg:%d", enemy[2].life);
+	//DrawFormatString(450, 70, 0xffffff, "Hit:%d", HitFlg);
+	//DrawFormatString(450, 90, 0xffffff, "Vx:%f", enemy[0].vecx);
+	//DrawFormatString(450, 110, 0xffffff, "Vy:%f", enemy[0].vecy);
 
-	
+	//
 
-	for (int i = 0; i < ENEMY_MAX; i++)
-	{
-		if (enemy[i].life == 2)
-		{
-			// 敵の当たり判定表示
-			if (enemy[i].state != 3)
-			{
-				if (StartFlg == 0)
-				{
-					// スタートモーション時
-					DrawBox((int)enemy[i].x, (int)enemy[i].y + 25, (int)enemy[i].x + 50, (int)enemy[i].y + 64, 0xffffff, FALSE);
-				}
-				else
-				{
-					// スタート以外
-					//DrawBox((int)enemy[i].x + 10, (int)enemy[i].y + 12, (int)enemy[i].x + 55, (int)enemy[i].y + 65, 0xffffff, FALSE);
+	//for (int i = 0; i < ENEMY_MAX; i++)
+	//{
+	//	if (enemy[i].life == 2)
+	//	{
+	//		// 敵の当たり判定表示
+	//		if (enemy[i].state != 3)
+	//		{
+	//			if (StartFlg == 0)
+	//			{
+	//				// スタートモーション時
+	//				DrawBox((int)enemy[i].x, (int)enemy[i].y + 25, (int)enemy[i].x + 50, (int)enemy[i].y + 64, 0xffffff, FALSE);
+	//			}
+	//			else
+	//			{
+	//				// スタート以外
+	//				//DrawBox((int)enemy[i].x + 10, (int)enemy[i].y + 12, (int)enemy[i].x + 55, (int)enemy[i].y + 65, 0xffffff, FALSE);
 
-					// プレイヤーと当たってる場合赤枠、当たっていない場合白枠
-					if (HitPeFlg == i)
-					{
-						DrawBox((int)EnXL[i], (int)EnYL[i], (int)EnXR[i], (int)EnYR[i], 0xff0000, FALSE);
-					}
-					else
-					{
-						// 風船ありの敵の範囲（白）
-						DrawBox((int)EnXL[i], (int)EnYL[i], (int)EnXR[i], (int)EnYR[i], 0xffffff, FALSE);
-						// 風船抜きの敵の範囲（緑）
-						DrawBox((int)EnXL[i], (int)EnYL[i] + 20, (int)EnXR[i], (int)EnYR[i], 0x00ff00, FALSE);
-						// 風船抜きの敵の範囲の半分（青）
-						DrawBox((int)EnXL[i], (int)EnYL[i]+36, (int)EnXR[i], (int)EnYR[i], 0x0000ff, FALSE);
-					}
-				}
-			}
-		}
-		else if (enemy[i].life == 1)
-		{
-		}
-	}
+	//				// プレイヤーと当たってる場合赤枠、当たっていない場合白枠
+	//				if (HitPeFlg == i)
+	//				{
+	//					DrawBox((int)EnXL[i], (int)EnYL[i], (int)EnXR[i], (int)EnYR[i], 0xff0000, FALSE);
+	//				}
+	//				else
+	//				{
+	//					// 風船ありの敵の範囲（白）
+	//					DrawBox((int)EnXL[i], (int)EnYL[i], (int)EnXR[i], (int)EnYR[i], 0xffffff, FALSE);
+	//					// 風船抜きの敵の範囲（緑）
+	//					DrawBox((int)EnXL[i], (int)EnYL[i] + 20, (int)EnXR[i], (int)EnYR[i], 0x00ff00, FALSE);
+	//					// 風船抜きの敵の範囲の半分（青）
+	//					DrawBox((int)EnXL[i], (int)EnYL[i]+36, (int)EnXR[i], (int)EnYR[i], 0x0000ff, FALSE);
+	//				}
+	//			}
+	//		}
+	//	}
+	//	else if (enemy[i].life == 1)
+	//	{
+	//	}
+	//}
 
 #endif // DEBUG
 
@@ -267,6 +246,11 @@ void Enemy::Draw() const
 			{
 				// スタートモーション時
 				DrawGraph((int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
+
+				if (enemy[i].score >= 0)
+				{
+					DrawGraph(enemy[i].oldx, enemy[i].oldy, ScoreImg[enemy[i].score], TRUE);
+				}
 			}
 			else
 			{
@@ -295,6 +279,10 @@ void Enemy::Draw() const
 		}
 		else
 		{
+			if (enemy[i].score >= 0)
+			{
+				DrawGraph(enemy[i].oldx, enemy[i].oldy, ScoreImg[enemy[i].score], TRUE);
+			}
 			// スタート以外
 			// 画面内
 			DrawGraph((int)enemy[i].x, (int)enemy[i].y, EnemyImg[enemy[i].state][enemy[i].flg], TRUE);
@@ -333,6 +321,7 @@ void Enemy::EnMove(int e)
 	}
 	else
 	{
+		enemy[e].flg = 11;
 		EnemyDown(e);
 	}
 
@@ -354,11 +343,6 @@ void Enemy::EnMove(int e)
 
 	enemy[e].vecx *= (1.0f - friction);
 	enemy[e].vecy *= (1.0f - friction);
-
-	enemy[e].x += enemy[e].vecx;
-	enemy[e].y += enemy[e].vecy;
-
-	enemy[e].ground = 0;
 
 }
 
@@ -496,6 +480,8 @@ void Enemy::StartMove(int i)
 
 		if (enemy[i].sm == 0)
 		{
+			enemy[i].flg = 1;
+
 			if (Fcnt > 0 && Fcnt < 15 || Fcnt > 31 && Fcnt < 45)
 			{
 				enemy[i].flg = 0;
@@ -716,12 +702,16 @@ void Enemy::EnemyPara(int e)
 
 		HitStage(e);
 
-		// 地面に着いたら風船を膨らませる
-		if (enemy[e].ground == 1)
+		if (e < ENEMY_MAX - 1)
 		{
-			enemy[e].life = 2;
-			enemy[e].start = 1;
+			for (int j = e + 1; j < ENEMY_MAX; j++)
+			{
+				HitFlg = HitEnemy(e, j);
+			}
 		}
+
+		// 地面に着いたら風船を膨らませる
+		
 	}
 }
 
@@ -772,27 +762,11 @@ int Enemy::HitEnemy(int e,int e2)
 	
 	if (EnXL[e] <= EnXR[e2] && EnYL[e] <= EnYR[e2] && EnXR[e] >= EnXL[e2] && EnYR[e] >= EnYL[e2])
 	{
-		if (EnXL[e] > EnXR[e2])
-		{
-			return 1;
-		}
-		else
-		{
-			return 2;
-		}
-
-
-		if (EnYR[e] < EnYL[e2])
-		{
-			return 3;
-		}
-		else
-		{
-			return 4;
-		}
-
+		enemy[e].vecx *= -0.8f;
+		enemy[e2].vecx *= -0.8f;
+		return 1;
 	}
-	
+		
 	return 0;
 }
 
@@ -802,7 +776,7 @@ void Enemy::HitStage(int e)
 	EnXL[e] = enemy[e].x + 10.0f;//左上X
 	EnYL[e] = enemy[e].y + 12.0f;//左上Y
 	EnXR[e] = EnXL[e] + 45.0f;//右下X
-	EnYR[e] = EnYL[e] + 53.0f;//右下Y
+	EnYR[e] = EnYL[e] + 50.0f;//右下Y
 
 	if (NowStage == 1) {//***************　１ステージ　***************//
 /*******************************************************************************************************************************/
@@ -810,14 +784,14 @@ void Enemy::HitStage(int e)
 /*******************************************************************************************************************************/
 		if (enemy[e].ground == 0) {
 			if (EnXL[e] <= S_Ground_Left_XL && EnYR[e] >= S_Ground_Left_YU + PlusPx) {//左下の台（側面）
-				enemy[e].vecx *= -COR;
+				enemy[e].vecx = -enemy[e].vecx;
 				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
 					enemy[e].vecx += 0.9f;
 				}
 			}
 
 			if (EnXR[e] >= S_Ground_Right_XU && EnYR[e] >= S_Ground_Right_YU + PlusPx) {//右下の台（側面）
-				enemy[e].vecx *= -COR;
+				enemy[e].vecx = -enemy[e].vecx;
 				if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
 					enemy[e].vecx -= 0.9f;
 				}
@@ -825,13 +799,13 @@ void Enemy::HitStage(int e)
 
 			if (EnYR[e] >= S_Sky_Ground_0_YU + PlusPx && EnYL[e] <= S_Sky_Ground_0_YL - PlusPx) {//上の台（側面）
 				if (EnXL[e] <= S_Sky_Ground_0_XL + PlusPx && EnXR[e] >= S_Sky_Ground_0_XL) {//上の台の右
-					enemy[e].vecx *= -COR;
+					enemy[e].vecx = -enemy[e].vecx;
 					if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
 						enemy[e].vecx += 0.9f;
 					}
 				}
 				else if (EnXR[e] >= S_Sky_Ground_0_XU - PlusPx && EnXR[e] <= S_Sky_Ground_0_XU) {//上の台の左
-					enemy[e].vecx *= -COR;
+					enemy[e].vecx = -enemy[e].vecx;
 					if (enemy[e].vecx >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を引く
 						enemy[e].vecx -= 0.9f;
 					}
@@ -842,7 +816,7 @@ void Enemy::HitStage(int e)
 			/*******************************************************************************************************************************/
 			if (EnYL[e] <= S_Sky_Ground_0_YL - PlusPx && EnYR[e] >= S_Sky_Ground_0_YL) {//上の台（下辺）
 				if (EnXL[e] <= S_Sky_Ground_0_XL && EnXR[e] >= S_Sky_Ground_0_XU) {
-					enemy[e].vecy *= -COR;
+					enemy[e].vecy = -enemy[e].vecy;
 					if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
 						enemy[e].vecy += 0.9f;
 					}
@@ -850,7 +824,7 @@ void Enemy::HitStage(int e)
 			}
 
 			if (EnYL[e] <= 0) {//画面上の当たり判定
-				enemy[e].vecy *= -COR;
+				enemy[e].vecy = -enemy[e].vecy;
 				if (enemy[e].vecy >= 0) {//めり込まないようにするために加速度が０以上になると加速度に値を足す
 					enemy[e].vecy += 0.9f;
 				}
@@ -1654,6 +1628,9 @@ int Enemy::HitStart(int e)
 		if (EnXL[e] <= PXR && EnYL[e] <= PYR && EnXR[e] >= PXL && EnYR[e] >= PYL)
 		{
 			enemy[e].flg = 17;
+			enemy[e].oldx = enemy[e].x;
+			enemy[e].oldy = enemy[e].y;
+			enemy[e].score = 1;
 			// 仮
 			enemy[e].life -= 1;
 
@@ -1676,7 +1653,7 @@ int Enemy::HitPlayer(int e)
 	PXL = Px + 18;  //左上X
 	PYL = Py + 14;  //左上Y
 	PXR = Px + 40;  //右下X
-	PYR = Py+ 64;   //右下Y
+	PYR = Py+ 61;   //右下Y
 
 	
 	EnXL[e] = enemy[e].x + 10.0f;  //左上X
@@ -1691,6 +1668,9 @@ int Enemy::HitPlayer(int e)
 			if (PYR < (EnYL[e] + 36))    // プレイヤーの位置(高さ)が敵キャラ(風船を除く人の部分)の半分より上にいる場合
 			{
 				enemy[e].flg = 17;
+				enemy[e].oldx = enemy[e].x;
+				enemy[e].oldy = enemy[e].y;
+				enemy[e].score = 0;
 				// 仮
 				enemy[e].life -= 1;
 
@@ -1703,6 +1683,7 @@ int Enemy::HitPlayer(int e)
 			{
 
 				HitPFlg = 2; // プレイヤーが敵に跳ね返る(風船あり)、プレイヤーの風船が一個減る
+				enemy[e].vecx *= -0.8f;
 
 				return 3;
 			}
@@ -1710,7 +1691,7 @@ int Enemy::HitPlayer(int e)
 			{
 
 				HitPFlg = 1; // プレイヤーが敵に跳ね返る
-
+				enemy[e].vecx *= -0.8f;
 				return 3;
 			}
 		}
@@ -1721,7 +1702,9 @@ int Enemy::HitPlayer(int e)
 		{
 			if (PYR < (EnYL[e] + 36))    // プレイヤーの位置(高さ)が敵キャラ(風船を除く人の部分)の半分より上にいる場合
 			{
-				enemy[e].flg = 17;
+				enemy[e].oldx = enemy[e].x;
+				enemy[e].oldy = enemy[e].y;
+				enemy[e].score = 2;
 				// 仮
 				enemy[e].life -= 1;
 
@@ -1732,7 +1715,7 @@ int Enemy::HitPlayer(int e)
 			}
 			else // 上記以上の場合
 			{
-				enemy[e].flg = 17;
+				
 
 				HitPFlg = 1; // プレイヤーが敵に跳ね返る
 
