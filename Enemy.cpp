@@ -7,10 +7,13 @@
 #include <math.h>
 #include "stdlib.h"
 #include<time.h>
-#include "InputKey.h"
+#include "InputKey.h"]
+#include"bubble.h"
 
 int Enemy::HitPFlg = 0;
 int Enemy::EnemyTotalScore = 0;
+int Enemy::EnemyX[3];
+int Enemy::EnemyY[3];
 ENEMY2 Enemy::EnemyData[ENEMY_MAX];
 
 // コンストラクタ
@@ -833,8 +836,10 @@ void Enemy::EnemyDie(int e)
 	{
 		enemy[e].die++;
 	}
-	else if (enemy[e].y <= 490.0f)
+	else if (enemy[e].y <= 450.0f)
 	{
+		EnemyX[stage.E] = enemy[e].x;
+		EnemyY[stage.E] = enemy[e].x;
 		enemy[e].y += 3.0f;
 	}
 }

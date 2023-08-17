@@ -3,6 +3,9 @@
 #include "InputKey.h"
 #include "StageImg.h"
 #include "Player.h"
+#include"Enemy.h"
+
+int gStage::E;
 
 gStage::gStage()
 {
@@ -27,6 +30,10 @@ gStage::gStage()
 	gGameState = 0;
 	px = 0;
 	py = 0;
+	for (int i; i < 3; i++) {
+		ex[i] = 0;
+		ey[i] = 0;
+	}
 	SeaAnimCount = 0;
 	DeathFlg = 0;
 	Seax = 0;
@@ -137,6 +144,7 @@ void gStage::Update()
 {
 	px = (int)player.PlayerX;
 	py = (int)player.PlayerY;
+	ex[E] = (int)enemy.EnemyX[E];
 	DeathFlg = player.Death;
 
 	gStage::SeaBottom();
@@ -159,7 +167,7 @@ void gStage::Update()
 }
 void gStage::SeaBottom()
 {
-	int pxL, pyL;
+	int pxL, pyL,
 	pxL = (int)px;
 	pyL = (int)py;
 	// プレイヤーのY座標が海のY座標を下回った時に波を立たせる処理
@@ -170,6 +178,12 @@ void gStage::SeaBottom()
 		Seax = pxL;
 		Seay = 420;
 		/*Seay = pyL;*/
+	}
+	if ((int)ey[E]> Seay && DeathFlg == 0) {
+		PlaySoundMem(ss.gSplashSE, DX_PLAYTYPE_BACK, TRUE);
+		DeathFlg = 1;
+		Seax = ex[E];
+		Seay = 420;
 	}
 }
 

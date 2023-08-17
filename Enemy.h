@@ -1,4 +1,5 @@
 #pragma once
+#include"Stage.h"
 
 #define ENEMY_X 200    // 敵[0]のX座標
 #define ENEMY_Y 185    // 敵[0]のY座標
@@ -16,6 +17,7 @@ struct ENEMY2
 class Enemy
 {
 private:
+	gStage stage;
 	int StartFlg;      // スタート状態か判定する用
 	int EnemyImg[3][24];  // 敵の画像格納用
 	int ScoreImg[5];  // スコア画像用
@@ -64,6 +66,8 @@ public:
 	 static int HitPFlg;       // プレイヤーと敵の当たり判定(プレイヤーに値を渡す)
 	 static ENEMY2 EnemyData[ENEMY_MAX]; // 敵の座標、状態（色）渡す用
 	 static int EnemyTotalScore;  // スコア加算用
+	 static int EnemyX[3];
+	 static int EnemyY[3];
 
 	Enemy();   // コンストラクタ
 	~Enemy();  // デストラクタ

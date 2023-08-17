@@ -3,11 +3,13 @@
 #include "DxLib.h"
 #include "Player.h"
 #include "Soundstorage.h"
+#include"Enemy.h"
 class gStage
 {
 private:
     Player player;
     Soundstorage ss;
+    Enemy enemy;
     int gGameImg[14];
     int gSeaImg;
     int MousePointx;
@@ -16,11 +18,14 @@ private:
     int SeaAnim[3];
     int SeaAnimCount;
     int px, py;
+    int ex[3],ey[3];
     int Seax, Seay;
     bool DeathFlg;
     bool SeaAnimFlg;
     
 public:
+    static int E;
+
     void Draw(int gStageState) const;
 
     void Update();
