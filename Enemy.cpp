@@ -263,7 +263,7 @@ void Enemy::Draw() const
 
 				if (enemy[i].score >= 0)
 				{
-					DrawGraph(enemy[i].oldx + 20, enemy[i].oldy - 20, ScoreImg[enemy[i].score], TRUE);
+					DrawGraph(enemy[i].oldx + 15, enemy[i].oldy - 20, ScoreImg[enemy[i].score], TRUE);
 				}
 			}
 			else
@@ -295,7 +295,7 @@ void Enemy::Draw() const
 		{
 			if (enemy[i].score >= 0)
 			{
-				DrawGraph(enemy[i].oldx + 20, enemy[i].oldy - 20, ScoreImg[enemy[i].score], TRUE);
+				DrawGraph(enemy[i].oldx + 15, enemy[i].oldy - 20, ScoreImg[enemy[i].score], TRUE);
 			}
 			// スタート以外
 			// 画面内
@@ -783,7 +783,7 @@ void Enemy::EnemyPara(int e)
 		enemy[e].y += 0.3f;
 
 		// パラシュート状態確認時コメントアウト
-		/*HitPeFlg = HitPlayer(e);*/
+		HitPeFlg = HitPlayer(e);
 
 		HitStage(e);
 
