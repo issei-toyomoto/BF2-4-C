@@ -3,7 +3,7 @@
 #define DEBUG
 class bubble  {
 private:
-	Soundstorage soundstorage;
+	Soundstorage ss;
 	// ƒVƒƒƒ{ƒ“‹Ê‚Ì\‘¢‘Ì
 	struct BubbleSet
 	{

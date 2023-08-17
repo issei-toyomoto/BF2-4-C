@@ -43,6 +43,7 @@ public:
 	static int PauseWTime;     // ポーズ状態に入った後からカウントする
 	static int GameOverWTime;  // ゲームオーバー状態に入った後にカウントする
 	static int PauseFlg;       // ポーズフラグ 0 : ポーズ状態ではない 1 : ポーズ状態
+	static bool SoundFlg;      // サウンドフラグ 0 : スタートBGMのみが流れている 1 : 特定のBGMが流れてる
 	//コンストラクタ
 	GameMain() {
 		//gGameImg[0] = LoadGraph("images/Stage_Footing01.png");      // ステージの足場1

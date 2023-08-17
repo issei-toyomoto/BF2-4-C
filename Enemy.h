@@ -18,7 +18,7 @@ class Enemy
 private:
 	int StartFlg;      // スタート状態か判定する用
 	int EnemyImg[3][24];  // 敵の画像格納用
-	int ScoreImg[3];
+	int ScoreImg[5];
 	int Fcnt;        // FPSカウント
 	int StartMotion;   // スタート時、敵のモーション管理用
 	float Px, Py;      // プレイヤーのX座標、Y座標
@@ -29,7 +29,15 @@ private:
 	float MaxSpeed;      // 最大速度
 	float acceleration;  // 加速度
 	float friction;      // 摩擦係数
+
+	const int EnemyMax[5] = { 3,5,3,4,5 };
+
+	
+	int OldStage;
+	int EnMax;
 	int NowStage;
+
+	int StageFlg;
 	
 	const float MinY = -19.0f;
 	
@@ -64,15 +72,15 @@ private:
 
 public:
 	 static int HitPFlg;       // プレイヤーと敵の当たり判定(プレイヤーに値を渡す)
-
+	 static int EnemyScore;
 	 static ENEMY2 EnemyData[ENEMY_MAX]; // 敵の座標、状態（色）渡す用
 
-	 static int EnemyScore;
+	 static int EnemyTotalScore;
 
 	Enemy();   // コンストラクタ
 	~Enemy();  // デストラクタ
 
-	void EnemyInit();       // 敵の初期化処理
+	void EnemyInit(int nowstage);       // 敵の初期化処理
 	void EnemyMove(int i);  // 敵の移動処理
 	void StartMove();       // 敵のスタート処理
 	void StartMove(int i);  // 敵のスタート処理(パラシュート後)
