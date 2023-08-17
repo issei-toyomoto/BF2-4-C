@@ -26,7 +26,6 @@ UI::UI()
 	HScore10000 = 0;
 	TScore100000 = 0;
 	HScore100000 = 0;
-	/*HighScore = 10000;*/
 	LifeCnt = 0;
 
 	UIflg = 0;
