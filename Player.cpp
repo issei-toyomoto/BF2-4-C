@@ -126,12 +126,6 @@ void Player::Update(int Stage) /***描画以外***/
 	}
 
 	UpdateStageCollision();//プレイヤーとステージの当たり判定
-	//if (Enemy::HitPFlg == 2) {//敵と接触したら風船の数を１つ減らす
-	//	BalloonCrack = Balloon_Crack;
-	//}
-	//if (InputKey::GetKeyDown(PAD_INPUT_10) == TRUE) {//スペースキーを押したら風船の数を１つ減らす
-	//	BalloonCrack = Balloon_Crack;
-	//}
 
 	//雷と当たったか？
 	for (int i = 0; i < 2; i++) {
@@ -169,6 +163,11 @@ void Player::Update(int Stage) /***描画以外***/
 		//Y方向
 		UpdatePlayerY();
 		PlayerY += VectorY;//Y座標更新
+
+		if (Enemy::HitPFlg == 2) {//敵と接触したら風船の数を１つ減らす
+			//EnemyCollison();
+			//BalloonCrack = Balloon_Crack;
+		}
 	}
 	else if (BalloonNum <= 0) {//風船の数が０になった時の処理
 		PlayerState = P_State_Dead;
