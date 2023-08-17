@@ -20,14 +20,26 @@ int GameMain::PauseWTime;
 int GameMain::GameOverWTime;
 int GameMain::PauseFlg;
 bool GameMain::SoundFlg;
+int GameMain::gStageState = 1;
 
 AbstractScene* GameMain::Update()
 {
+	FPSCount++;
+	if (FPSCount == 60) {
+		FPSCount = 0;
+	}
 	if (SoundFlg == 0) {
 		PlaySoundMem(ss.gStartSE, DX_PLAYTYPE_BACK, TRUE);
 		SoundFlg = 1;
 	}
 	++PauseWTime;
+	if (PhaseCount < 320) {
+		PhaseFlg = 0;
+		PhaseCount++;
+	}
+	else {
+		PhaseFlg = 1;
+	}
 	// ポーズ状態、ゲームオーバー状態ではない間行う処理
 	if (PauseFlg == 0 && GameOverFlg == 0 && ClearFlg == 0) {
 		player.Update(gStageState);
@@ -86,6 +98,7 @@ AbstractScene* GameMain::Update()
 		ClearWTime = 0;
 		gStageState++;
 		ClearFlg = 0;
+		PhaseCount = 0;
 	}
 	if (inputkey.GetKeyDown(PAD_INPUT_7) && ClearFlg == 0 && gStageState < 6) {
 		SoundFlg = 1;
@@ -102,6 +115,10 @@ AbstractScene* GameMain::Update()
 
 void GameMain::Draw()const
 {
+	if (FPSCount > 30 && PhaseFlg == 0) {
+		DrawGraph(250, 50, PhaseUI, TRUE);
+		DrawGraph(370, 42, UINumber[gStageState], TRUE);
+	}
 	stage.Draw(gStageState);
 	ui.Draw();
 	// ポーズ状態でなければ描画する
@@ -116,7 +133,7 @@ void GameMain::Draw()const
 	}
 	// ポーズフラグが立った時描画する
 	if (PauseFlg == 1) {
-		DrawString(210, 320, "--- ポーズ中 ---", C_WHITE);
+		DrawString(220, 320, "--- ポーズ中 ---", C_WHITE);
 	}
 	// ゲームオーバーフラグが立った時描画する
 	if (GameOverFlg == 1) {
@@ -125,7 +142,6 @@ void GameMain::Draw()const
 	DrawGraph(160, 455, SeaImg, TRUE);//海の表示
 	DrawGraph(0, 455, SeaImg, TRUE);
 	DrawGraph(480, 455, SeaImg, TRUE);
-
 #ifdef DEBUG
 	DrawString(250, 280, "BACKボタンでステージ遷移", C_RED);
 	//ステージの当たり判定(ステージ１)
