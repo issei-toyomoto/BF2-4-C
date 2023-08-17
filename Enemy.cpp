@@ -42,6 +42,9 @@ Enemy::Enemy()
 	ScoreImg[0] = LoadGraph("images-20230711T024428Z-001/images/Score/GetScore_500.png");
 	ScoreImg[1] = LoadGraph("images-20230711T024428Z-001/images/Score/GetScore_750.png");
 	ScoreImg[2] = LoadGraph("images-20230711T024428Z-001/images/Score/GetScore_1000.png");
+	ScoreImg[3] = LoadGraph("images-20230711T024428Z-001/images/Score/GetScore_1500.png");
+	ScoreImg[4] = LoadGraph("images-20230711T024428Z-001/images/Score/GetScore_2000.png");
+
 
 }
 
@@ -195,61 +198,61 @@ void Enemy::Update(int nowstage)
 void Enemy::Draw() const 
 {
 #ifdef _DEBUG
-	//DrawFormatString(400, 50, 0xffffff, "EnX:%f EnY:%f", enemy[2].x, enemy[2].y);
-	//DrawFormatString(400, 130, 0xffffff, "EnX:%f EnY:%f", EnemyData[2].x, EnemyData[2].y);
-	DrawFormatString(100, 150, 0xffffff, "now:%d", NowStage);
-	DrawFormatString(100, 180, 0xffffff, "Old:%d", OldStage);
-	DrawFormatString(100, 210, 0xffffff, "EnMax:%d", EnMax);
+	////DrawFormatString(400, 50, 0xffffff, "EnX:%f EnY:%f", enemy[2].x, enemy[2].y);
+	////DrawFormatString(400, 130, 0xffffff, "EnX:%f EnY:%f", EnemyData[2].x, EnemyData[2].y);
+	//DrawFormatString(100, 150, 0xffffff, "now:%d", NowStage);
+	//DrawFormatString(100, 180, 0xffffff, "Old:%d", OldStage);
+	//DrawFormatString(100, 210, 0xffffff, "EnMax:%d", EnMax);
 
-	//DrawFormatString(400, 170, 0xffffff, "EnSt:%d", EnemyData[0].state);
+	////DrawFormatString(400, 170, 0xffffff, "EnSt:%d", EnemyData[0].state);
 
-	//DrawFormatString(400, 70, 0xffffff, "Enflg:%d", enemy[0].life);
-	//DrawFormatString(400, 90, 0xffffff, "Enflg:%d", enemy[1].life);
-	//DrawFormatString(400, 110, 0xffffff, "Enflg:%d", enemy[2].life);
-	//DrawFormatString(450, 70, 0xffffff, "Hit:%d", HitFlg);
-	//DrawFormatString(450, 90, 0xffffff, "Vx:%f", enemy[0].vecx);
-	//DrawFormatString(450, 110, 0xffffff, "Vy:%f", enemy[0].vecy);
+	////DrawFormatString(400, 70, 0xffffff, "Enflg:%d", enemy[0].life);
+	////DrawFormatString(400, 90, 0xffffff, "Enflg:%d", enemy[1].life);
+	////DrawFormatString(400, 110, 0xffffff, "Enflg:%d", enemy[2].life);
+	////DrawFormatString(450, 70, 0xffffff, "Hit:%d", HitFlg);
+	////DrawFormatString(450, 90, 0xffffff, "Vx:%f", enemy[0].vecx);
+	////DrawFormatString(450, 110, 0xffffff, "Vy:%f", enemy[0].vecy);
 
-	//
+	////
 
-	for (int i = 0; i < ENEMY_MAX; i++)
-	{
-		if (enemy[i].life == 2)
-		{
-			// 敵の当たり判定表示
-			if (enemy[i].state != 3)
-			{
-				if (StartFlg == 0)
-				{
-					// スタートモーション時
-					DrawBox((int)enemy[i].x, (int)enemy[i].y + 25, (int)enemy[i].x + 50, (int)enemy[i].y + 64, 0xffffff, FALSE);
-				}
-				else
-				{
-					// スタート以外
-					//DrawBox((int)enemy[i].x + 10, (int)enemy[i].y + 12, (int)enemy[i].x + 55, (int)enemy[i].y + 65, 0xffffff, FALSE);
+	//for (int i = 0; i < ENEMY_MAX; i++)
+	//{
+	//	if (enemy[i].life == 2)
+	//	{
+	//		// 敵の当たり判定表示
+	//		if (enemy[i].state != 3)
+	//		{
+	//			if (StartFlg == 0)
+	//			{
+	//				// スタートモーション時
+	//				DrawBox((int)enemy[i].x, (int)enemy[i].y + 25, (int)enemy[i].x + 50, (int)enemy[i].y + 64, 0xffffff, FALSE);
+	//			}
+	//			else
+	//			{
+	//				// スタート以外
+	//				//DrawBox((int)enemy[i].x + 10, (int)enemy[i].y + 12, (int)enemy[i].x + 55, (int)enemy[i].y + 65, 0xffffff, FALSE);
 
-					// プレイヤーと当たってる場合赤枠、当たっていない場合白枠
-					if (HitFlg == 1)
-					{
-						DrawBox((int)EnXL[i], (int)EnYL[i], (int)EnXR[i], (int)EnYR[i], 0xff0000, FALSE);
-					}
-					else
-					{
-						// 風船ありの敵の範囲（白）
-						DrawBox((int)EnXL[i], (int)EnYL[i], (int)EnXR[i], (int)EnYR[i], 0xffffff, FALSE);
-						// 風船抜きの敵の範囲（緑）
-						DrawBox((int)EnXL[i], (int)EnYL[i] + 20, (int)EnXR[i], (int)EnYR[i], 0x00ff00, FALSE);
-						// 風船抜きの敵の範囲の半分（青）
-						DrawBox((int)EnXL[i], (int)EnYL[i]+36, (int)EnXR[i], (int)EnYR[i], 0x0000ff, FALSE);
-					}
-				}
-			}
-		}
-		else if (enemy[i].life == 1)
-		{
-		}
-	}
+	//				// プレイヤーと当たってる場合赤枠、当たっていない場合白枠
+	//				if (HitFlg == 1)
+	//				{
+	//					DrawBox((int)EnXL[i], (int)EnYL[i], (int)EnXR[i], (int)EnYR[i], 0xff0000, FALSE);
+	//				}
+	//				else
+	//				{
+	//					// 風船ありの敵の範囲（白）
+	//					DrawBox((int)EnXL[i], (int)EnYL[i], (int)EnXR[i], (int)EnYR[i], 0xffffff, FALSE);
+	//					// 風船抜きの敵の範囲（緑）
+	//					DrawBox((int)EnXL[i], (int)EnYL[i] + 20, (int)EnXR[i], (int)EnYR[i], 0x00ff00, FALSE);
+	//					// 風船抜きの敵の範囲の半分（青）
+	//					DrawBox((int)EnXL[i], (int)EnYL[i]+36, (int)EnXR[i], (int)EnYR[i], 0x0000ff, FALSE);
+	//				}
+	//			}
+	//		}
+	//	}
+	//	else if (enemy[i].life == 1)
+	//	{
+	//	}
+	//}
 
 #endif // DEBUG
 
@@ -1722,8 +1725,21 @@ int Enemy::HitStart(int e)
 			enemy[e].flg = 17;
 			enemy[e].oldx = enemy[e].x;
 			enemy[e].oldy = enemy[e].y;
-			enemy[e].score = 1;
-			EnemyTotalScore += 750;
+			if (enemy[e].state == 0)
+			{
+				enemy[e].score = 1;
+				EnemyTotalScore += 750;
+			}
+			else if (enemy[e].state == 1)
+			{
+				enemy[e].score = 2;
+				EnemyTotalScore += 1000;
+			}
+			else if (enemy[e].state == 2)
+			{
+				enemy[e].score = 3;
+				EnemyTotalScore += 1500;
+			}
 			// 仮
 			enemy[e].life -= 2;
 			PlaySoundMem(Soundstorage::DefeatTheEnemySE, DX_PLAYTYPE_BACK, TRUE);
@@ -1763,8 +1779,21 @@ int Enemy::HitPlayer(int e)
 				enemy[e].flg = 17;
 				enemy[e].oldx = enemy[e].x;
 				enemy[e].oldy = enemy[e].y;
-				enemy[e].score = 0;
-				EnemyTotalScore += 500;
+				if (enemy[e].state == 0)
+				{
+					enemy[e].score = 0;
+					EnemyTotalScore += 500;
+				}
+				else if (enemy[e].state == 1)
+				{
+					enemy[e].score = 1;
+					EnemyTotalScore += 750;
+				}
+				else if (enemy[e].state == 2)
+				{
+					enemy[e].score = 2;
+					EnemyTotalScore += 1000;
+				}
 				// 仮
 				enemy[e].life -= 1;
 				PlaySoundMem(Soundstorage::CrackSE, DX_PLAYTYPE_BACK, TRUE);
@@ -1803,8 +1832,22 @@ int Enemy::HitPlayer(int e)
 			{
 				enemy[e].oldx = enemy[e].x;
 				enemy[e].oldy = enemy[e].y;
-				enemy[e].score = 2;
-				EnemyTotalScore += 1000;
+
+				if (enemy[e].state == 0)
+				{
+					enemy[e].score = 2;
+					EnemyTotalScore += 1000;
+				}
+				else if (enemy[e].state == 1)
+				{
+					enemy[e].score = 3;
+					EnemyTotalScore += 1500;
+				}
+				else if(enemy[e].state == 2)
+				{
+					enemy[e].score = 4;
+					EnemyTotalScore += 2000;
+				}
 				// 仮
 				enemy[e].life -= 1;
 				PlaySoundMem(Soundstorage::DefeatTheEnemySE, DX_PLAYTYPE_BACK, TRUE);
