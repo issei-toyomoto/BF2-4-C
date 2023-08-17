@@ -20,8 +20,9 @@ Fish::Fish() {
 	f_Count = 120;
 	P_X = Player::PlayerX;
 	P_Y = Player::PlayerY;
-	E_X = 0;
-	E_Y = 0;
+	E_X = Enemy::EnemyData[ENEMY_MAX].x;
+	E_Y = Enemy::EnemyData[ENEMY_MAX].y;
+	E_Color = Enemy::EnemyData[ENEMY_MAX].state;
 	Target = 0;
 	FishAnim = 0;
 	WaitTime = 51;
@@ -29,11 +30,13 @@ Fish::Fish() {
 	TurnFlg = FALSE;
 	E_Color = 0;
 	E_Num = 0;
+	E_Flg = FALSE;
+	E_Sta[ENEMY_MAX] = {};
 }
 
 //魚生成
 void Fish::Draw() const {
-	if (P_SpawnFlg==TRUE||E_SpawnFlg == TRUE) {
+	if (P_SpawnFlg==TRUE || E_SpawnFlg == TRUE) {
 		//魚画像(アニメーション)
 		if (TurnFlg == FALSE) {
 			DrawLeft();
@@ -49,7 +52,7 @@ void Fish::Update() {
 	if (E_SpawnFlg == FALSE) {
 		CheckPlayer();
 	}
-	if (P_SpawnFlg == FALSE) {
+	if (P_SpawnFlg == TRUE) {
 		CheckEnemy();
 	}
 }
@@ -98,6 +101,7 @@ void Fish::E_MoveFish() {
 	if (f_Count <= 0) {
 		WaitTime--;
 		if (WaitTime <= 0) {
+			E_Sta[E_Num] = 1;
 			InitFish();
 		}
 	}
@@ -169,7 +173,7 @@ void Fish::CheckPlayer() {
 		else if (FishAnim >= 4) {
 			FishAnim = 5;
 			f_PosY = f_PosY + 2;
-			if (f_PosY >= 440) {
+			if (f_PosY >= 460) {
 				InitFish();
 			}
 		}
@@ -185,18 +189,22 @@ void Fish::CheckPlayer() {
 //エネミー判定
 void Fish::CheckEnemy() {
 	for (int i = 0; i <= ENEMY_MAX; i++) {
-		if (E_Flg == FALSE) {
+		if (E_Sta[i] == 0 && E_Flg == FALSE) {
 			E_X = Enemy::EnemyData[i].x;
 			E_Y = Enemy::EnemyData[i].y;
 			E_Color = Enemy::EnemyData[i].state;
 			E_Num = i;
-			if (E_Y >= 360 && E_Y <= 460)E_Flg = TRUE;
+			E_Flg = TRUE;
 		}
 	}
 	E_X = Enemy::EnemyData[E_Num].x;
 	E_Y = Enemy::EnemyData[E_Num].y;
+	if (E_Y >= 460) {
+		E_Sta[E_Num] = 1;
+		E_Flg = FALSE;
+	}
 	//出現エリア判定
-	if (E_Y >= 360 && E_Y <= 460) {
+	if (E_Y >= 360 && E_Y < 460) {
 		Count++;
 		Second = Count / 60;
 		//三秒経過＆魚がいない
@@ -231,7 +239,7 @@ void Fish::CheckEnemy() {
 		else if (FishAnim >= 4) {
 			FishAnim = 5;
 			f_PosY = f_PosY + 2;
-			if (f_PosY >= 440) {
+			if (f_PosY >= 460) {
 				InitFish();
 			}
 		}
@@ -241,6 +249,7 @@ void Fish::CheckEnemy() {
 		//抽選用時間リセット
 		Count = 0;
 		Second = 0;
+		E_Flg = FALSE;
 	}
 }
 
