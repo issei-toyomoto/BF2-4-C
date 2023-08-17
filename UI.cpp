@@ -15,6 +15,7 @@ UI::UI()
 	UIStock = LoadGraph("images-20230711T024428Z-001/images/UI/UI_Stock.png", TRUE);
 	TotalScore = 0;
 	bubleScore = 0;
+	EnemyScore = 0;
 	TScore1 = 0;
 	HScore1 = 0;
 	TScore10 = 0;
@@ -28,7 +29,6 @@ UI::UI()
 	TScore100000 = 0;
 	HScore100000 = 0;
 	LifeCnt = 0;
-
 	UIflg = 0;
 };
 UI::~UI()
