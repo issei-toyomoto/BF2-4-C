@@ -129,6 +129,8 @@ public:
 
 	static int Life;		//残機数
 
+	static bool HitThunder;
+
 	//コンストラクタ
 	Player();
 	//デストラクタ
@@ -168,8 +170,12 @@ public:
 	float GetPlayerX();
 	float GetPlayerY();
 
+	//風船がすべて割られる時
 	void PlayerDeathMove();
+	//雷に当たった時
 	void PlayerThunderMove();
 
 	void SeaInit();
+
+	void EnemyCollison();
 };

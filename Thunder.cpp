@@ -44,6 +44,19 @@ void Thunder::Update(int Stage)
 		if (FinThunderboltAnimFlg[Num] == true) {
 			Thunderbolt::FinAnimFlg[Num] = false;
 			State[Num] = USE;
+			/*NowNum++;
+			if (NowNum >= 2) {
+				NowNum = 2;
+			}*/
+			
+		}
+
+		if (Player::HitThunder == true) {
+			ThunderUnderSea[Num] = true;
+			State[Num] = NO_USE;
+			InitFlg[Num] = false;
+			VectorX[Num] = 0;
+			VectorY[Num] = 0;
 		}
 
 		if (State[Num] == USE) {
@@ -80,15 +93,16 @@ void Thunder::Draw() const
 	DrawFormatString(0, 120, C_WHITE, "State  %d", State[0]);
 	DrawFormatString(0, 140, C_WHITE, "Flg    %d", InitFlg[0]);
 	DrawFormatString(0, 160, C_WHITE, "HitFlg %d", HitFlg[0]);
+	DrawFormatString(0, 180, C_WHITE, "NowNum %d", NowNum);
 
-	/*DrawFormatString(100, 20,  C_RED,   "Num 1");
-	DrawFormatString(100, 40,  C_WHITE, "X  %d", X[1]);
-	DrawFormatString(100, 60,  C_WHITE, "Y  %d", Y[1]);
-	DrawFormatString(100, 80,  C_WHITE, "VX %d", VectorX[1]);
-	DrawFormatString(100, 100, C_WHITE, "VY %d", VectorY[1]);
-	DrawFormatString(100, 120, C_WHITE, "State  %d", State[1]);
-	DrawFormatString(100, 140, C_WHITE, "Flg    %d", InitFlg[1]);
-	DrawFormatString(100, 160, C_WHITE, "HitFlg %d", HitFlg[1]);*/
+	DrawFormatString(0, 200,  C_RED,   "Num 1");
+	DrawFormatString(0, 220,  C_WHITE, "X  %d", X[1]);
+	DrawFormatString(0, 240,  C_WHITE, "Y  %d", Y[1]);
+	DrawFormatString(0, 260,  C_WHITE, "VX %d", VectorX[1]);
+	DrawFormatString(0, 280, C_WHITE, "VY %d", VectorY[1]);
+	DrawFormatString(0, 300, C_WHITE, "State  %d", State[1]);
+	DrawFormatString(0, 320, C_WHITE, "Flg    %d", InitFlg[1]);
+	DrawFormatString(0, 340, C_WHITE, "HitFlg %d", HitFlg[1]);
 #endif // DEBUG
 
 }
