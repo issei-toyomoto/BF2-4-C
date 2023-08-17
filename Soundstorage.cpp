@@ -16,7 +16,7 @@ int Soundstorage::EatableSE;
 int Soundstorage::DefeatTheEnemySE;
 int Soundstorage::CrackSE;
 int Soundstorage::BubbleSE; // çœ
-int Soundstorage::TripBGM;
+int Soundstorage::TripBGM;  // çœ
 Soundstorage::Soundstorage() 
 {
 	 gStartSE=LoadSoundMem("sounds/SE_Start.wav");
