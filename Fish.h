@@ -39,6 +39,7 @@ private:
 	float E_Y;
 	int E_Color;
 	bool E_Flg;
+	int E_Num;
 public:
 
 	//魚に食べられたときプレイヤー用

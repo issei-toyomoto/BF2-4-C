@@ -28,11 +28,12 @@ Fish::Fish() {
 	P_FishFlg = FALSE;
 	TurnFlg = FALSE;
 	E_Color = 0;
+	E_Num = 0;
 }
 
 //魚生成
 void Fish::Draw() const {
-	if (P_SpawnFlg==TRUE||E_SpawnFlg) {
+	if (P_SpawnFlg==TRUE||E_SpawnFlg == TRUE) {
 		//魚画像(アニメーション)
 		if (TurnFlg == FALSE) {
 			DrawLeft();
@@ -45,8 +46,10 @@ void Fish::Draw() const {
 
 //出現エリア
 void Fish::Update() {
-	CheckPlayer();
 	if (E_SpawnFlg == FALSE) {
+		CheckPlayer();
+	}
+	if (P_SpawnFlg == FALSE) {
 		CheckEnemy();
 	}
 }
@@ -106,6 +109,7 @@ void Fish::InitFish() {
 	P_SpawnFlg = FALSE;
 	E_SpawnFlg = FALSE;
 	P_FishFlg = FALSE;
+	E_FishFlg = FALSE;
 	TurnFlg = FALSE;
 	f_PosY = 400;
 	Target = 0;
@@ -185,16 +189,19 @@ void Fish::CheckEnemy() {
 			E_X = Enemy::EnemyData[i].x;
 			E_Y = Enemy::EnemyData[i].y;
 			E_Color = Enemy::EnemyData[i].state;
+			E_Num = i;
 			if (E_Y >= 360 && E_Y <= 460)E_Flg = TRUE;
 		}
 	}
+	E_X = Enemy::EnemyData[E_Num].x;
+	E_Y = Enemy::EnemyData[E_Num].y;
 	//出現エリア判定
 	if (E_Y >= 360 && E_Y <= 460) {
 		Count++;
 		Second = Count / 60;
 		//三秒経過＆魚がいない
 		/*３秒後確率抽選。その後FALSEなら１秒ごとに抽選*/
-		if (Second >= 0 && E_SpawnFlg == FALSE) {
+		if (Second >= 1 && E_SpawnFlg == FALSE) {
 			FishRand = GetRand(99);
 			Count = 0;
 			Second = 0;
@@ -234,7 +241,7 @@ void Fish::CheckEnemy() {
 		//抽選用時間リセット
 		Count = 0;
 		Second = 0;
-		}
+	}
 }
 
 //左向き描画
