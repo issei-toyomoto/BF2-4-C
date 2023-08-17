@@ -2,10 +2,12 @@
 #include "AbstractScene.h"
 #include "DxLib.h"
 #include "Player.h"
+#include "Soundstorage.h"
 class gStage
 {
 private:
-
+    Player player;
+    Soundstorage ss;
     int gGameImg[14];
     int gSeaImg;
     int MousePointx;

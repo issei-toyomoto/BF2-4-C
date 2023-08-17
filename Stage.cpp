@@ -135,9 +135,9 @@ void gStage::Draw(int gStageState) const
 
 void gStage::Update()
 {
-	px = (int)Player::PlayerX;
-	py = (int)Player::PlayerY;
-	DeathFlg = Player::Death;
+	px = (int)player.PlayerX;
+	py = (int)player.PlayerY;
+	DeathFlg = player.Death;
 
 	gStage::SeaBottom();
 	if (DeathFlg == 1)
@@ -165,6 +165,7 @@ void gStage::SeaBottom()
 	// プレイヤーのY座標が海のY座標を下回った時に波を立たせる処理
 	if (pyL > Seay && DeathFlg == 0)
 	{
+		PlaySoundMem(ss.gSplashSE, DX_PLAYTYPE_BACK, TRUE);
 		DeathFlg = 1;
 		Seax = pxL;
 		Seay = 420;

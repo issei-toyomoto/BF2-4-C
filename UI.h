@@ -25,7 +25,6 @@ private:
 	int HScore1000;
 	int HScore10000;
 	int HScore100000;
-	int HighScore;
 	int LifeCnt;
 
 	int UIflg;     // デバッグ用
@@ -40,5 +39,5 @@ public:
 	void Update(int flg);
 	// 描画に関することを実装する
 	void Draw() const;
-
+	static int HighScore;
 };

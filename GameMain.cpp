@@ -54,14 +54,15 @@ AbstractScene* GameMain::Update()
 	}
 	if (GameOverFlg == 0 && player.Life < 0) { // ゲームオーバーフラグが立っていないかつプレイヤーのライフが0を下回った時
 		StopSoundMem(ss.gStartSE);
+		StopSoundMem(ss.gSplashSE);
 		PlaySoundMem(ss.GameOverSE, DX_PLAYTYPE_BACK, TRUE);
 		GameOverFlg = 1; // GameOvereになるというフラグ
 	}
 	if (GameOverFlg == 1) {
-		if (GameOverWTime < 480) {
+		if (GameOverWTime < 540) {
 			++GameOverWTime;
 		}
-		else { // 480カウントを超えた時行う処理
+		else { // 540カウントを超えた時行う処理
 			ui.Update(GameOverFlg);
 			BUBBLE.Update(GameOverFlg);
 			GameOverFlg = 0;
@@ -101,7 +102,6 @@ AbstractScene* GameMain::Update()
 
 void GameMain::Draw()const
 {
-	DrawFormatString(300, 300, C_GREEN, "%d", ClearWTime);
 	stage.Draw(gStageState);
 	ui.Draw();
 	// ポーズ状態でなければ描画する
@@ -113,13 +113,10 @@ void GameMain::Draw()const
 		enemy.Draw();
 		fish.Draw();
 		player.Draw();
-		DrawFormatString(200, 300, C_RED, "%d", PauseFlg);
 	}
 	// ポーズフラグが立った時描画する
 	if (PauseFlg == 1) {
 		DrawString(210, 320, "--- ポーズ中 ---", C_WHITE);
-		DrawFormatString(200, 300, C_RED, "%d", PauseFlg);
-		DrawFormatString(200, 350, C_RED, "%d", PauseWTime);
 	}
 	// ゲームオーバーフラグが立った時描画する
 	if (GameOverFlg == 1) {
