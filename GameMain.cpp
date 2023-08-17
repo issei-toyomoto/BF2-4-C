@@ -19,9 +19,14 @@ int GameMain::GameOverFlg;
 int GameMain::PauseWTime;
 int GameMain::GameOverWTime;
 int GameMain::PauseFlg;
+bool GameMain::SoundFlg;
 
 AbstractScene* GameMain::Update()
 {
+	if (SoundFlg == 0) {
+		PlaySoundMem(ss.gStartSE, DX_PLAYTYPE_BACK, TRUE);
+		SoundFlg = 1;
+	}
 	++PauseWTime;
 	// ポーズ状態、ゲームオーバー状態ではない間行う処理
 	if (PauseFlg == 0 && GameOverFlg == 0 && ClearFlg == 0) {
@@ -47,7 +52,8 @@ AbstractScene* GameMain::Update()
 	if (PauseFlg == 1) {
 		Pause();
 	}
-	if (GameOverFlg == 0 && player.Life < 0) { // STARTが押された  // まだ一度もPause状態になってないなら
+	if (GameOverFlg == 0 && player.Life < 0) { // ゲームオーバーフラグが立っていないかつプレイヤーのライフが0を下回った時
+		StopSoundMem(ss.gStartSE);
 		PlaySoundMem(ss.GameOverSE, DX_PLAYTYPE_BACK, TRUE);
 		GameOverFlg = 1; // GameOvereになるというフラグ
 	}
@@ -68,62 +74,24 @@ AbstractScene* GameMain::Update()
 		++ClearWTime;
 	}
 	else  if(ClearWTime >=  150 && ClearFlg == 1) {
+		if (gStageState > 4) {
+			ui.Update(ClearFlg);
+			BUBBLE.Update(ClearFlg);
+			ClearWTime = 0;
+			ClearFlg = 0;
+			SoundFlg = 0;
+			return new Title();
+		}
 		ClearWTime = 0;
 		gStageState++;
 		ClearFlg = 0;
 	}
-	if (inputkey.GetKeyDown(PAD_INPUT_7) && ClearFlg == 0 && gStageState == 1) {
-		PlaySoundMem(ss.gStageClearSE, DX_PLAYTYPE_BACK, TRUE);
-		ClearFlg = 1;
-		/*if (ClearWTime < 300){
-			++ClearWTime;
-		}
-		else {
-			ClearWTime = 0;
-			gStageState++;
-			ClearFlg = 0;
-		}*/
-	}
-	if (inputkey.GetKeyDown(PAD_INPUT_7) && ClearFlg == 0 && gStageState == 2){
+	if (inputkey.GetKeyDown(PAD_INPUT_7) && ClearFlg == 0 && gStageState < 6) {
+		SoundFlg = 1;
+		StopSoundMem(ss.gStartSE);
 		PlaySoundMem(ss.gStageClearSE, DX_PLAYTYPE_BACK, TRUE);
 		ClearFlg = 1;
 	}
-	if (inputkey.GetKeyDown(PAD_INPUT_7) && ClearFlg == 0 && gStageState == 3) {
-		PlaySoundMem(ss.gStageClearSE, DX_PLAYTYPE_BACK, TRUE);
-		ClearFlg = 1;
-		/*if (ClearWTime < 300) {
-			++ClearWTime;
-		}
-		else {
-			ClearWTime = 0;
-			gStageState++;
-			ClearFlg = 0;
-		}*/
-	}
-	if (inputkey.GetKeyDown(PAD_INPUT_7) && ClearFlg == 0 && gStageState == 4) {
-		PlaySoundMem(ss.gStageClearSE, DX_PLAYTYPE_BACK, TRUE);
-		ClearFlg = 1;
-		/*if (ClearWTime < 300) {
-			++ClearWTime;
-		}
-		else {
-			ClearWTime = 0;
-			gStageState++;
-			ClearFlg = 0;
-		}*/
-	}
-	/*if (inputkey.GetKeyDown(PAD_INPUT_7) || ClearFlg == 1 && gStageState == 4){
-		PlaySoundMem(ss.gStageClearSE, DX_PLAYTYPE_BACK, TRUE);
-		ClearFlg = 1;
-		if (ClearWTime < 300) {
-			++ClearWTime;
-		}
-		else {
-			ClearWTime = 0;
-			gStageState = 5;
-			ClearFlg = 0;
-		}
-	}*/
 	else if (CheckHitKey(KEY_INPUT_6)) {
 		return nullptr;
 	}

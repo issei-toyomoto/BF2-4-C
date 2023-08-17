@@ -88,7 +88,9 @@ void bubble::Update(int flg)
 				Bubble[i].AnimCount++;
 			}
 			if (Bubble[i].AnimCount == 1) {
-				PlaySoundMem(soundstorage.BubbleSE, DX_PLAYTYPE_BACK, TRUE);
+				GameMain::SoundFlg = 1;
+				StopSoundMem(ss.gStartSE);
+				PlaySoundMem(ss.BubbleSE, DX_PLAYTYPE_BACK, TRUE);
 			}
 			if (Bubble[i].AnimCount == 30 || Bubble[i].Y == 0)
 			{
