@@ -35,10 +35,13 @@ private:
 	float P_Y;		
 
 	//敵情報
+	Enemy e;
 	float E_X;
 	float E_Y;
 	int E_Color;
 	bool E_Flg;
+	int E_Num;
+	int E_Sta[ENEMY_MAX];
 public:
 
 	//魚に食べられたときプレイヤー用
