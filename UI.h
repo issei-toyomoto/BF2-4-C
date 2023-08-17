@@ -2,16 +2,19 @@
 #include "DxLib.h"
 #include "bubble.h"
 #include"Player.h"
+#include"Enemy.h"
 class  UI
 {
 private:
 	bubble Bubble;
 	Player player;
+	Enemy enemy;
 	int UIScore;
 	int UITop;
 	int UIStock;
 	int UINumber[10];
 	int bubleScore;
+	int EnemyScore;
 	int TotalScore;
 	int TScore1;
 	int TScore10;
