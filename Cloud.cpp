@@ -2,7 +2,7 @@
 #include "Thunder.h"
 #include "Common.h"
 
-#define DEBUG
+//#define DEBUG
 
 bool Cloud::FinAnimFlg[2];
 
@@ -44,11 +44,18 @@ void Cloud::Update()
 {
 	for (Num = 0; Num < 2; Num++) {
 		ThunderState[Num] = Thunder::State[Num];
-		WaitTimeCnt[Num]++;
 
-		if (CloudState[Num] == Anim && ThunderState[Num] == NO_USE) {//雲のステートがAnimならAnimCntをCntする
-			AnimCnt[Num]++;
+		if (ThunderState[Num] == NO_USE) {
+			WaitTimeCnt[Num]++;
+		}
+		else if (ThunderState[Num] == USE) {
+			WaitTimeCnt[Num] = 0;
 			FinAnimFlg[Num] = false;
+		}
+
+		if (CloudState[Num] == Anim && ThunderState[Num] == NO_USE /*&& Thunder::InitFlg[Num] == true*/) {//雲のステートがAnimならAnimCntをCntする
+			AnimCnt[Num]++;
+			//FinAnimFlg[Num] = false;
 		}
 
 		if (AnimCnt[Num] > 8) {//AnimCntが８より大きいならAnimCntを０に

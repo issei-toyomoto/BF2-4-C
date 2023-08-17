@@ -1,14 +1,19 @@
 ﻿#include "Thunder.h"
 #include "Thunderbolt.h"
+#include "Player.h"
 #include "Common.h"
 
-#define DEBUG
+//#define DEBUG
 
 bool Thunder::State[2];
+bool Thunder::HitFlg[2];
+bool Thunder::InitFlg[2];
+bool Thunder::ThunderUnderSea[2];
 
 Thunder::Thunder() 
 {
 	Num = 0;
+	NowNum = 1;
 
 	LoadDivGraph("images/Stage_ThunderEffectAnimation.png", 3, 3, 1, 32, 32, Img);
 	for (int i = 0; i < 2; i++) {
@@ -19,13 +24,16 @@ Thunder::Thunder()
 		VectorX[i] = 0;
 		VectorY[i] = 0;
 		InitFlg[i] = false;
+		HitFlg[i] = false;
+		ThunderUnderSea[i] = false;
+		State[i] = NO_USE;
 	}
 }
 
 //描画以外の更新を実装する
 void Thunder::Update(int Stage) 
 {
-	for (Num = 0; Num < 2; Num++) {
+	for (Num = 0; Num < NowNum; Num++) {
 		FinThunderboltAnimFlg[Num] = Thunderbolt::FinAnimFlg[Num];
 		Position[Num] = Thunderbolt::Position[Num];
 
@@ -34,18 +42,17 @@ void Thunder::Update(int Stage)
 		}
 
 		if (FinThunderboltAnimFlg[Num] == true) {
-			ThunderAnim(Num);
-			AnimCnt[Num]++;
+			Thunderbolt::FinAnimFlg[Num] = false;
 			State[Num] = USE;
 		}
 
 		if (State[Num] == USE) {
+			ThunderAnim(Num);
+			AnimCnt[Num]++;
 			X[Num] += VectorX[Num];
 			Y[Num] += VectorY[Num];
 			ThunderCollision(Num, Stage);
 		}
-
-		
 
 		if (AnimCnt[Num] > 8) {
 			AnimCnt[Num] = 0;
@@ -60,14 +67,28 @@ void Thunder::Draw() const
 		DrawGraph(X[0], Y[0], NowImg[0], TRUE);
 	}
 
+	if (State[1] == USE) {
+		DrawGraph(X[1], Y[1], NowImg[1], TRUE);
+	}
+
 #ifdef DEBUG
-	DrawFormatString(0, 40, C_WHITE, "X %d", X[0]);
-	DrawFormatString(0, 60, C_WHITE, "Y %d", Y[0]);
-	DrawFormatString(0, 80, C_WHITE, "VX %d", VectorX[0]);
+	DrawFormatString(0, 20,  C_RED,   "Num 0");
+	DrawFormatString(0, 40,  C_WHITE, "X  %d", X[0]);
+	DrawFormatString(0, 60,  C_WHITE, "Y  %d", Y[0]);
+	DrawFormatString(0, 80,  C_WHITE, "VX %d", VectorX[0]);
 	DrawFormatString(0, 100, C_WHITE, "VY %d", VectorY[0]);
-	DrawFormatString(0, 120, C_WHITE, "State %d", State[0]);
-	DrawFormatString(0, 140, C_WHITE, "Flg %d", InitFlg[0]);
-	DrawFormatString(0, 160, C_WHITE, "AnimCnt %d", AnimCnt[0]);
+	DrawFormatString(0, 120, C_WHITE, "State  %d", State[0]);
+	DrawFormatString(0, 140, C_WHITE, "Flg    %d", InitFlg[0]);
+	DrawFormatString(0, 160, C_WHITE, "HitFlg %d", HitFlg[0]);
+
+	/*DrawFormatString(100, 20,  C_RED,   "Num 1");
+	DrawFormatString(100, 40,  C_WHITE, "X  %d", X[1]);
+	DrawFormatString(100, 60,  C_WHITE, "Y  %d", Y[1]);
+	DrawFormatString(100, 80,  C_WHITE, "VX %d", VectorX[1]);
+	DrawFormatString(100, 100, C_WHITE, "VY %d", VectorY[1]);
+	DrawFormatString(100, 120, C_WHITE, "State  %d", State[1]);
+	DrawFormatString(100, 140, C_WHITE, "Flg    %d", InitFlg[1]);
+	DrawFormatString(100, 160, C_WHITE, "HitFlg %d", HitFlg[1]);*/
 #endif // DEBUG
 
 }
@@ -130,6 +151,20 @@ void Thunder::ThunderCollision(int i, int Stage)
 	int XL = X[i] + 28;
 	int YL = Y[i] + 28;
 
+	int PXU = (int)Player::PlayerX + 18;
+	int PYU = (int)Player::PlayerY + 14;
+	int PXL = (int)Player::PlayerX + 40;
+	int PYL = (int)Player::PlayerY + 64;
+
+//プレイヤーとの当たり判定//
+	if (PYU <= YL && PYL >= YU && PXU <= XL && PXL >= XU) {
+		HitFlg[i] = true;
+	}
+	else {
+		HitFlg[i] = false;
+	}
+
+//ステージとの当たり判定//
 	if (Stage == 1) {
 		//
 		if (XU <= S_Ground_Left_XL && YL >= S_Ground_Left_YU + PlusPx) {//
@@ -156,7 +191,7 @@ void Thunder::ThunderCollision(int i, int Stage)
 				VectorX[i] *= -1;
 			}
 		}
-		if (YL >= S_Sky_Ground_0_YU && YL <= S_Sky_Ground_0_YU + PlusPx && XU <= S_Sky_Ground_0_XL && XL >= S_Sky_Ground_0_XU) {//���
+		if (YL >= S_Sky_Ground_0_YU && YL <= S_Sky_Ground_0_YU + PlusPx && XU <= S_Sky_Ground_0_XL && XL >= S_Sky_Ground_0_XU) {//
 			VectorY[i] *= -1;
 		}
 		if (YU <= S_Sky_Ground_0_YL - PlusPx && YL >= S_Sky_Ground_0_YL) {//
@@ -170,10 +205,13 @@ void Thunder::ThunderCollision(int i, int Stage)
 			VectorY[i] *= -1;
 		}
 
-		//
+		//海に落ちた
 		if (YL >= _SCREEN_HEIGHT_ + 50) {
+			ThunderUnderSea[i] = true;
 			State[i] = NO_USE;
 			InitFlg[i] = false;
+			VectorX[i] = 0;
+			VectorY[i] = 0;
 		}
 
 		//

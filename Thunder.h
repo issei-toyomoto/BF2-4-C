@@ -4,6 +4,7 @@ class Thunder
 {
 private:
 	int Num;
+	int NowNum;
 
 	int Img[3];
 	int NowImg[2];
@@ -19,10 +20,11 @@ private:
 
 	int Position[2];
 
-	bool InitFlg[2];
-
 public:
 	static bool State[2];//(false:未使用 true:使用)
+	static bool HitFlg[2];
+	static bool InitFlg[2];
+	static bool ThunderUnderSea[2];
 
 	//コンストラクタ
 	Thunder();
@@ -38,7 +40,5 @@ public:
 	void ThunderCollision(int i, int Stage);
 
 	void ThunderAnim(int i);	//雷のアニメーション
-
-	void ThunderMove(int i);
 };
 
