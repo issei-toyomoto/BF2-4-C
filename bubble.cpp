@@ -110,7 +110,7 @@ void bubble::Draw() const
 		if (Bubble[i].Event == 1) {
 			if (Bubble[i].Flg == 0 && Bubble[i].detection == 0) {
 				DrawGraph((int)Bubble[i].X, (int)Bubble[i].Y, Bubble[i].Img[0], TRUE);
-				DrawBox((int)Bubble[i].X + 15, (int)Bubble[i].Y + 15, (int)Bubble[i].X + 50, (int)Bubble[i].Y + 50, C_RED, FALSE);
+				/*DrawBox((int)Bubble[i].X + 15, (int)Bubble[i].Y + 15, (int)Bubble[i].X + 50, (int)Bubble[i].Y + 50, C_RED, FALSE);*/
 			}
 			if (Bubble[i].Flg == 1) {
 				if (Bubble[i].AnimCount < 100) {
@@ -128,7 +128,7 @@ void bubble::Draw() const
 			}
 		}
 	}
-#ifdef DEBUG
+#ifdef _DEBUG
 	DrawGraph((int)BEnemyX, (int)BEnemyY, BubbleVEnemy[9], TRUE);
 #endif // DEBUG
 }
