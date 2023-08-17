@@ -32,6 +32,7 @@ private:
 
 	const int EnemyMax[5] = { 3,5,3,4,5 };
 
+	
 	int OldStage;
 	int EnMax;
 	int NowStage;
@@ -71,10 +72,10 @@ private:
 
 public:
 	 static int HitPFlg;       // プレイヤーと敵の当たり判定(プレイヤーに値を渡す)
-
+	 static int EnemyScore;
 	 static ENEMY2 EnemyData[ENEMY_MAX]; // 敵の座標、状態（色）渡す用
 
-	 static int EnemyScore;
+	 static int EnemyTotalScore;
 
 	Enemy();   // コンストラクタ
 	~Enemy();  // デストラクタ

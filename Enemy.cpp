@@ -13,6 +13,8 @@ int Enemy::HitPFlg = 0;
 
 int Enemy::EnemyScore;
 
+int Enemy::EnemyTotalScore = 0;
+
 ENEMY2 Enemy::EnemyData[ENEMY_MAX];
 
 // コンストラクタ
@@ -1721,6 +1723,7 @@ int Enemy::HitStart(int e)
 			enemy[e].oldx = enemy[e].x;
 			enemy[e].oldy = enemy[e].y;
 			enemy[e].score = 1;
+			EnemyTotalScore += 750;
 			// 仮
 			enemy[e].life -= 2;
 			PlaySoundMem(Soundstorage::DefeatTheEnemySE, DX_PLAYTYPE_BACK, TRUE);
@@ -1761,6 +1764,7 @@ int Enemy::HitPlayer(int e)
 				enemy[e].oldx = enemy[e].x;
 				enemy[e].oldy = enemy[e].y;
 				enemy[e].score = 0;
+				EnemyTotalScore += 500;
 				// 仮
 				enemy[e].life -= 1;
 				PlaySoundMem(Soundstorage::CrackSE, DX_PLAYTYPE_BACK, TRUE);
@@ -1800,6 +1804,7 @@ int Enemy::HitPlayer(int e)
 				enemy[e].oldx = enemy[e].x;
 				enemy[e].oldy = enemy[e].y;
 				enemy[e].score = 2;
+				EnemyTotalScore += 1000;
 				// 仮
 				enemy[e].life -= 1;
 				PlaySoundMem(Soundstorage::DefeatTheEnemySE, DX_PLAYTYPE_BACK, TRUE);

@@ -1,6 +1,7 @@
 #include "UI.h"
 #include "bubble.h"
 #include "Common.h"
+#include "Enemy.h"
 #include <math.h>
 
 #define DEBUG
@@ -37,7 +38,7 @@ void UI::Update(int flg)
 {
 	LifeCnt = player.Life;
 	bubleScore = Bubble.BubleScore;
-	TotalScore = bubleScore;
+	TotalScore = bubleScore + Enemy::EnemyTotalScore;
 	if (TotalScore > HighScore) {
 		HighScore = TotalScore;
 	}
