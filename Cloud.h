@@ -1,21 +1,8 @@
 #pragma once
-//**ステージごとの雲の位置**//
-//ステージ１
-#define Stage_1_X 300
-#define Stage_1_Y 70
-//ステージ２
-#define Stage_2_X_0 50
-#define Stage_2_Y_0 150 
-#define Stage_2_X_1 450
-#define Stage_2_Y_1 150
-//ステージ３
-
-//**************************//
-
 #define No_Anim 0
 #define Anim     1
 
-#define StopTime 3 * Frame
+#define StopTime 1 * Frame
 
 class Cloud
 {
@@ -30,7 +17,11 @@ private:
 	int WaitTimeFlg[2];		//アニメーションの時間を決める用
 	int CloudState[2];		//雲の状態(0: 通常　1:アニメーション)
 
+	bool ThunderState[2];
+
 public:
+	static bool FinAnimFlg[2];//アニメーションが終わったことをThunderboltに受け渡す用
+
 	//コンストラクタ
 	Cloud();
 	//デストラクタ

@@ -64,8 +64,6 @@
 #define Touch      true	//地面以外に触れている
 #define Not_Touch  false//地面以外に触れてない
 
-#define PlusPx 3			//px太くする（当たり判定）
-
 #define AbtnIntervalFream 8 //Aボタンのインターバルフレーム数
 
 #define COR 0.8f			//反発係数(coefficient of repulsion)
@@ -118,6 +116,11 @@ private:
 	bool ReStartSoundFlg;
 
 	int DeathVectorY;
+
+	int ThunderHit;
+	int MoveStopThunderCnt;
+	int MoveDeathCnt;
+
 public:
 	static float PlayerX;	//プレイヤーX座標(画像の左上X座標)
 	static float PlayerY;	//プレイヤーY座標(画像の左上Y座標)
@@ -165,5 +168,8 @@ public:
 	float GetPlayerX();
 	float GetPlayerY();
 
-	void PlayerDeathAnim();
+	void PlayerDeathMove();
+	void PlayerThunderMove();
+
+	void SeaInit();
 };

@@ -85,7 +85,6 @@ void UI::Draw() const
 	DrawGraph(335, 0, UINumber[HScore1], TRUE);
 	DrawGraph(35, 7, UIScore, TRUE);
 	DrawGraph(200, 8, UITop, TRUE);
-	/*DrawGraph(150, 28, UIStock, TRUE);*/
 
 #ifdef DEBUG
 	DrawFormatString(200, 0, C_RED, "%d", HighScore);

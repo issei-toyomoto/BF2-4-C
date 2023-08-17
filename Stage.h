@@ -11,12 +11,12 @@ private:
     int MousePointx;
     int MousePointy;
     int gGameState;
-    int SeaPos;
     int SeaAnim[3];
     int SeaAnimCount;
-    float px, py;
+    int px, py;
     int Seax, Seay;
     bool DeathFlg;
+    bool SeaAnimFlg;
     
 public:
     void Draw(int gStageState) const;
