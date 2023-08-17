@@ -10,31 +10,31 @@
 #include "InputKey.h"
 
 int Enemy::HitPFlg = 0;
-
-int Enemy::EnemyScore;
-
 int Enemy::EnemyTotalScore = 0;
-
 ENEMY2 Enemy::EnemyData[ENEMY_MAX];
 
 // コンストラクタ
 Enemy::Enemy()
 {
-	StartFlg = 0;   // スタート状態か判定する用
-	Fcnt = 0;     // FPSカウント
-	StartMotion = 0;          // スタート時、敵のモーション管理用
-	Px = 0;         // プレイヤーのX座標
-	Py = 0;         // プレイヤーのY座標
+	StartFlg = 0;   
+	Fcnt = 0;     
+	StartMotion = 0;          
+	Px = 0;
+	Py = 0;
 	HitFlg = 0;
 	HitPeFlg = 0;
 	NowStage = 0;
-	MaxSpeed = 2.0f;      // 最大速度
-	acceleration = 0.6f;  // 加速度
-	friction = 0.5f;      // 摩擦係数
+	MaxSpeed = 2.0f;
+	acceleration = 0.6f;
+	friction = 0.5f;
 	StageFlg = 0;
 	EnMax = 0;
 	OldStage = 0;
-	
+	EnXL[0] = 0;
+	EnYL[0] = 0;
+	EnXR[0] = 0;
+	EnYR[0] = 0;
+
 	LoadDivGraph("image/Enemy/Enemy_P_Animation.png", 18, 6, 3, 64, 64, EnemyImg[0]);  //画像読み込み(ピンク)
 	LoadDivGraph("image/Enemy/Enemy_G_Animation.png", 18, 6, 3, 64, 64, EnemyImg[1]);  //画像読み込み(みどり)
 	LoadDivGraph("image/Enemy/Enemy_R_Animation.png", 18, 6, 3, 64, 64, EnemyImg[2]);  //画像読み込み(きいろ)
@@ -44,8 +44,6 @@ Enemy::Enemy()
 	ScoreImg[2] = LoadGraph("images-20230711T024428Z-001/images/Score/GetScore_1000.png");
 	ScoreImg[3] = LoadGraph("images-20230711T024428Z-001/images/Score/GetScore_1500.png");
 	ScoreImg[4] = LoadGraph("images-20230711T024428Z-001/images/Score/GetScore_2000.png");
-
-
 }
 
 // デストラクタ
@@ -171,7 +169,7 @@ void Enemy::Update(int nowstage)
 		}
 	}
 
-	//１秒たったらフレームカウント
+	//１秒たったらリセット
 	if (Fcnt > 60) 
 	{
 		Fcnt = 0;
@@ -300,7 +298,7 @@ void Enemy::Draw() const
 		{
 			if (enemy[i].score >= 0)
 			{
-				DrawGraph(enemy[i].oldx + 15, enemy[i].oldy - 20, ScoreImg[enemy[i].score], TRUE);
+				DrawGraph((int)enemy[i].oldx + 15, (int)enemy[i].oldy - 20, ScoreImg[enemy[i].score], TRUE);
 			}
 			// スタート以外
 			// 画面内
@@ -319,6 +317,7 @@ void Enemy::Draw() const
 	}
 }
 
+// 敵の移動処理
 void Enemy::EnMove(int e)
 {
 	// プレイヤーへのベクトル
@@ -448,6 +447,7 @@ void Enemy::EnemyInit(int nowstage)
 		*/
 }
 
+// 敵のデータを格納
 void Enemy::SetEnemyData(int e)
 {
 	EnemyData[e].x = enemy[e].x;
@@ -617,8 +617,6 @@ void Enemy::StartMove(int i)
 				{
 					enemy[i].state++;
 				}
-
-				enemy[i].okballoon = 0;
 				enemy[i].start = 0;
 				enemy[i].sm = 0;
 			}
