@@ -8,7 +8,6 @@
 #include<math.h>
 #define DEBUG
 
-
 int bubble::BubleScore;
 
 bubble::bubble() 
@@ -38,7 +37,6 @@ bubble::bubble()
 #endif // DEBUG
 
 }
-
 
 void bubble::Update(int flg)
 {
