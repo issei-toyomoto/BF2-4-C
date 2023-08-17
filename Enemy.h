@@ -29,7 +29,14 @@ private:
 	float MaxSpeed;      // 最大速度
 	float acceleration;  // 加速度
 	float friction;      // 摩擦係数
+
+	const int EnemyMax[5] = { 3,5,3,4,5 };
+
+	int OldStage;
+	int EnMax;
 	int NowStage;
+
+	int StageFlg;
 	
 	const float MinY = -19.0f;
 	
@@ -72,7 +79,7 @@ public:
 	Enemy();   // コンストラクタ
 	~Enemy();  // デストラクタ
 
-	void EnemyInit();       // 敵の初期化処理
+	void EnemyInit(int nowstage);       // 敵の初期化処理
 	void EnemyMove(int i);  // 敵の移動処理
 	void StartMove();       // 敵のスタート処理
 	void StartMove(int i);  // 敵のスタート処理(パラシュート後)
