@@ -10,8 +10,6 @@
 #define _SCREEN_COLOR_BIT_16_ 16
 #define _SCREEN_COLOR_BIT_32_ 32
 
-#define DEBUG
-
 int WINAPI WinMain(_In_ HINSTANCE ih, _In_opt_ HINSTANCE ioh, _In_ LPSTR il, _In_ int ii)
 {
 	// ウィンドウモードで起動
@@ -45,9 +43,6 @@ int WINAPI WinMain(_In_ HINSTANCE ih, _In_opt_ HINSTANCE ioh, _In_ LPSTR il, _In
 		fps.Update();	//FPS計測
 		sceneMng.Draw();//シーン描画
 		fps.Wait();		//FPS同期
-#ifdef DEBUG
-		fps.Draw();		//FPS描画
-#endif // DEBUG
 		ScreenFlip();
 	}
 

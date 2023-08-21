@@ -142,7 +142,7 @@ void GameMain::Draw()const
 	DrawGraph(160, 455, SeaImg, TRUE);//海の表示
 	DrawGraph(0, 455, SeaImg, TRUE);
 	DrawGraph(480, 455, SeaImg, TRUE);
-#ifdef DEBUG
+#ifdef _DEBUG
 	DrawString(250, 280, "BACKボタンでステージ遷移", C_RED);
 	//ステージの当たり判定(ステージ１)
 	if (gStageState == 1) {

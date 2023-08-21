@@ -61,16 +61,16 @@ void gStage::Draw(int gStageState) const
 	{
 	case 1: // ステージ1
 		/*DrawFormatString(50, 0, C_RED, "各ステージに対応した数字(1～5)キーを押すことで押したキーのステージへ");*/
-		DrawFormatString(10, 30, C_RED, "6キーで強制終了");
+		/*DrawFormatString(10, 30, C_RED, "6キーで強制終了");*/
 		DrawGraph(S_Ground_Left_XU, S_Ground_Left_YU, gGameImg[8], TRUE);
 		DrawGraph(S_Ground_Right_XU, S_Ground_Right_YU, gGameImg[10], TRUE);
 		DrawGraph(S_Sky_Ground_0_XU, S_Sky_Ground_0_YU, gGameImg[0], TRUE);
 		
-		DrawFormatString(10, 30, C_RED, "6キーで強制終了");
+		/*DrawFormatString(10, 30, C_RED, "6キーで強制終了");*/
 		break;
 	case 2: // ステージ2
 		/*DrawFormatString(50, 0, C_RED, "各ステージに対応した数字(1～5)キーを押すことで押したキーのステージへ");*/
-		DrawFormatString(10, 30, C_RED, "6キーで強制終了");
+		/*DrawFormatString(10, 30, C_RED, "6キーで強制終了");*/
 		DrawGraph(S_Sky_Ground_0_XU, S_Sky_Ground_0_YU, gGameImg[0], TRUE);
 		DrawGraph(S2_Sky_Ground_0_XU, S2_Sky_Ground_0_YU, gGameImg[1], TRUE);
 		DrawGraph(S2_Sky_Ground_1_XU, S2_Sky_Ground_1_YU, gGameImg[1], TRUE);
@@ -80,7 +80,7 @@ void gStage::Draw(int gStageState) const
 		break;
 	case 3: // ステージ3
 		/*DrawFormatString(50, 0, C_RED, "各ステージに対応した数字(1～5)キーを押すことで押したキーのステージへ");*/
-		DrawFormatString(10, 30, C_RED, "6キーで強制終了");
+	/*	DrawFormatString(10, 30, C_RED, "6キーで強制終了");*/
 		DrawGraph(S3_Sky_Ground_1_XU, S3_Sky_Ground_1_YU, gGameImg[2], TRUE);
 		DrawGraph(S3_Sky_SGround_0_XU, S3_Sky_SGround_0_YU, gGameImg[3], TRUE);
 		DrawGraph(S3_Sky_SGround_1_XU, S3_Sky_SGround_1_YU, gGameImg[3], TRUE);
@@ -92,7 +92,7 @@ void gStage::Draw(int gStageState) const
 		break;
 	case 4: // ステージ4
 		/*DrawFormatString(50, 0, C_RED, "各ステージに対応した数字(1～5)キーを押すことで押したキーのステージへ");*/
-		DrawFormatString(10, 30, C_RED, "6キーで強制終了");
+		/*DrawFormatString(10, 30, C_RED, "6キーで強制終了");*/
 		DrawGraph(S4_Sky_Ground_0_XU, S4_Sky_Ground_0_YU, gGameImg[5], TRUE);
 		DrawGraph(S4_Sky_Ground_1_XU, S4_Sky_Ground_1_YU, gGameImg[5], TRUE);
 		DrawGraph(S4_Sky_Ground_2_XU, S4_Sky_Ground_2_YU, gGameImg[5], TRUE);
@@ -104,7 +104,7 @@ void gStage::Draw(int gStageState) const
 		break;
 	case 5: // ステージ5
 		/*DrawFormatString(50, 0, C_RED, "各ステージに対応した数字(1～5)キーを押すことで押したキーのステージへ");*/
-		DrawFormatString(10, 30, C_RED, "6キーで強制終了");
+		/*DrawFormatString(10, 30, C_RED, "6キーで強制終了");*/
 		DrawGraph(S5_Sky_Ground_0_XU, S5_Sky_Ground_0_YU, gGameImg[5], TRUE);
 		DrawGraph(S5_Sky_Ground_1_XU, S5_Sky_Ground_1_YU, gGameImg[5], TRUE);
 		DrawGraph(S5_Sky_Ground_2_XU, S5_Sky_Ground_2_YU, gGameImg[5], TRUE);
